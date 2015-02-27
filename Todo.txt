@@ -1,0 +1,5 @@
+Activate Tool
+Choose face
+determine if too long
+determine if right thickness
+set attributes
