@@ -1,25 +1,32 @@
 class TransformerTool
 	def activate
-		puts 'Your tool has been activated.'
+	#	puts 'Your tool has been activated.'
 	end
-  def transform(x,y, view)
-    face = view.inputpoint x, y
-    if face
-      puts "Found a face #{face}"
-    else
-      puts "Didn't click on a face"
-    end
-  end
-	def onLButtonDown(flags, x, y, view)
+	def deactivate(view)
+		#puts "Your tool has been deactivated in view: #{view}"
+	end
+	def transform(x,y, view)
+		ph = view.pick_helper
+    ph.do_pick(x,y)
+    face = ph.picked_face
+		if face
+			puts "Found a face #{face}"
+      part = Part.new(face)
+      part.wikize!
+		else
+			puts "Didn't click on a face"
+		end
+	end
+	def onLButtonDoubleClick(flags, x, y, view)
 		#	wikihouse_it!(view)
 		#  draw_stairs(x,y)
-    transform(x,y,view)
-		if WikiHouse::LOG_ON
-			puts "onLButtonDown: flags =  #{flags}"
-			puts "                   x = #{x}"
-			puts "      y = #{y}"
-			puts "                view = #{view}"
-		end
+		transform(x,y,view)
+		# if WikiHouse::LOG_ON
+		# 	puts "onLButtonDown: flags =  #{flags}"
+		# 	puts "                   x = #{x}"
+		# 	puts "      y = #{y}"
+		# 	puts "                view = #{view}"
+		# end
 	end
 	def self.init
 		puts "initializing the menu system"

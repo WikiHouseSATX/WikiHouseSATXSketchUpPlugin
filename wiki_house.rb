@@ -16,6 +16,10 @@ module WikiHouse
    init
 
   end
+  def self.error(msg)
+    UI.messagebox(msg)
+    return false
+  end
   def self.plugin_file(filename, sub_directories = [])
     unless sub_directories.is_a? Array
       sub_directories = [sub_directories]
