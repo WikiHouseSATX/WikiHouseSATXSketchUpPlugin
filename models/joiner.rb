@@ -22,8 +22,8 @@ class Joiner
         new_end = [    ((index + 1) * new_length) + starting_x ,
           end_edge.end.position.y.to_inch,
         0]
+        @joint.join!(new_start, new_end)
 
-        Sketchup.active_model.entities.add_line(new_start, new_end)
       end
     else
       puts "Y is long"
@@ -39,7 +39,7 @@ class Joiner
           ((index + 1) * new_length) + starting_y ,
         0]
 
-        Sketchup.active_model.entities.add_line(new_start, new_end)
+        @joint.join!(new_start, new_end)
       end
     end
 
