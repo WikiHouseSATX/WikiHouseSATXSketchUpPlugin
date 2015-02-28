@@ -29,6 +29,7 @@ module WikiHouse
   end
   def self.init
     puts "Calling"
+    load plugin_file("joint.rb","models") #Other files depend on this
     Dir[ plugin_file("*.rb", "models")].each do |file|
       puts file if LOG_ON
       load file
