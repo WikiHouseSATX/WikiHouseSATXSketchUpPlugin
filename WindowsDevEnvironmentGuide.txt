@@ -1,0 +1,51 @@
+Windows Dev Envionment Notes
+
+SketchUp - 2015
+http://www.sketchup.com/ - dowload the free version
+
+
+
+Git - GitHub for Windows
+
+https://windows.github.com/
+
+
+Ruby for Windows http://rubyinstaller.org/
+Ruby 2.0 and dev tools
+
+http://dl.bintray.com/oneclick/rubyinstaller/rubyinstaller-2.0.0-p643-x64.exe?direct
+http://cdn.rubyinstaller.org/archives/devkits/DevKit-mingw64-64-4.7.2-20130224-1432-sfx.exe
+
+Some versions of Ruby on Windows have a broken RubyGems - https://gist.github.com/luislavena/f064211759ee0f806c88
+
+download https://github.com/rubygems/rubygems/releases/download/v2.0.15/rubygems-update-2.0.15.gem
+C:\>gem install --local C:\rubygems-update-2.0.15.gem
+C:\>update_rubygems --no-ri --no-rdoc
+
+Gems:
+
+gem install ruby-beautify
+
+Modify Folder Settings 
+ Win 7 - Control Panel -> Appeance & Personalization 0> Folder Options -> View 
+Show Hidden files
+
+Create a link from Users/YOUR USERNAME/AppData/Romaing/SketchUp/SketchUp2015/SketchUp/Plugins to Desktop
+Checkout the git repot to that plugins directory
+Copy WikiHouseSATXSketchUpPluginLoader.rb from project directory to the Plugins Directory
+
+Editor - Atom.io
+
+https://atom.io/
+
+Customize Atom
+
+Install Font -http://www.levien.com/type/myfonts/inconsolata.html    http://www.levien.com/type/myfonts/Inconsolata.otf
+Set Font in Atom
+Install packages:
+atom-beautify
+open-in-github-app
+git-plus
+
+
+SketupAPI Docs - http://www.sketchup.com/intl/en/developer/index
