@@ -18,14 +18,14 @@ class SJoint < Joint
 	# b4 = 8 x 7 11/16  8 x 7.625
 
 	# triangle1 = 3 1/2 x 15 5/16  3.5 x 15.3125
-	MEASURED_HEIGHT = 22.8125
-	MEASURED_B1_WIDTH = 7.6875
-	MEASURED_B1_HEIGHT = 7.625
-	MEASURED_B2_WIDTH = 3.75
-	MEASURED_B3_WIDTH = 8
-	MEASURED_B4_HEIGHT = 7.625
-	MEASURED_T1_WIDTH = 3.5
-	MEASURED_T1_HEIGHT = 15.3125
+	MEASURED_HEIGHT = 22.8125  unless defined? MEASURED_HEIGHT
+	MEASURED_B1_WIDTH = 7.6875  unless defined? MEASURED_B1_WIDTH
+	MEASURED_B1_HEIGHT = 7.625  unless defined? MEASURED_B1_HEIGHT
+	MEASURED_B2_WIDTH = 3.75 unless defined? MEASURED_B2_WIDTH
+	MEASURED_B3_WIDTH = 8 unless defined? MEASURED_B3_WIDTH
+	MEASURED_B4_HEIGHT = 7.625 unless defined? MEASURED_B4_HEIGHT
+	MEASURED_T1_WIDTH = 3.5 unless defined? MEASURED_T1_WIDTH
+	MEASURED_T1_HEIGHT = 15.3125 unless defined? MEASURED_T1_HEIGHT
 	def total_height
 		@total_height
 	end
@@ -51,10 +51,11 @@ class SJoint < Joint
 		edges
 	end
 	def draw_box(top_right_x, top_right_y, bottom_left_x, bottom_left_y, omit_sides = [])
-		c1 = [bottom_left_x,top_right_y,0]
-		c2 = [top_right_x,top_right_y,0]
-		c3 = [top_right_x,bottom_left_y,0]
-		c4 = [bottom_left_x, bottom_left_y,0]
+
+		c1 = [top_right_x,top_right_y,0]
+		c2 = [top_right_x,bottom_left_y,0]
+		c3 = [bottom_left_x, bottom_left_y,0]
+		c4 = [bottom_left_x,top_right_y,0]
 		edges = []
 		edges << Sketchup.active_model.entities.add_line(c1, c2) unless omit_sides.include? :s1
 		edges << Sketchup.active_model.entities.add_line(c2, c3) unless omit_sides.include? :s2
@@ -86,21 +87,21 @@ class SJoint < Joint
 		# Right side
 		#b2
 		b2 = draw_box(finish[0],finish[1],
-		finish[0] - b2_width, finish[1] - b2_height )
+		finish[0] - b2_width, finish[1] - b2_height,[:s1,:s2, :s3] )
 		b1 = draw_box( finish[0] - b2_width, finish[1],
-		finish[0] - b2_width - b1_width, finish[1] - b1_height )
+		finish[0] - b2_width - b1_width, finish[1] - b1_height ,[:s1,:s2, :s3] )
 		b3 = draw_box(finish[0] + b3_width ,finish[1],
-		finish[0] , finish[1] - b3_height )
+		finish[0] , finish[1] - b3_height ,[:s1,:s2, :s3, :s4] )
 		b4 = draw_box(finish[0] + b3_width ,finish[1] - b3_height,
-		finish[0] , finish[1] - b3_height - b4_height)
+		finish[0] , finish[1] - b3_height - b4_height ,[:s1,:s2, :s3, :s4])
 		t1 = draw_triangle( finish[0] + b3_width ,finish[1],
 			finish[0] + b3_width, finish[1] - t1_height,
-			finish[0] + b3_width + t1_width, finish[1] - t1_height
+			finish[0] + b3_width + t1_width, finish[1] - t1_height,[:s1,:s2, :s3]
 		)
 		t2 = draw_triangle( 	finish[0] - b2_width - b1_width, finish[1] - b1_height,
 			finish[0] - b2_width - b1_width, finish[1] - b1_height - t2_height,
 			finish[0] - b2_width - b1_width + t2_width, finish[1] - b1_height - t2_height,
-	,[:s1, :s2]	)
+		[:s1, :s2, :s3]	)
 		# Left Side
 		# Fuse them into the part
 		# Turn into group
