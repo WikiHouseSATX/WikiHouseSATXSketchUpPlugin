@@ -3,7 +3,7 @@ class Part
 		@face = face
 		@sheet = Sheet.new
 		@ripper = Ripper.new(@sheet)
-		@joiner = Joiner.new(SJoint.new)
+		@joiner = Joiner.new(SJoint, @sheet)
 	end
 	def wikize!
 		unless @face.edges.count == 4

@@ -1,7 +1,7 @@
 class SJoint < Joint
 	# This class was based on the original S-Joint 3.4
 	#  We made some changes
-	# The parallelogram  had 77.5 and 102.5 as the angles - we changed it to 80/100 degrees
+	# The parallelogram  had 77.5 and 102.5 as the angles - we changed it to 71.45 degrees
 	# The width of the parallelogram  was slightly less than the  width of the baord - we made it the width of the baord
 
 
@@ -37,7 +37,7 @@ class SJoint < Joint
 		end
 
 
-		c4 = [c3[0]  - b_length, c3[1],0]
+		c4 = [c3.x  - b_length, c3.y,0]
 		[c1, c2, c3, c4]
 	end
   def draw_parallelogram(x1,y1, b_length, h_length, x1_angle_in_degrees, omit_sides = [])
@@ -80,7 +80,7 @@ class SJoint < Joint
 	end
 	def join!(first_point, last_point, orientation)
 
-		if first_point[1] < last_point[1]
+		if first_point.y < last_point.y
 			start = last_point
 			finish = first_point
 		else
@@ -99,49 +99,59 @@ class SJoint < Joint
 		#71.45 degrees makes
 		angle_degrees = 71.45
 		one_third_height = total_height/3
-		# outer_parallelogram = draw_parallelogram(finish[0] - (2 * one_third_height),
-		#  start[1], total_height,
+		# outer_parallelogram = draw_parallelogram(finish.x - (2 * one_third_height),
+		#  start.y, total_height,
 		#  total_height,angle_degrees, [])
-	parallelogram_points = build_parallelogram_points(finish[0] - (2 * one_third_height),
-			start[1], total_height,
+	parallelogram_points = build_parallelogram_points(finish.x - (2 * one_third_height),
+			start.y, total_height,
 			total_height,angle_degrees)
-    x1 = finish[0] - (2 * one_third_height)
-		y1 = finish[1] + (1 * one_third_height)
-		y2 = finish[1] + (2 * one_third_height)
-		x2 = finish[0] + (2 * one_third_height)
+    x1 = finish.x - (2 * one_third_height)
+		y1 = finish.y + (1 * one_third_height)
+		y2 = finish.y + (2 * one_third_height)
+		x2 = finish.x + (2 * one_third_height)
 	#	Sketchup.active_model.entities.add_line([x1, y1,0], [x2, y1 ,0])
 	#	Sketchup.active_model.entities.add_line([x1, y2,0], [x2, y2,0])
 
 		bottom_triangle_leg = one_third_height/Math.tan(SJoint.degrees_to_radians(angle_degrees))
-		x1 = parallelogram_points[3][0]
-		y1 = parallelogram_points[3][1]
-		x2 = finish[0] - (2 * one_third_height) + bottom_triangle_leg
-		y2 = finish[1] + (2 * one_third_height)
+		x1 = parallelogram_points[3].x
+		y1 = parallelogram_points[3].y
+		x2 = finish.x - (2 * one_third_height) + bottom_triangle_leg
+		y2 = finish.y + (2 * one_third_height)
 
 		Sketchup.active_model.entities.add_line([x1, y1,0], [x2, y2 ,0])
 
 
-		x1 = finish[0] - (2 * one_third_height) + bottom_triangle_leg
-		x2 = finish[0]
-		y =  finish[1] + (2 * one_third_height)
+		x1 = finish.x - (2 * one_third_height) + bottom_triangle_leg
+		x2 = finish.x
+		y =  finish.y + (2 * one_third_height)
 		Sketchup.active_model.entities.add_line([x1, y,0], [x2, y ,0])
-		x = finish[0]
-		y1 =  finish[1] + (1 * one_third_height)
-		y2 =  finish[1] + (2 * one_third_height)
+		x = finish.x
+		y1 =  finish.y + (1 * one_third_height)
+		y2 =  finish.y + (2 * one_third_height)
 		Sketchup.active_model.entities.add_line([x, y1,0], [x, y2 ,0])
-		x1 = finish[0]
-		x2 = parallelogram_points[2][0] - bottom_triangle_leg
-		y =  finish[1] + (1 * one_third_height)
+		x1 = finish.x
+		x2 = parallelogram_points[2].x - bottom_triangle_leg
+		y =  finish.y + (1 * one_third_height)
 		Sketchup.active_model.entities.add_line([x1, y,0], [x2, y ,0])
 
-		x1 = parallelogram_points[2][0] - bottom_triangle_leg
-		y1 = finish[1] + (1 * one_third_height)
-		x2 = parallelogram_points[1][0]
-		y2 = parallelogram_points[1][1]
+		x1 = parallelogram_points[2].x - bottom_triangle_leg
+		y1 = finish.y + (1 * one_third_height)
+		x2 = parallelogram_points[1].x
+		y2 = parallelogram_points[1].y
 		Sketchup.active_model.entities.add_line([x1, y1,0], [x2, y2 ,0])
+		#
+		# #lock
+		 width_of_lock_slot_inches = total_height/2.0
+		 thickness = @joiner.sheet.thickness
+		# #top Right
+		 x1 = finish.x + (width_of_lock_slot_inches/2.0)
+		 y1 = start.y - (total_height/2.0) + thickness/2.0
+		# #bottom left
+		 x2 = finish.x - (width_of_lock_slot_inches/2.0)
+		 y2 = y1 - thickness
+		puts "#{x1} #{y1} X #{x2} #{y2}"
+		 draw_box(x1, y1, x2, y2)
 
-
-		# Left Side
 		# Fuse them into the part
 		# Turn into group
 	end

@@ -1,4 +1,10 @@
+make the lock gap without a box
 
+fillets? place in corners with 1/4" square
+Lock pieces
+Pull to thickness
+group as components
+label parts with carving
 determine if right thickness
 
 set attributes

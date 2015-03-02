@@ -1,7 +1,11 @@
 #This class handles taking a face and creating joints
 class Joiner
-  def initialize(joint)
-    @joint = joint
+  def initialize(joint_class, sheet)
+    @joint = joint_class.new(self)
+    @sheet = sheet
+  end
+  def sheet
+    @sheet
   end
   def make_joints!(edge_divisor, face)
     max_length = face.edges.collect { |e| e.length}.max
