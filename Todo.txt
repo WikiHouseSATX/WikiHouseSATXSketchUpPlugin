@@ -1,6 +1,7 @@
 make the lock gap without a box
 
 fillets? place in corners with 1/4" square
+Transformational matrix
 Lock pieces
 Pull to thickness
 group as components
