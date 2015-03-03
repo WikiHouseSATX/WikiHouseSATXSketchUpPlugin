@@ -68,15 +68,15 @@ class Fillet
           y_inc = Math.sin(angle_in_radians) * bit_size
           x_inc = Math.cos(angle_in_radians) * bit_size
           centerpoint = Geom::Point3d.new
-          centerpoint.x = @intersection.position.x + x_inc
-          centerpoint.y = @intersection.position.y - y_inc
+          centerpoint.x = @intersection.position.x #+ x_inc
+          centerpoint.y = @intersection.position.y# - y_inc
           centerpoint.z = 0
 
           vector = Geom::Vector3d.new 0,0,1
           vector2 = Geom::Vector3d.new 1,0,0
           vector3 = vector.normalize!
           Sketchup.active_model.active_entities.add_arc(centerpoint, vector2, vector3, bit_size,
-           0.degrees,360.degrees )
+           0.degrees,360.degrees - angle_in_radians )
 
           fsy_inc = Math.sin(angle_in_radians) * bit_size * 2
           fsx_inc = Math.cos(angle_in_radians) * bit_size * 2
