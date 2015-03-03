@@ -1,4 +1,4 @@
-fillets? place in corners with 1/4" square
+fillets? place in corners with 1/4" square - need to look at using an arc with 
 Change locks to an object that erases the line
 Transformational matrix
 Lock pieces
