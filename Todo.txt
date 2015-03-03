@@ -1,6 +1,5 @@
-make the lock gap without a box
-
 fillets? place in corners with 1/4" square
+Change locks to an object that erases the line
 Transformational matrix
 Lock pieces
 Pull to thickness

@@ -10,12 +10,7 @@ module WikiHouse
   def self.build_menus?
     @build_menus.nil? || @build_menus ? true : false
   end
-  def self.reload
-    SKETCHUP_CONSOLE.clear
-    puts "Reloading Code"
-   init
 
-  end
   def self.error(msg)
     UI.messagebox(msg)
     return false
@@ -28,30 +23,22 @@ module WikiHouse
     File.join(path_list)
   end
   def self.init
-    puts "Calling"
-    load plugin_file("joint.rb","models") #Other files depend on this
-    Dir[ plugin_file("*.rb", "models")].each do |file|
-      puts file if LOG_ON
+    #puts "Calling"
+    Dir[ plugin_file("*.rb", "helpers")].each do |file|
+      #puts file if LOG_ON
       load file
     end
-    setup_toolbar if WikiHouse.build_menus? && DEV_MODE
-    TransformerTool.init
+    load plugin_file("joint.rb","models") #Other files depend on this
+    load plugin_file("tools.rb","models") #Other files depend on this
 
+    Dir[ plugin_file("*.rb", "models")].each do |file|
+    #  puts file if LOG_ON
+      load file unless ["joint.rb", "tools.rb"].include? File.basename(file)
+    end
+    Tools.init_all
     @build_menus = false
   end
-  def self.setup_toolbar
-    toolbar = UI::Toolbar.new "WikiHouse"
-    cmd = UI::Command.new("WikiHouse Reload") {
-        WikiHouse.reload
-    }
-    cmd.small_icon = WikiHouse.plugin_file("reload.png","images")
-    cmd.large_icon = WikiHouse.plugin_file("reload.png","images")
-    cmd.tooltip = "WikiHouse Reload"
-    cmd.status_bar_text = "Reload's Code"
-    cmd.menu_text = "WikiHouse Reload"
-    toolbar = toolbar.add_item cmd
-    toolbar.show
-    toolbar.restore
-  end
+
+
 end
 WikiHouse.init
