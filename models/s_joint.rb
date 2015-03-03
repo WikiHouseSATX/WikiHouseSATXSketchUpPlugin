@@ -108,7 +108,7 @@ class SJoint < Joint
 
     #Fillets - 8
 		# Top left
-		fillet = Fillet.new(fillet_on: line2,  fillet_off: line1)
+		fillet = Fillet.new(fillet_on: line2,  fillet_off: line1, angle_in_degrees: angle_degrees)
 		fillet.draw!
 		# Fuse them into the part
 		# Turn into group

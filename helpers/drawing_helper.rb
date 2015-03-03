@@ -4,7 +4,10 @@ module DrawingHelper
 	end
 	module ClassMethods
 		def degrees_to_radians(degrees)
-			degrees * Math::PI / 180
+			degrees.to_f * Math::PI / 180
+		end
+		def radians_to_degrees(radians)
+			radians.to_f / Math::PI / 180
 		end
     def vertex_to_s(vertex)
       "#{vertex.x} #{vertex.y} #{vertex.z}"
