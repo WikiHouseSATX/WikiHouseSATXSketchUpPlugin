@@ -1,5 +1,7 @@
 fillets? place in corners with 1/4" square - need to look at using an arc with 
 Change locks to an object that erases the line
+
+http://sketchupapi.blogspot.com/2011/07/gofaster-parameter.html (Group operations to make them easier to handle)
 Transformational matrix
 Lock pieces
 Pull to thickness
