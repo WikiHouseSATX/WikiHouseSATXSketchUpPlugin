@@ -80,7 +80,7 @@ class Fillet
 
 					@c3 = [@c4.x + bottom_triangle_leg + bit_radius/2.0, @c4.y, 0]
           new_edge = @fillet_off.split(@c3)
-          new_edge.erase!
+          new_edge.erase! if new_edge
 				end
 
 			end
@@ -89,9 +89,10 @@ class Fillet
 			if y_shift < 0
 				#negative bit size for y
 				if angle_in_degrees == 90
-					@c1,@c2,@c3,@c4 = build_box( @intersection.position.x ,
-						@intersection.position.y + 2 * bit_radius,
-					@intersection.position.x - bit_radius, @intersection.position.y  )
+
+					@c1,@c2,@c3,@c4 = build_box( @intersection.position.x + 2 * bit_radius,
+					 	@intersection.position.y ,
+					 @intersection.position.x , @intersection.position.y - bit_radius )
 
 
 				else
@@ -114,9 +115,11 @@ class Fillet
 			else
 				#positing bit size for y
 				if angle_in_degrees == 90
-					@c1,@c2,@c3,@c4 = build_box( @intersection.position.x + bit_radius,
-						@intersection.position.y,
-					@intersection.position.x, @intersection.position.y  - 2 * bit_radius)
+
+					 @c1,@c2,@c3,@c4 = build_box( @intersection.position.x ,
+					 	@intersection.position.y + bit_radius,
+					 @intersection.position.x - 2 * bit_radius, @intersection.position.y )
+
 
 				else
 					raise ScriptError, "No code"

@@ -1,7 +1,9 @@
 class TransformerTool
 	Tools.register(:transformer, self)
 	def self.last_face=(face)
+		puts "Face Id #{face.entityID}" if face
 		@last_face = face
+
 	end
 	def self.last_face
 		@last_face
@@ -22,7 +24,7 @@ class TransformerTool
       part = Part.new(face)
       part.wikize!
 		else
-			puts "Didn't click on a face"  
+			puts "Didn't click on a face"
 		end
 	end
 	def onLButtonDoubleClick(flags, x, y, view)

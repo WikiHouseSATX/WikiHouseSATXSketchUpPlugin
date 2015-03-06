@@ -15,7 +15,7 @@ class UndoTool
   def undo_face(face)
     count = 0
     if face
-      puts "Found a face #{face}"   if  WikiHouse::DEV_MODE
+      puts "Found a face #{face.entityID}"   if  WikiHouse::DEV_MODE
       while face.edges.count > 4 && count < 100
         Sketchup.undo
         count += 1
@@ -50,6 +50,7 @@ class UndoTool
 
 			Sketchup.active_model.select_tool(tool)
       if TransformerTool.last_face
+
           tool.undo_face(TransformerTool.last_face)
 
   #        Sketchup.active_model.select_tool(nil)

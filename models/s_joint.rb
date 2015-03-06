@@ -10,14 +10,7 @@ class SJoint < Joint
 		3.5
 	end
 
-	def total_height
-		@total_height
-	end
-	def set_total_height_from_line(start, finish, orientation)
-		index = orientation == :y ? 0 : 1
 
-		@total_height = (finish[index] - start[index]).abs
-	end
 	def join!(first_point, last_point, orientation)
 
 		if first_point.y < last_point.y
@@ -58,8 +51,8 @@ class SJoint < Joint
 		y =  finish.y + (2 * one_third_height)
 		line2 =	draw_line([x1, y,0], [x2, y ,0])
 		# Top left
-		fillet = Fillet.new(fillet_on: line2,  fillet_off: line1, angle_in_degrees: angle_degrees)
-		fillet.draw!
+		fillet1 = Fillet.new(fillet_on: line2,  fillet_off: line1, angle_in_degrees: angle_degrees)
+		fillet1.draw!
 
 
 		x1 = finish.x
@@ -72,16 +65,16 @@ class SJoint < Joint
 		line3_position = EdgePosition.from_edge(line3)
 
 
-		 fillet = Fillet.new(fillet_on: line2,  fillet_off: line3_position)
-		fillet.draw!
+	 fillet2 = Fillet.new(fillet_on: line2,  fillet_off: line3_position)
+	fillet2.draw!
 
-		 fillet = Fillet.new(fillet_on: line4,  fillet_off: line3_position)
-		 fillet.draw!
+	 fillet3 = Fillet.new(fillet_on: line4,  fillet_off: line3_position)
+		 fillet3.draw!
 
-		puts "#{SJoint.edge_to_s()
-		lock = JointLock.new(lock_on: line3_position)
-		#line3.erase!
-	#	lock.draw!
+	
+		lock = JointLock.new(lock_on: line3, joint: self)
+
+		lock.draw!
 
 
 		x1 = parallelogram_points[2].x - bottom_triangle_leg
@@ -91,8 +84,8 @@ class SJoint < Joint
 
 		line5 =		draw_line([x1, y1,0], [x2, y2 ,0])
 
-		fillet = Fillet.new(fillet_on: line4_position,  fillet_off: line5, angle_in_degrees: angle_degrees)
-		fillet.draw!
+#	fillet = Fillet.new(fillet_on: line4_position,  fillet_off: line5, angle_in_degrees: angle_degrees)
+	#	fillet.draw!
 
 
 		# Fuse them into the part
