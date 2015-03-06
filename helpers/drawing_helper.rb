@@ -10,10 +10,13 @@ module DrawingHelper
 			radians.to_f / Math::PI / 180
 		end
     def vertex_to_s(vertex)
-      "#{vertex.x} #{vertex.y} #{vertex.z}"
+      point_to_s(vertex.position)
     end
+		def point_to_s(point)
+			"X:#{point.x} Y:#{point.y} Z:#{point.z}"
+		end
     def edge_to_s(edge)
-     "Edge: start #{vertex_to_s(edge.start.position)} end #{vertex_to_s(edge.end.position)}"
+     "Edge: start #{point_to_s(edge.start.position)} end #{point_to_s(edge.end.position)}"
     end
 	end
 		def build_parallelogram_points(x1,y1, b_length, h_length, x1_angle_in_degrees)
@@ -55,10 +58,11 @@ module DrawingHelper
 		edges
 	end
 	def build_box(top_right_x, top_right_y, bottom_left_x, bottom_left_y)
-		c1 = [top_right_x,top_right_y,0]
-		c2 = [top_right_x,bottom_left_y,0]
-		c3 = [bottom_left_x, bottom_left_y,0]
-		c4 = [bottom_left_x,top_right_y,0]
+		c1 = [bottom_left_x,top_right_y,0]
+		c2 = [top_right_x,top_right_y,0]
+		c3 = [top_right_x,bottom_left_y,0]
+		c4 = [bottom_left_x, bottom_left_y,0]
+
 		[c1, c2, c3 ,c4]
 	end
 	def draw_box(top_right_x, top_right_y, bottom_left_x, bottom_left_y, omit_sides = [])
@@ -71,7 +75,8 @@ module DrawingHelper
 		edges << draw_line(c4,c1) unless omit_sides.include? :s4
 		edges
 	end
-	def draw_line(pt1, pt2)
-		Sketchup.active_model.entities.add_line(pt1, pt2)
+	def draw_line(pt1, pt2, entities_group: nil)
+		entities_group ? entities_group.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
+
 	end
-	end
+end
