@@ -1,5 +1,5 @@
 #This class handles dividing up a given part
-class Ripper
+class WikiHouse::Ripper
   def initialize(sheet)
     @sheet = sheet
   end

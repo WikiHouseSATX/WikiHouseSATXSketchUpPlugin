@@ -1,4 +1,4 @@
-class SJoint < Joint
+class WikiHouse::SJoint < WikiHouse::Joint
 	include DrawingHelper
 	# This class was based on the original S-Joint 3.4
 	#  We made some changes

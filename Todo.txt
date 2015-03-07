@@ -1,7 +1,3 @@
-
-Change locks to an object that erases the line
-Fix Fillets on locks
-Fillet in the lower right hand corner messes up the entier face
 http://sketchupapi.blogspot.com/2011/07/gofaster-parameter.html (Group operations to make them easier to handle)
 Transformational matrix
 Lock pieces
@@ -12,5 +8,4 @@ determine if right thickness
 
 set attributes
 
-Move all the code in the system into a single module namespace so it doesn't polute/conflict in the general namespace
 Make a rake task to auto generate an .rbz for easy install  It's simple. RBZ files are nothing more than ZIP files. You can use your favorite ZIP tool (I like 7-zip on Windows) to create the archive, then rename it to have a .RBZ extension. Anything you put inside of this RBZ file, including files and subfolders, will be unpacked into the user's Plugins folder. That's it!

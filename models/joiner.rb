@@ -1,5 +1,5 @@
 #This class handles taking a face and creating joints
-class Joiner
+class WikiHouse::Joiner
   def initialize(joint_class, sheet)
     @joint = joint_class.new(self)
     @sheet = sheet

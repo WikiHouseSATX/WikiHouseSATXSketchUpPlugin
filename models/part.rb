@@ -1,4 +1,4 @@
-class Part
+class WikiHouse::Part
 	def initialize(face)
 		@face = face
 		@sheet = Sheet.new

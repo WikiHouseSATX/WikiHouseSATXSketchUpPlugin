@@ -1,4 +1,4 @@
-class Joint
+class WikiHouse::Joint
   attr_reader :joiner
   def initialize(joiner)
     @joiner = joiner

@@ -1,4 +1,4 @@
-class UndoTool
+class WikiHouse::UndoTool
   Tools.register(:undo, self)
 	def activate
 	#	puts 'Your tool has been activated.'

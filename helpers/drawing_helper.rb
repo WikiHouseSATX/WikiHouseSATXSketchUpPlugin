@@ -1,4 +1,4 @@
-module DrawingHelper
+module WikiHouse::DrawingHelper
 	def self.included(base)
 		base.extend(ClassMethods)
 	end
@@ -24,6 +24,7 @@ module DrawingHelper
 		change_in_x = (x2 - x1)
 		 change_in_x == 0 ? nil : change_in_y/change_in_x
 		end
+
 		def build_parallelogram_points(x1,y1, b_length, h_length, x1_angle_in_degrees)
 		c1 = [x1, y1,0]
 		c2 = [x1 + b_length, y1,0]

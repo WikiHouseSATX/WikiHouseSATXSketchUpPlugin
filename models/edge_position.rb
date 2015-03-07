@@ -2,7 +2,7 @@
 #reference them change.  This class allows you to store a location to do operations on (since it appears to be an edge)
 # but it won't change
 #This can also be used to store a synthetic edge - one that you use for reference, but don't ever draw
-class EdgePosition
+class WikiHouse::EdgePosition
 	include DrawingHelper
   attr_reader :start, :end
   def initialize(start_position: nil, end_position: nil)

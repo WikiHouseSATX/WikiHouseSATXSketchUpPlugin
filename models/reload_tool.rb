@@ -1,4 +1,4 @@
-class ReloadTool
+class WikiHouse::ReloadTool
   Tools.register(:reload, self)  if  WikiHouse::DEV_MODE
 	def activate
 	#	puts 'Your tool has been activated.'

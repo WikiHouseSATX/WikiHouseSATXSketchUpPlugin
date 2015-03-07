@@ -1,4 +1,4 @@
-class JointLock
+class WikiHouse::JointLock
 	include DrawingHelper
 	def initialize(lock_on: nil, joint: nil)
 		raise ArgumentError, "You must provide a lock edge" if !lock_on || !lock_on.respond_to?(:start)

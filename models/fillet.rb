@@ -1,4 +1,4 @@
-class Fillet
+class WikiHouse::Fillet
 	attr_reader :c1, :c2, :c3, :c4, :face
 	include DrawingHelper
 	def initialize(fillet_on: nil, fillet_off: nil, angle_in_degrees: 90)

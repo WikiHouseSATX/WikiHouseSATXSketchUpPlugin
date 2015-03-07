@@ -1,4 +1,4 @@
-class Sheet
+class WikiHouse::Sheet
 
   def units
     :inches

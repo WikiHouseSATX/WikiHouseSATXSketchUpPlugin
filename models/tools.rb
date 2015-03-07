@@ -1,4 +1,4 @@
-class Tools
+class WikiHouse::Tools
   def self.register(name, klass)
     @tools ||= {}
   #  puts "Registering Tool #{name} - #{klass}" if WikiHouse::LOG_ON

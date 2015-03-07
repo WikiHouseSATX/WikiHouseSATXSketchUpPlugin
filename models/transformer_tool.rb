@@ -1,4 +1,4 @@
-class TransformerTool
+class WikiHouse::TransformerTool
 	Tools.register(:transformer, self)
 	def self.last_face=(face)
 		puts "Face Id #{face.entityID}" if face
