@@ -26,7 +26,7 @@ class WikiHouse::Joiner
         new_end = [    ((index + 1) * new_length) + starting_x ,
           end_edge.end.position.y.to_inch,
         0]
-        @joint.join!(new_start, new_end, :x)
+        @joint.join!(face,new_start, new_end, :x)
 
       end
     else
@@ -43,7 +43,7 @@ class WikiHouse::Joiner
           ((index + 1) * new_length) + starting_y ,
         0]
 
-        @joint.join!(new_start, new_end, :y)
+        @joint.join!(face,new_start, new_end, :y)
       end
     end
 

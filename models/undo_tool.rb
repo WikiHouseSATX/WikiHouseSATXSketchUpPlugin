@@ -1,5 +1,5 @@
 class WikiHouse::UndoTool
-  Tools.register(:undo, self)
+  WikiHouse::Tools.register(:undo, self)
 	def activate
 	#	puts 'Your tool has been activated.'
 	end
@@ -23,7 +23,7 @@ class WikiHouse::UndoTool
       if face.edges.count > 4
         puts "Sorry couldn't undo enough to reset that face"
       else
-        TransformerTool.last_face = nil
+        WikiHouse::TransformerTool.last_face = nil
       end
     else
       puts "Didn't click on a face"
@@ -45,13 +45,13 @@ class WikiHouse::UndoTool
 		setup_toolbar if WikiHouse.build_menus?
 	end
 	def self.setup_toolbar
-    tool = UndoTool.new
+    tool = WikiHouse::UndoTool.new
 		cmd = UI::Command.new("WikiHouse Undo") {
 
 			Sketchup.active_model.select_tool(tool)
-      if TransformerTool.last_face
+      if WikiHouse::TransformerTool.last_face
 
-          tool.undo_face(TransformerTool.last_face)
+          tool.undo_face(WikiHouse::TransformerTool.last_face)
 
   #        Sketchup.active_model.select_tool(nil)
 #          Sketchup.active_model.select_tool(Tools.tool(:transformer)[:tool])
@@ -63,7 +63,7 @@ class WikiHouse::UndoTool
 		cmd.tooltip = "WikiHouse Undo"
 		cmd.status_bar_text = "Tries to Undo Until It is reset"
 		cmd.menu_text = "WikiHouse Undo"
-    Tools.add_to_toolbar(cmd)
+    WikiHouse::Tools.add_to_toolbar(cmd)
     tool
 	end
 

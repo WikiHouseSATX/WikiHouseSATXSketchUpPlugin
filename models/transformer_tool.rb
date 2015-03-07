@@ -1,5 +1,5 @@
 class WikiHouse::TransformerTool
-	Tools.register(:transformer, self)
+	WikiHouse::Tools.register(:transformer, self)
 	def self.last_face=(face)
 		puts "Face Id #{face.entityID}" if face
 		@last_face = face
@@ -20,8 +20,8 @@ class WikiHouse::TransformerTool
     face = ph.picked_face
 		if face
 			puts "Found a face #{face}"   if  WikiHouse::DEV_MODE
-			TransformerTool.last_face = face
-      part = Part.new(face)
+			self.class.last_face = face
+      part = WikiHouse::Part.new(face)
       part.wikize!
 		else
 			puts "Didn't click on a face"
@@ -43,7 +43,7 @@ class WikiHouse::TransformerTool
 		setup_toolbar if WikiHouse.build_menus?
 	end
 	def self.setup_toolbar
-	  tool = TransformerTool.new
+	  tool = WikiHouse::TransformerTool.new
 		cmd = UI::Command.new("WikiHouse Transform") {
 
 			Sketchup.active_model.select_tool(tool)
@@ -54,7 +54,7 @@ class WikiHouse::TransformerTool
 		cmd.tooltip = "WikiHouse Transformer"
 		cmd.status_bar_text = "Let's you pick a face to wikize"
 		cmd.menu_text = "WikiHouse Transform"
-		Tools.add_to_toolbar(cmd)
+		WikiHouse::Tools.add_to_toolbar(cmd)
 	  tool
 	end
 

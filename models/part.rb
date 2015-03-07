@@ -1,9 +1,9 @@
 class WikiHouse::Part
 	def initialize(face)
 		@face = face
-		@sheet = Sheet.new
-		@ripper = Ripper.new(@sheet)
-		@joiner = Joiner.new(SJoint, @sheet)
+		@sheet = WikiHouse::Sheet.new
+		@ripper = WikiHouse::Ripper.new(@sheet)
+		@joiner = WikiHouse::Joiner.new(WikiHouse::SJoint, @sheet)
 	end
 	def wikize!
 		unless @face.edges.count == 4

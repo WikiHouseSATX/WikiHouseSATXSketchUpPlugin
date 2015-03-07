@@ -1,5 +1,5 @@
 class WikiHouse::ReloadTool
-  Tools.register(:reload, self)  if  WikiHouse::DEV_MODE
+  WikiHouse::Tools.register(:reload, self)  if  WikiHouse::DEV_MODE
 	def activate
 	#	puts 'Your tool has been activated.'
 	end
@@ -16,7 +16,7 @@ class WikiHouse::ReloadTool
     WikiHouse.init
   end
   def self.setup_toolbar
-    tool = ReloadTool.new
+    tool = WikiHouse::ReloadTool.new
     cmd = UI::Command.new("WikiHouse Reload") {
         tool.reload
     }
@@ -25,7 +25,7 @@ class WikiHouse::ReloadTool
     cmd.tooltip = "WikiHouse Reload"
     cmd.status_bar_text = "Reload's Code"
     cmd.menu_text = "WikiHouse Reload"
-    Tools.add_to_toolbar(cmd)
+    WikiHouse::Tools.add_to_toolbar(cmd)
     tool
   end
 end

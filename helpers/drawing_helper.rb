@@ -28,7 +28,7 @@ module WikiHouse::DrawingHelper
 		def build_parallelogram_points(x1,y1, b_length, h_length, x1_angle_in_degrees)
 		c1 = [x1, y1,0]
 		c2 = [x1 + b_length, y1,0]
-		bottom_triangle_leg = h_length/Math.tan(SJoint.degrees_to_radians(x1_angle_in_degrees))
+		bottom_triangle_leg = h_length/Math.tan(self.class.degrees_to_radians(x1_angle_in_degrees))
 		puts "#{x1} #{b_length} #{h_length} #{bottom_triangle_leg}"
 		if x1_angle_in_degrees > 90
 			c3 = [x1 + b_length + - bottom_triangle_leg, y1 - h_length,0]
@@ -41,25 +41,25 @@ module WikiHouse::DrawingHelper
 		c4 = [c3.x  - b_length, c3.y,0]
 		[c1, c2, c3, c4]
 	end
-	def draw_parallelogram(x1,y1, b_length, h_length, x1_angle_in_degrees, omit_sides = [])
+	def draw_parallelogram(x1,y1, b_length, h_length, x1_angle_in_degrees, omit_sides: [], group: nil)
 
 		c1,c2,c3,c4 = build_parallelogram_points(x1,y1, b_length, h_length, x1_angle_in_degrees)
 
 		edges = []
-		edges << draw_line(c1, c2) unless omit_sides.include? :s1
-		edges << draw_line(c2, c3) unless omit_sides.include? :s2
-		edges << draw_line(c3, c4) unless omit_sides.include? :s3
-		edges << draw_line(c4,c1) unless omit_sides.include? :s4
+		edges << draw_line(c1, c2, group: group) unless omit_sides.include? :s1
+		edges << draw_line(c2, c3, group: group) unless omit_sides.include? :s2
+		edges << draw_line(c3, c4, group:  group) unless omit_sides.include? :s3
+		edges << draw_line(c4,c1, group: group) unless omit_sides.include? :s4
 		edges
 	end
-	def draw_triangle(x1,y1, x2, y2, x3, y3, omit_sides = [])
+	def draw_triangle(x1,y1, x2, y2, x3, y3, omit_sides: [], group: nil)
 		p1 = [x1, y1, 0]
 		p2 = [x2, y2, 0]
 		p3 = [x3, y3, 0]
 		edges  = []
-		edges << draw_line(p1, p2)  unless omit_sides.include? :s1
-		edges << draw_line(p2, p3) unless omit_sides.include? :s2
-		edges << draw_line(p3, p1) unless omit_sides.include? :s3
+		edges << draw_line(p1, p2, group:group)  unless omit_sides.include? :s1
+		edges << draw_line(p2, p3, group: group) unless omit_sides.include? :s2
+		edges << draw_line(p3, p1, group: group) unless omit_sides.include? :s3
 
 		edges
 	end
@@ -71,18 +71,20 @@ module WikiHouse::DrawingHelper
 
 		[c1, c2, c3 ,c4]
 	end
-	def draw_box(top_right_x, top_right_y, bottom_left_x, bottom_left_y, omit_sides = [])
+	def draw_box(top_right_x, top_right_y, bottom_left_x, bottom_left_y, omit_sides: [], group: nil)
 
 		c1, c2, c3, c4 = build_box(top_right_x, top_right_y, bottom_left_x, bottom_left_y)
 		edges = []
-		edges << draw_line(c1, c2) unless omit_sides.include? :s1
-		edges << draw_line(c2, c3) unless omit_sides.include? :s2
-		edges << draw_line(c3, c4) unless omit_sides.include? :s3
-		edges << draw_line(c4,c1) unless omit_sides.include? :s4
+		edges << draw_line(c1, c2, group: group) unless omit_sides.include? :s1
+		edges << draw_line(c2, c3, group: group) unless omit_sides.include? :s2
+		edges << draw_line(c3, c4, group: group) unless omit_sides.include? :s3
+		edges << draw_line(c4,c1, group: group) unless omit_sides.include? :s4
 		edges
 	end
-	def draw_line(pt1, pt2, entities_group: nil)
-		entities_group ? entities_group.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
+	def draw_line(pt1, pt2, group: nil)
+
+		puts "*******> DrawLine called without Group #{self.class}" unless group
+ 		group ? group.entities.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
 
 	end
 end

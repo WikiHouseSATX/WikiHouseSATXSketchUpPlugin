@@ -14,7 +14,7 @@ class WikiHouse::Joint
 
     @total_height = (finish[index] - start[index]).abs
   end
-  def join!(start, finish, orientation = :x)
+  def join!(face,start, finish, orientation = :x)
     raise ArgumentError, "You must override this method"
   end
 end

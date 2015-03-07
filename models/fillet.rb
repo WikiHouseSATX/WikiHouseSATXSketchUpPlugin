@@ -1,38 +1,33 @@
 class WikiHouse::Fillet
-	attr_reader :c1, :c2, :c3, :c4, :face
-	include DrawingHelper
-	def initialize(fillet_on: nil, fillet_off: nil, angle_in_degrees: 90)
+	attr_reader :c1, :c2, :c3, :c4, :face, :group
+	include WikiHouse::DrawingHelper
+	def initialize(fillet_on: nil, fillet_off: nil, angle_in_degrees: 90, group: nil)
 		@fillet_on = fillet_on
 		@fillet_off = fillet_off
 		@angle_in_degrees = angle_in_degrees
 		@c1 = @c2 = @c3 = @c4 = @face = nil
+		@group = group
 		raise ArgumentError, "Can only fillet angles 90 or less" if @angle_in_degrees.abs > 90
-		puts "Edge1 #{Fillet.edge_to_s(@fillet_on)}"
-		puts "Edge2 #{Fillet.edge_to_s(@fillet_off)}"
-		if fillet_on.start.position == fillet_off.start.position
-			@intersection = fillet_on.start
-			@fillet_off_end = fillet_off.end
-      @fillet_on_end = fillet_on.end
-		elsif fillet_on.start.position == fillet_off.end.position
-			@intersection = fillet_on.start
-			@fillet_off_end = fillet_off.start
-      @fillet_on_end = fillet_on.end
-		elsif fillet_on.end.position == fillet_off.start.position
-			@intersection = fillet_on.end
-			@fillet_off_end = fillet_off.end
-      @fillet_on_end = fillet_on.start
-		elsif   fillet_on.end.position == fillet_off.end.position
-			@intersection = fillet_on.end
-			@fillet_off_end = fillet_off.start
-      @fillet_on_end = fillet_on.start
+		puts "Edge1 #{WikiHouse::Fillet.edge_to_s(@fillet_on)}"
+		puts "Edge2 #{WikiHouse::Fillet.edge_to_s(@fillet_off)}"
+
+		if fillet_on.used_by?(fillet_off.start)
+			@intersection = fillet_off.start
+
+		elsif fillet_on.used_by?(fillet_off.end)
+			@intersection = fillet_off.end
 		else
 			raise ArgumentError, "The edges must intersect to form a fillet On #{@fillet_on.start.position}/#{@fillet_on.end.position} to #{@fillet_off.start.position}/#{@fillet_off.end.position}"
 		end
 
+		@fillet_off_end = fillet_off.other_vertex(@intersection)
+		@fillet_on_end = fillet_on.other_vertex(@intersection)
+
+
 	end
 
 	def angle_in_radians
-		Fillet.degrees_to_radians(angle_in_degrees)
+	 	self.class.degrees_to_radians(angle_in_degrees)
 	end
 	def angle_in_degrees
 		@angle_in_degrees
@@ -84,10 +79,10 @@ class WikiHouse::Fillet
     if @c1
   		fillet_edges = []
 
-  		fillet_edges << 	draw_line(@c1, @c2)
-  		fillet_edges <<   draw_line(@c2,@c3)
-  		fillet_edges << 	draw_line(@c3,@c4)
-  		fillet_edges << 	draw_line(@c4, @c1)
+  		fillet_edges << 	draw_line(@c1, @c2, group: @group)
+  		fillet_edges <<   draw_line(@c2,@c3, group: @group)
+  		fillet_edges << 	draw_line(@c3,@c4, group: @group)
+  		fillet_edges << 	draw_line(@c4, @c1, group: @group)
       if skip_side == :s12
       elsif skip_side == :s23
       elsif skip_side == :s34
