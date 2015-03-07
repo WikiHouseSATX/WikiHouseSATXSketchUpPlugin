@@ -19,6 +19,11 @@ module DrawingHelper
      "Edge: start #{point_to_s(edge.start.position)} end #{point_to_s(edge.end.position)}"
     end
 	end
+	  def slope(x1, y1, x2, y2)
+		 change_in_y =	(y2 - y1)
+		change_in_x = (x2 - x1)
+		 change_in_x == 0 ? nil : change_in_y/change_in_x
+		end
 		def build_parallelogram_points(x1,y1, b_length, h_length, x1_angle_in_degrees)
 		c1 = [x1, y1,0]
 		c2 = [x1 + b_length, y1,0]

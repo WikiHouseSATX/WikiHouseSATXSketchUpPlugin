@@ -6,8 +6,8 @@ class EdgePosition
 	include DrawingHelper
   attr_reader :start, :end
   def initialize(start_position: nil, end_position: nil)
-    @start = start_position.respond_to?(:position) ? start_position : Position.new(start_position)
-    @end = end_position.respond_to?(:position) ? end_position : Position.new(end_position)
+    @start = Position.new(start_position)
+    @end =  Position.new(end_position)
   	raise ArgumentError, "You must provide a start and end for this EdgePosition" unless start_position && end_position
   end
   def self.from_edge(edge)
@@ -19,7 +19,11 @@ class EdgePosition
   class Position
     attr_reader :position
   	def initialize(position)
-  		@position = position
-  	end
+			if position.respond_to?(:position)
+				@position = [position.position.x, position.position.y, position.position.z]
+			else
+  			@position = position
+  		end
+		end
   end
 end

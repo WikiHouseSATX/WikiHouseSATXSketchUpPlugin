@@ -13,7 +13,7 @@
 .dat*
 .repl_history
 build/
-sample_modles/AutoSave*
+sample_models/AutoSave*
 ## Documentation cache and generated files:
 /.yardoc/
 /_yardoc/

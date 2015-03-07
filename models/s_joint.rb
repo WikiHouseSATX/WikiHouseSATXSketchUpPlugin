@@ -65,13 +65,13 @@ class SJoint < Joint
 		line3_position = EdgePosition.from_edge(line3)
 
 
-	 fillet2 = Fillet.new(fillet_on: line2,  fillet_off: line3_position)
+	 fillet2 = Fillet.new(fillet_on: line3,  fillet_off: line2)
 	fillet2.draw!
 
-	 fillet3 = Fillet.new(fillet_on: line4,  fillet_off: line3_position)
+	 fillet3 = Fillet.new(fillet_on: line3,  fillet_off: line4)
 		 fillet3.draw!
 
-	
+
 		lock = JointLock.new(lock_on: line3, joint: self)
 
 		lock.draw!
@@ -83,9 +83,9 @@ class SJoint < Joint
 		y2 = parallelogram_points[1].y
 
 		line5 =		draw_line([x1, y1,0], [x2, y2 ,0])
-
-#	fillet = Fillet.new(fillet_on: line4_position,  fillet_off: line5, angle_in_degrees: angle_degrees)
-	#	fillet.draw!
+    line5_position = EdgePosition.from_edge(line5)
+ 	fillet = Fillet.new(fillet_on: line4_position,  fillet_off: line5_position, angle_in_degrees: angle_degrees)
+  	fillet.draw!
 
 
 		# Fuse them into the part

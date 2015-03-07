@@ -59,16 +59,27 @@ class JointLock
       line2 = draw_line(c2,c3)
       line3 = draw_line(c3,c4)
       line4 = draw_line(c4,c1)
+			line1_position = EdgePosition.from_edge(line1)
+			line2_position = EdgePosition.from_edge(line2)
+			line3_position = EdgePosition.from_edge(line3)
+			line4_position = EdgePosition.from_edge(line4)
 
       	lock_face = Sketchup.active_model.active_entities.add_face([line1, line2, line3, line4])
        	lock_face.erase!
 puts "****ILock************"
-      fillet = Fillet.new(fillet_on: line2,
-        fillet_off: line1)
+      fillet = Fillet.new(fillet_on: line2_position,
+        fillet_off: line1_position)
       fillet.draw!
-      fillet2 = Fillet.new(fillet_on: line3,
-        fillet_off: line2)
+      fillet2 = Fillet.new(fillet_on: line2_position,
+        fillet_off: line3_position)
       fillet2.draw!
+
+			fillet3 = Fillet.new(fillet_on: line4_position,
+				fillet_off: line1_position)
+			fillet3.draw!
+			fillet4 = Fillet.new(fillet_on: line4_position,
+				fillet_off: line3_position)
+		fillet4.draw!
       puts "****ILock************"
 		end
 
