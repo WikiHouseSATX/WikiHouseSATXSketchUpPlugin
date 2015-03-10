@@ -3,6 +3,7 @@ class WikiHouse::Ripper
   def initialize(sheet)
     @sheet = sheet
   end
+
   def divide(max_length)
     edge_divisor = nil
     (2..10).each do |divisor|

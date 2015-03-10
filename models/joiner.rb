@@ -4,12 +4,14 @@ class WikiHouse::Joiner
     @joint = joint_class.new(self)
     @sheet = sheet
   end
+
   def sheet
     @sheet
   end
+
   def make_joints!(edge_divisor, face)
-    max_length = face.edges.collect { |e| e.length}.max
-    long_edges = face.edges.collect {|e| e}.delete_if { |e| e.length < max_length}
+    max_length = face.edges.collect { |e| e.length }.max
+    long_edges = face.edges.collect { |e| e }.delete_if { |e| e.length < max_length }
     start_edge = long_edges.first
     end_edge = long_edges.last
 
@@ -20,13 +22,13 @@ class WikiHouse::Joiner
       starting_x = start_edge.start.position.x.to_l < start_edge.end.position.x.to_l ? start_edge.start.position.x : start_edge.end.position.x
       (edge_divisor.to_i - 1).times do |index|
 
-        new_start = [  ((index + 1) * new_length) + starting_x ,
-          start_edge.start.position.y.to_inch,
-        0]
-        new_end = [    ((index + 1) * new_length) + starting_x ,
-          end_edge.end.position.y.to_inch,
-        0]
-        @joint.join!(face,new_start, new_end, :x)
+        new_start = [((index + 1) * new_length) + starting_x,
+                     start_edge.start.position.y.to_inch,
+                     0]
+        new_end = [((index + 1) * new_length) + starting_x,
+                   end_edge.end.position.y.to_inch,
+                   0]
+        @joint.join!(face, new_start, new_end, :x)
 
       end
     else
@@ -37,13 +39,13 @@ class WikiHouse::Joiner
       (edge_divisor.to_i - 1).times do |index|
 
         new_start = [start_edge.start.position.x.to_inch,
-          ((index + 1) * new_length) + starting_y ,
-        0]
-        new_end = [  end_edge.end.position.x.to_inch,
-          ((index + 1) * new_length) + starting_y ,
-        0]
+                     ((index + 1) * new_length) + starting_y,
+                     0]
+        new_end = [end_edge.end.position.x.to_inch,
+                   ((index + 1) * new_length) + starting_y,
+                   0]
 
-        @joint.join!(face,new_start, new_end, :y)
+        @joint.join!(face, new_start, new_end, :y)
       end
     end
 
