@@ -28,6 +28,10 @@ module WikiHouse
       #puts file if LOG_ON
       load file
     end
+    Dir[ plugin_file("*.rb", "overrides")].each do |file|
+      #puts file if LOG_ON
+      load file
+    end
     load plugin_file("joint.rb","models") #Other files depend on this
     load plugin_file("tools.rb","models") #Other files depend on this
 

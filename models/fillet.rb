@@ -9,8 +9,8 @@ class WikiHouse::Fillet
     @c1 = @c2 = @c3 = @c4 = @face = nil
     @group = group
     raise ArgumentError, "Can only fillet angles 90 or less" if @angle_in_degrees.abs > 90
-    puts "Edge1 #{WikiHouse::Fillet.edge_to_s(@fillet_on)}"
-    puts "Edge2 #{WikiHouse::Fillet.edge_to_s(@fillet_off)}"
+  #  puts "Edge1 #{WikiHouse::Fillet.edge_to_s(@fillet_on)}"
+    #puts "Edge2 #{WikiHouse::Fillet.edge_to_s(@fillet_off)}"
 
     if fillet_on.used_by?(fillet_off.start)
       @intersection = fillet_off.start

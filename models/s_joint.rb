@@ -16,6 +16,7 @@ class WikiHouse::SJoint < WikiHouse::Joint
 
   def join!(face, first_point, last_point, orientation)
     face_group = face.parent
+
     if first_point.y < last_point.y
       start = last_point
       finish = first_point
@@ -28,6 +29,16 @@ class WikiHouse::SJoint < WikiHouse::Joint
     puts "I'm an SJoint" if WikiHouse::LOG_ON
     #Mid point Line
 
+    # all_connected = face.all_connected
+    # puts "I have #{all_connected.count}"
+    # puts "Type    Id    Start  End"
+    # all_connected.each do |i|
+    #   next if i.typename == "Face"
+    #   start_on = i.on?(start)
+    #   end_on = i.on?(finish)
+    #   puts "#{i.typename} #{i.entityID}  #{start_on} #{end_on}"
+    # end
+    #
     set_total_height_from_line(start, finish, orientation)
     puts "Total Height #{total_height}"
     puts "Start #{start}"
@@ -47,7 +58,7 @@ class WikiHouse::SJoint < WikiHouse::Joint
     y2 = finish.y + (2 * one_third_height)
 
     line1 = draw_line([x1, y1, 0], [x2, y2, 0], group: face_group)
-
+    line1_position = line1.to_line_position
 
     x1 = finish.x - (2 * one_third_height) + bottom_triangle_leg
     x2 = finish.x
@@ -86,9 +97,32 @@ class WikiHouse::SJoint < WikiHouse::Joint
     y2 = parallelogram_points[1].y
 
     line5 = draw_line([x1, y1, 0], [x2, y2, 0], group: face_group)
-    line5_position = WikiHouse::EdgePosition.from_edge(line5)
+    line5_position = line5.to_line_position
     fillet = WikiHouse::Fillet.new(fillet_on: line4_position, fillet_off: line5_position, angle_in_degrees: angle_in_degrees, group: face_group)
     fillet.draw!
+
+    #all_connected = line1.all_connected
+    possible_starts = line1.connected_at_end #should be three
+    raise ScriptError, "I only know how to handle three edges" if possible_starts.length != 2
+
+
+    if possible_starts[0].on?([line1.end.position.x, line1.start.position.y, line1.start.position.z])
+      up_outer_line = possible_starts[0]
+      down_outer_line = possible_starts[1]
+    else
+      up_outer_line = possible_starts[1]
+      down_outer_line = possible_starts[0]
+    end
+
+    up_outer_path = face_group.path_from(line1_position.start, line5_position.end, forbidden_edges: [line1, down_outer_line])
+
+    up_part_edges = up_outer_path
+    up_part_edges.concat([])
+
+   # down_outer_path = face_group.path_from(line1_position.start, line5_position.end, forbidden_edges: [line1, up_outer_line])
+    # Find path for up
+
+    #find path for down
 
 
     # Fuse them into the part
