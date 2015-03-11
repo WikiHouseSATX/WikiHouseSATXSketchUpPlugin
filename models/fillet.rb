@@ -92,7 +92,13 @@ class WikiHouse::Fillet
       elsif skip_side == :s41
         #  fillet_edges[3].erase!
       end
-      #@face = Sketchup.active_model.active_entities.add_face(fillet_edges)
+
+     # @face = Sketchup.active_model.active_entities.add_face(fillet_edges)
+     # if @face
+     #   group2 = Sketchup.active_model.entities.add_group(@face.all_connected)
+     #   group2.material = self.class.color_material("Purple", color: [128, 0, 128])
+     # end
+
 
       #	if @face
       #			@face.erase!

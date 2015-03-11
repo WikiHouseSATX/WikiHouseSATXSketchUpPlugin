@@ -18,6 +18,16 @@ module WikiHouse::DrawingHelper
     def edge_to_s(edge)
      "Edge: start #{point_to_s(edge.start.position)} end #{point_to_s(edge.end.position)}"
     end
+    def color_material(name, color: nil)
+
+      Sketchup.active_model.materials.each do |mat|
+        return mat if mat.name == name
+      end
+
+      mat = Sketchup.active_model.materials.add  name
+      mat.color = color
+      mat
+    end
 	end
 	  def slope(x1, y1, x2, y2)
 		 change_in_y =	(y2 - y1)

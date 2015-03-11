@@ -64,6 +64,7 @@ class WikiHouse::SJoint < WikiHouse::Joint
     x2 = finish.x
     y = finish.y + (2 * one_third_height)
     line2 = draw_line([x1, y, 0], [x2, y, 0], group: face_group)
+
     # Top left
     fillet1 = WikiHouse::Fillet.new(fillet_on: line2, fillet_off: line1, angle_in_degrees: angle_in_degrees, group: face_group)
     fillet1.draw!
@@ -118,6 +119,7 @@ class WikiHouse::SJoint < WikiHouse::Joint
 
     up_part_edges = up_outer_path
     up_part_edges.concat([])
+
 
    # down_outer_path = face_group.path_from(line1_position.start, line5_position.end, forbidden_edges: [line1, up_outer_line])
     # Find path for up
