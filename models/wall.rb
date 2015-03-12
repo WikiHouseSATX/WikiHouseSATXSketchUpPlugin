@@ -1,94 +1,123 @@
 class WikiHouse::Wall
   include WikiHouse::DrawingHelper
 
-  class Column
-    def side_length
+  class ColumnBoard
+    include WikiHouse::DrawingHelper
+    def initialize( origin: nil, sheet: nil)
+      #origin should be the upper left corner
+      @origin = origin
+
+      @sheet = sheet ? sheet : WikiHouse::Sheet.new
+
+    end
+    def bottom_side_length
       10
     end
+
+    def left_side_length
+      80
+
+    end
+
     def tab_width
       5
     end
-    def tab_start
-      side_length/2.0 - tab_width/2.0
+
+    def bottom_tab_start
+      bottom_side_length/2.0 - tab_width/2.0
     end
 
-    def tab_end
-      side_length/2.0 + tab_width/2.0
+    def bottom_tab_end
+      bottom_side_length/2.0 + tab_width/2.0
     end
   end
   class ColumnCap
-    def initialize(column, origin: [0,0,0], sheet: nil)
+    include WikiHouse::DrawingHelper
+    def initialize(column, origin: [0, 0, 0], sheet: nil)
+      #origin should be the upper left corner
+      @origin = origin
       @column = column
       @sheet = sheet ? sheet : WikiHouse::Sheet.new
-      @left_side = @right_side = @top_side = @bottom_side = @top_face = @bottom_face = nil
+      @left_side = @right_side = @top_side = @bottom_side = nil
+      @top_face = @bottom_face = nil
     end
+
     def side_length
-      @column.side_length
+      @column.bottom_side_length
 
     end
+
     def tab_width
       @column.tab_width
     end
+
     def tab_start
-      @column.tab_start
+      @column.bottom_tab_start
     end
+
     def tab_end
-      @column.tab_end
+      @column.bottom_tab_end
     end
+
     def left_side
       unless @left_side
-        @left_side = calculate_side(:left)
+        @left_side = calculate_side( orientation: :left)
       end
       @left_side
     end
+
     def right_side
       unless @right_side
-        @right_side = calculate_side(:right)
+        @right_side = calculate_side( orientation: :right)
       end
       @right_side
     end
+
     def top_side
       unless @top_side
-        @top_side = calculate_side(:top)
+        @top_side = calculate_side( orientation: :top)
       end
       @top_side
     end
+
     def bottom_side
       unless @bottom_side
-        @bottom_side = calculate_side(:bottom)
+        @bottom_side = calculate_side( orientation: :bottom)
       end
       @bottom_side
     end
+
     def calculate_side(orientation: :left)
-      #this needs to embed the origin calc here and use c1 instead of origin to calculate the other dimesnation
+
+      c1 = @origin.dup
       if orientation == :left
-        c1 = @origin.dup
-        c2 = [@origin.x + @sheet.thickness, @origin.y, @origin.z]
-        c3 = [@origin.x + @sheet.thickness, @origin.y - side_length, @origin.z]
-        c4 = [@origin.x, @origin.y - side_length, @origin.z]
+
+        c2 = [c1.x + @sheet.thickness, c1.y, c1.z]
+        c3 = [c1.x + @sheet.thickness, c1.y - side_length, c1.z]
+        c4 = [c1.x, c1.y - side_length, c1.z]
       elsif orientation == :right
-        c1 = @origin
-        c2 = [@origin.x + @sheet.thickness, @origin.y, @origin.z]
-        c3 = [@origin.x + @sheet.thickness, @origin.y - side_length, @origin.z]
-        c4 = [@origin.x, @origin.y - side_length, @origin.z]
+        c1.x += side_length
+        c1.y -= @sheet.thickness
+        c2 = [c1.x + @sheet.thickness, c1.y, c1.z]
+        c3 = [c1.x + @sheet.thickness, c1.y - side_length, c1.z]
+        c4 = [c1.x, c1.y - side_length, c1.z]
       elsif orientation == :top
-        [0 + @sheet.thickness, 0, 0]
-        c1 = @origin.dup
-        c2 = [@origin.x + side_length, @origin.y, @origin.z]
-        c3 = [@origin.x + side_length, @origin.y - @sheet.thickness, @origin.z]
-        c4 = [@origin.x, @origin.y - @sheet.thickness, @origin.z]
+        c1.x += @sheet.thickness
+        c2 = [c1.x + side_length, c1.y, c1.z]
+        c3 = [c1.x + side_length, c1.y - @sheet.thickness, c1.z]
+        c4 = [c1.x, c1.y - @sheet.thickness, c1.z]
       elsif orientation == :bottom
-        c1 = @origin
-        c2 = [@origin.x + side_length, @origin.y, @origin.z]
-        c3 = [@origin.x + side_length, @origin.y - @sheet.thickness, @origin.z]
-        c4 = [@origin.x, @origin.y - @sheet.thickness, @origin.z]
+        c1.y -= side_length
+        c2 = [c1.x + side_length, c1.y, c1.z]
+        c3 = [c1.x + side_length, c1.y - @sheet.thickness, c1.z]
+        c4 = [c1.x, c1.y - @sheet.thickness, c1.z]
       end
 
       if orientation == :left || orientation == :right
-        c5 = [@origin.x, @origin.y - tab_start, 0]
-        c6 = [@origin.x + @sheet.thickness, @origin.y - tab_start, 0]
-        c7 = [@origin.x, @origin.y - tab_end, 0]
-        c8 = [@origin.x + @sheet.thickness, @origin.y - tab_end, 0]
+        c5 = [c1.x, c1.y - tab_start, c1.z]
+        c6 = [c1.x + @sheet.thickness, c1.y - tab_start, c1.z]
+        c7 = [c1.x, c1.y - tab_end, c1.z]
+        c8 = [c1.x + @sheet.thickness, c1.y - tab_end, c1.z]
         if orientation == :left
           c9 = c6
           c10 = c8
@@ -97,10 +126,10 @@ class WikiHouse::Wall
           c10 = c7
         end
       else
-        c5 = [@origin.x + tab_start, @origin.y, 0]
-        c6 = [@origin.x + tab_start, @origin.y - @sheet.thickness, 0]
-        c7 = [@origin.x + tab_end, @origin.y, 0]
-        c8 = [@origin.x + tab_end, @origin.y - @sheet.thickness, 0]
+        c5 = [c1.x + tab_start, c1.y, c1.z]
+        c6 = [c1.x + tab_start, c1.y - @sheet.thickness, c1.z]
+        c7 = [c1.x + tab_end, c1.y, c1.z]
+        c8 = [c1.x + tab_end, c1.y - @sheet.thickness, c1.z]
         if orientation == :bottom
           c9 = c5
           c10 = c7
@@ -112,23 +141,20 @@ class WikiHouse::Wall
 
       [c1, c2, c3, c4, c5, c6, c7, c8]
     end
+
     def create_face(line_points)
-     lines = []
+      lines = []
       line_points.each do |line_points|
         lines << draw_line(line_points[0], line_points[1])
       end
 
-     face = Sketchup.active_model.active_entities.add_face(lines)
+      face = Sketchup.active_model.active_entities.add_face(lines)
       #group = Sketchup.active_model.active_entities.add_group center_piece_face.all_connected
       face
     end
-    def draw!
-      left_side = draw_side(orientation: :left, origin: [0, 0, 0])
-      top_side = draw_side(orientation: :top, origin: [0 + @sheet.thickness, 0, 0])
-      right_side = draw_side(orientation: :right, origin: [side_length, 0 - @sheet.thickness, 0])
-      bottom_side = draw_side(orientation: :bottom, origin: [0, 0 - side_length, 0])
 
-      bottom_center_piece_line_pts = [
+    def bottom_face_line_pts
+      [
           [left_side[4], left_side[6]],
           [left_side[4], left_side[5]],
           [left_side[6], left_side[7]],
@@ -151,37 +177,47 @@ class WikiHouse::Wall
           [bottom_side[4], left_side[2]],
       ]
 
-      bottom_center_piece_face = create_center_piece_face(bottom_center_piece_line_pts)
+    end
 
-      bottom_center_piece_face.reverse!
-      bottom_center_piece_face.pushpull @sheet.thickness
-      top_center_piece_line_pts = []
-
-
-      bottom_center_piece_line_pts.each do |line_points|
+    def top_face_line_pts
+      line_pts = []
+      bottom_face_line_pts.each do |line_points|
         first_point = line_points[0].dup
         last_point = line_points[1].dup
         first_point.z = @sheet.thickness
         last_point.z = @sheet.thickness
-        top_center_piece_line_pts << [first_point, last_point]
+        line_pts << [first_point, last_point]
 
       end
-      top_center_piece_face = create_center_piece_face(top_center_piece_line_pts)
+      line_pts
+    end
 
-      center_piece_group = Sketchup.active_model.active_entities.add_group bottom_center_piece_face.all_connected
+    def draw!
+
+
+      @bottom_face = create_face(bottom_face_line_pts)
+      @top_face = create_face(top_face_line_pts)
+      @bottom_face.reverse!
+      @bottom_face.pushpull @sheet.thickness
+
+
+      center_piece_group = Sketchup.active_model.active_entities.add_group @bottom_face.all_connected
     end
   end
+
   def initialize
     @sheet = WikiHouse::Sheet.new
-    @column = Column.new
+    @column = ColumnBoard.new(origin: [0,0,0], sheet: @sheet)
   end
+
   def wall_height
     80
   end
+
   def draw!
-    @bottom_column_cap = ColumnCap.new(@column, [0,0,0])
+    @bottom_column_cap = ColumnCap.new(@column, origin: [0, 0, 0])
     @bottom_column_cap.draw!
-    @top_column_cap = ColumnCap.new(@column, [0,0,wall_height])
+    @top_column_cap = ColumnCap.new(@column, origin: [0, 0, @column.left_side_length])
     @top_column_cap.draw!
   end
 end

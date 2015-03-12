@@ -13,7 +13,7 @@ class WikiHouse::Sheet
   end
 
   def thickness
-    0.71
+   0.718
   end
 
   def margin
