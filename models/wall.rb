@@ -68,6 +68,9 @@ class WikiHouse::Wall
     end
 
     def left_tabs
+
+      c1_5 = [c1.x + thickness, c1.y, c1.z]
+      c4_5 = [c4.x + thickness, c4.y, c4.z]
       lines = []
       c5 = c1
       c5.y -= thickness
@@ -76,12 +79,16 @@ class WikiHouse::Wall
       c7 = [c6.x, c6.y - left_side_length + (2 * thickness), c6.z]
       c8 = [c5.x, c7.y, c5.z]
 
-      erase_line(c5, c8)
+      erase_line(c1, c4)
+      erase_line(c1, c1_5)
+      erase_line(c4, c4_5)
 
+      draw_line(c1_5, c6)
+      draw_line(c7, c4_5)
       total_length = c5.y - c8.y
       puts total_length
       section_width = total_length/number_of_side_tabs.to_f
-      last_point_1 = c5
+      last_point_1 = nil
       last_point_2 = c6
       last_point_4 = nil
       number_of_side_tabs.times do |i|
@@ -96,8 +103,8 @@ class WikiHouse::Wall
         pc3 = [c5.x + thickness, end_pocket, c5.z]
         pc4 = [c5.x, end_pocket, c5.z]
         lines << draw_line(last_point_4, last_point_1) if last_point_4
-        lines << draw_line(last_point_1, last_point_2)
-        lines << draw_line(last_point_2, pc2)
+        lines << draw_line(last_point_1, last_point_2) if last_point_1 && last_point_2
+        lines << draw_line(last_point_2, pc2) if last_point_2
         lines << draw_line(pc2, pc1)
 
         last_point_1 = pc4
@@ -108,8 +115,8 @@ class WikiHouse::Wall
       end
       lines << draw_line(last_point_4, last_point_1) if last_point_4
       lines << draw_line(last_point_1, last_point_2)
-      lines << draw_line(last_point_2, c7)
-      lines << draw_line(c7, c8)
+      lines << draw_line(last_point_2, c7 )
+
       lines
     end
 
@@ -125,21 +132,12 @@ class WikiHouse::Wall
       c10 = [c1.x + bottom_tab_end, c1.y - left_side_length + thickness, c1.z]
       c11 = [c1.x + bottom_tab_end, c1.y - left_side_length, c1.z]
       c12 = [c1.x + bottom_tab_start, c1.y - left_side_length, c1.z]
-      lines = []
-      lines << draw_line(c1, c5)
-      lines << draw_line(c5, c8)
-      lines << draw_line(c8, c7)
-      lines << draw_line(c7, c6)
-      lines << draw_line(c6, c2)
-      lines << draw_line(c2, c3)
-      lines << draw_line(c3, c11)
-      lines << draw_line(c11, c10)
-      lines << draw_line(c10, c9)
-      lines << draw_line(c9, c12)
-      lines << draw_line(c12, c4)
-      lines << draw_line(c4, c1)
 
-      lines
+
+     pts = [c1,c5,c8,c7,c6,c2, c3, c11, c10,c9, c12,c4]
+
+
+      connect_all_points(pts)
     end
 
     def draw!
@@ -147,7 +145,7 @@ class WikiHouse::Wall
       right_pockets
       left_tabs
 
-      lines = top_bottom_lines.first.all_connected
+      lines = top_bottom_lines.select {|l| !l.deleted?}.first.all_connected
       face = Sketchup.active_model.active_entities.add_face(lines)
       face.reverse!
       face.pushpull thickness
@@ -192,10 +190,12 @@ class WikiHouse::Wall
       @origin = origin
       @column = column
       @sheet = sheet ? sheet : WikiHouse::Sheet.new
-      @left_side = @right_side = @top_side = @bottom_side = nil
-      @top_face = @bottom_face = nil
-    end
 
+     @bottom_face = nil
+    end
+    def thickness
+      @sheet.thickness
+    end
     def side_length
       @column.bottom_side_length
 
@@ -205,132 +205,53 @@ class WikiHouse::Wall
       @column.tab_width
     end
 
-    def tab_start
-      @column.bottom_tab_start
-    end
+   
 
-    def tab_end
-      @column.bottom_tab_end
-    end
+     def create_face(line_points)
 
-    def left_side
-      unless @left_side
-        @left_side = calculate_side(orientation: :left)
-      end
-      @left_side
-    end
-
-    def right_side
-      unless @right_side
-        @right_side = calculate_side(orientation: :right)
-      end
-      @right_side
-    end
-
-    def top_side
-      unless @top_side
-        @top_side = calculate_side(orientation: :top)
-      end
-      @top_side
-    end
-
-    def bottom_side
-      unless @bottom_side
-        @bottom_side = calculate_side(orientation: :bottom)
-      end
-      @bottom_side
-    end
-
-    def calculate_side(orientation: :left)
-
-      c1 = @origin.dup
-      if orientation == :left
-
-        c2 = [c1.x + @sheet.thickness, c1.y, c1.z]
-        c3 = [c1.x + @sheet.thickness, c1.y - side_length, c1.z]
-        c4 = [c1.x, c1.y - side_length, c1.z]
-      elsif orientation == :right
-        c1.x += side_length
-        c1.y -= @sheet.thickness
-        c2 = [c1.x + @sheet.thickness, c1.y, c1.z]
-        c3 = [c1.x + @sheet.thickness, c1.y - side_length, c1.z]
-        c4 = [c1.x, c1.y - side_length, c1.z]
-      elsif orientation == :top
-        c1.x += @sheet.thickness
-        c2 = [c1.x + side_length, c1.y, c1.z]
-        c3 = [c1.x + side_length, c1.y - @sheet.thickness, c1.z]
-        c4 = [c1.x, c1.y - @sheet.thickness, c1.z]
-      elsif orientation == :bottom
-        c1.y -= side_length
-        c2 = [c1.x + side_length, c1.y, c1.z]
-        c3 = [c1.x + side_length, c1.y - @sheet.thickness, c1.z]
-        c4 = [c1.x, c1.y - @sheet.thickness, c1.z]
-      end
-
-      if orientation == :left || orientation == :right
-        c5 = [c1.x, c1.y - tab_start, c1.z]
-        c6 = [c1.x + @sheet.thickness, c1.y - tab_start, c1.z]
-        c7 = [c1.x, c1.y - tab_end, c1.z]
-        c8 = [c1.x + @sheet.thickness, c1.y - tab_end, c1.z]
-        if orientation == :left
-          c9 = c6
-          c10 = c8
-        else
-          c9 = c5
-          c10 = c7
-        end
-      else
-        c5 = [c1.x + tab_start, c1.y, c1.z]
-        c6 = [c1.x + tab_start, c1.y - @sheet.thickness, c1.z]
-        c7 = [c1.x + tab_end, c1.y, c1.z]
-        c8 = [c1.x + tab_end, c1.y - @sheet.thickness, c1.z]
-        if orientation == :bottom
-          c9 = c5
-          c10 = c7
-        else
-          c9 = c6
-          c10 = c8
-        end
-      end
-
-      [c1, c2, c3, c4, c5, c6, c7, c8]
-    end
-
-    def create_face(line_points)
-      lines = []
-      line_points.each do |line_points|
-        lines << draw_line(line_points[0], line_points[1])
-      end
-
+      lines = connect_all_points(line_points)
       face = Sketchup.active_model.active_entities.add_face(lines.first.all_connected)
       #group = Sketchup.active_model.active_entities.add_group center_piece_face.all_connected
       face
     end
 
     def bottom_face_line_pts
-      [
-          [left_side[4], left_side[6]],
-          [left_side[4], left_side[5]],
-          [left_side[6], left_side[7]],
-          [left_side[7], left_side[2]],
-          [top_side[4], top_side[6]],
-          [top_side[4], top_side[5]],
-          [top_side[6], top_side[7]],
-          [top_side[3], top_side[5]],
-          [top_side[3], left_side[5]],
-          [top_side[7], right_side[0]],
-          [right_side[0], right_side[4]],
-          [right_side[4], right_side[5]],
-          [right_side[5], right_side[7]],
-          [right_side[7], right_side[6]],
-          [right_side[6], bottom_side[1]],
-          [bottom_side[6], bottom_side[1]],
-          [bottom_side[6], bottom_side[7]],
-          [bottom_side[7], bottom_side[5]],
-          [bottom_side[5], bottom_side[4]],
-          [bottom_side[4], left_side[2]],
-      ]
+      c0 = @origin.dup
+      c1 = [c0.x + thickness, c0.y - thickness, c0.z]
+      c2 = [ c0.x + side_length - ( thickness) , c1.y, c1.z]
+      c3 = [ c2.x, c0.y - side_length + (thickness), c2.z]
+      c4 = [c1.x, c3.y, c3.z]
 
+      points = [c1]
+       x_midpoint = c1.x + (c2.x - c1.x)/2.0
+       y_midpoint = c2.y - (c2.y - c3.y)/2.0
+       half_tab = tab_width/2.0
+
+      points << [x_midpoint - half_tab, c1.y, c1.z]
+      points << [x_midpoint - half_tab, c1.y + thickness, c1.z]
+      points << [x_midpoint + half_tab, c1.y + thickness, c1.z]
+      points << [x_midpoint + half_tab, c1.y, c1.z]
+      points << c2
+
+      points << [c2.x , y_midpoint + half_tab, c2.z]
+      points << [c2.x + thickness,  y_midpoint + half_tab , c2.z]
+      points << [c2.x + thickness, y_midpoint - half_tab, c2.z]
+      points << [c2.x ,  y_midpoint - half_tab, c2.z]
+      points << c3
+
+      points << [x_midpoint + half_tab, c3.y, c3.z]
+      points << [x_midpoint + half_tab, c3.y - thickness, c3.z]
+      points << [x_midpoint - half_tab, c3.y - thickness, c3.z]
+      points << [ x_midpoint - half_tab, c3.y, c3.z]
+      points << c4
+
+      points << [c4.x ,  y_midpoint - half_tab, c4.z]
+      points << [c4.x - thickness,  y_midpoint - half_tab , c4.z]
+      points << [c4.x - thickness, y_midpoint + half_tab, c4.z]
+      points << [c4.x , y_midpoint + half_tab, c4.z]
+
+      
+      points
     end
 
 
@@ -355,7 +276,9 @@ class WikiHouse::Wall
   def wall_height
     80
   end
-
+  def thickness
+    @sheet.thickness
+  end
   def draw!
 
     column_board = @column.draw!
@@ -363,15 +286,24 @@ class WikiHouse::Wall
     @bottom_column_cap = ColumnCap.new(@column, origin: [0, 0, 0])
     @bottom_column_cap.draw!
 
+    @lower_mid_column_cap = ColumnCap.new(@column, origin: [0, 0, 20])
+    @lower_mid_column_cap.draw!
+
+    @upper_mid_column_cap = ColumnCap.new(@column, origin: [0, 0, 40])
+    @upper_mid_column_cap.draw!
+
+    @top_column_cap = ColumnCap.new(@column, origin: [0, 0, 80 - thickness])
+    @top_column_cap.draw!
 
     column_board2 = column_board.copy
+
     point = Geom::Point3d.new  0,0,0
 
-    tm = Geom::Transformation.new( Geom::Point3d.new(@sheet.thickness,0, 0))
+    #tm = Geom::Transformation.new( Geom::Point3d.new(@sheet.thickness,0, 0))
 
     tr2 = Geom::Transformation.rotation point, [1,0, 0], 90.degrees
 
-    column_board.move! tm * tr2
+    column_board.move!  tr2
 
    # tr = Geom::Transformation.rotation point, [1, 0, 0], -90.degrees
     #column_board.move! tr
