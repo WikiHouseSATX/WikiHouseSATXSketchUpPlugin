@@ -93,7 +93,7 @@ module WikiHouse::DrawingHelper
 	end
 	def draw_line(pt1, pt2, group: nil)
 
-		puts "*******> DrawLine called without Group #{self.class}" unless group
+	#	puts "*******> DrawLine called without Group #{self.class}" unless group
  		group ? group.entities.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
 
 	end
