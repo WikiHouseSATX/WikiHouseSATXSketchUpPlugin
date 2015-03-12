@@ -11,7 +11,9 @@ class WikiHouse::Wall
       @sheet = sheet ? sheet : WikiHouse::Sheet.new
 
     end
-
+    def number_of_internal_supports
+      2
+    end
     def number_of_side_tabs
       3
     end
@@ -139,11 +141,22 @@ class WikiHouse::Wall
 
       connect_all_points(pts)
     end
-
+    def support_pockets
+      # support_sections = left_side_length/number_of_internal_supports.to_f
+      # half_tab = tab_width/2.0
+      # half_section = left_side_length/number_of_internal_supports.to_f/2.0
+      # mid_x = bottom_side_length/2.0
+      #
+      # c5 = [c1.x + mid_x - half_tab, c1.y - half_section, c1.z]
+      # c6 = [c1.x + mid_x + half_tab, c1.y - ]
+      # c7 = c3
+      # c8 = c4
+    end
     def draw!
       top_bottom_lines = top_bottom_pockets
       right_pockets
       left_tabs
+     # support_pockets
 
       lines = top_bottom_lines.select {|l| !l.deleted?}.first.all_connected
       face = Sketchup.active_model.active_entities.add_face(lines)
