@@ -96,5 +96,9 @@ module WikiHouse::DrawingHelper
 	#	puts "*******> DrawLine called without Group #{self.class}" unless group
  		group ? group.entities.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
 
-	end
+  end
+  def erase_line(pt1, pt2)
+    line = draw_line(pt1, pt2)
+    line.erase! if line
+  end
 end
