@@ -11,9 +11,11 @@ class WikiHouse::Wall
       @sheet = sheet ? sheet : WikiHouse::Sheet.new
 
     end
+
     def number_of_internal_supports
-      2
+     2
     end
+
     def number_of_side_tabs
       3
     end
@@ -117,7 +119,7 @@ class WikiHouse::Wall
       end
       lines << draw_line(last_point_4, last_point_1) if last_point_4
       lines << draw_line(last_point_1, last_point_2)
-      lines << draw_line(last_point_2, c7 )
+      lines << draw_line(last_point_2, c7)
 
       lines
     end
@@ -136,34 +138,56 @@ class WikiHouse::Wall
       c12 = [c1.x + bottom_tab_start, c1.y - left_side_length, c1.z]
 
 
-     pts = [c1,c5,c8,c7,c6,c2, c3, c11, c10,c9, c12,c4]
+      pts = [c1, c5, c8, c7, c6, c2, c3, c11, c10, c9, c12, c4]
 
 
-      connect_all_points(pts)
+      draw_all_points(pts)
+    end
+    def support_section_height
+      left_side_length/(number_of_internal_supports.to_f + 1.0)
     end
     def support_pockets
-      # support_sections = left_side_length/number_of_internal_supports.to_f
-      # half_tab = tab_width/2.0
-      # half_section = left_side_length/number_of_internal_supports.to_f/2.0
-      # mid_x = bottom_side_length/2.0
-      #
-      # c5 = [c1.x + mid_x - half_tab, c1.y - half_section, c1.z]
-      # c6 = [c1.x + mid_x + half_tab, c1.y - ]
-      # c7 = c3
-      # c8 = c4
+
+      half_tab = tab_width/2.0
+
+      mid_x = bottom_side_length/2.0
+
+      support_pockets_list = []
+      number_of_internal_supports.times do |index|
+        base = support_section_height * (index + 1)  * -1
+        c5 = [c1.x + mid_x - half_tab, base  + thickness/2.0, c1.z]
+        c6 = [c1.x + mid_x + half_tab, c5.y, c1.z]
+        c7 = [c6.x, base  - thickness/2.0, c1.z]
+        c8 = [c5.x, c7.y, c1.z]
+        support_pockets_list << draw_all_points([c5, c6, c7, c8])
+
+      end
+      support_pockets_list
     end
+
     def draw!
+
+
       top_bottom_lines = top_bottom_pockets
       right_pockets
       left_tabs
-     # support_pockets
+      support_pockets_list =support_pockets
 
-      lines = top_bottom_lines.select {|l| !l.deleted?}.first.all_connected
+
+      lines = top_bottom_lines.select { |l| !l.deleted? }.first.all_connected
       face = Sketchup.active_model.active_entities.add_face(lines)
+
+      support_pockets_list.each do |sp|
+        pocket_face = Sketchup.active_model.active_entities.add_face(sp)
+        pocket_face.erase!
+      end
+
       face.reverse!
       face.pushpull thickness
       face2 = Sketchup.active_model.active_entities.add_face(lines)
+
       column_board = Sketchup.active_model.active_entities.add_group face.all_connected
+
       point = Geom::Point3d.new 10, 0, 0
       t = Geom::Transformation.new point
       column_board.move! t
@@ -195,7 +219,7 @@ class WikiHouse::Wall
       @sheet.thickness
     end
   end
-  class ColumnCap
+  class ColumnRib
     include WikiHouse::DrawingHelper
 
     def initialize(column, origin: [0, 0, 0], sheet: nil)
@@ -204,11 +228,13 @@ class WikiHouse::Wall
       @column = column
       @sheet = sheet ? sheet : WikiHouse::Sheet.new
 
-     @bottom_face = nil
+      @bottom_face = nil
     end
+
     def thickness
       @sheet.thickness
     end
+
     def side_length
       @column.bottom_side_length
 
@@ -218,11 +244,10 @@ class WikiHouse::Wall
       @column.tab_width
     end
 
-   
 
-     def create_face(line_points)
+    def create_face(line_points)
 
-      lines = connect_all_points(line_points)
+      lines = draw_all_points(line_points)
       face = Sketchup.active_model.active_entities.add_face(lines.first.all_connected)
       #group = Sketchup.active_model.active_entities.add_group center_piece_face.all_connected
       face
@@ -231,14 +256,14 @@ class WikiHouse::Wall
     def bottom_face_line_pts
       c0 = @origin.dup
       c1 = [c0.x + thickness, c0.y - thickness, c0.z]
-      c2 = [ c0.x + side_length - ( thickness) , c1.y, c1.z]
-      c3 = [ c2.x, c0.y - side_length + (thickness), c2.z]
+      c2 = [c0.x + side_length - (thickness), c1.y, c1.z]
+      c3 = [c2.x, c0.y - side_length + (thickness), c2.z]
       c4 = [c1.x, c3.y, c3.z]
 
       points = [c1]
-       x_midpoint = c1.x + (c2.x - c1.x)/2.0
-       y_midpoint = c2.y - (c2.y - c3.y)/2.0
-       half_tab = tab_width/2.0
+      x_midpoint = c1.x + (c2.x - c1.x)/2.0
+      y_midpoint = c2.y - (c2.y - c3.y)/2.0
+      half_tab = tab_width/2.0
 
       points << [x_midpoint - half_tab, c1.y, c1.z]
       points << [x_midpoint - half_tab, c1.y + thickness, c1.z]
@@ -246,24 +271,24 @@ class WikiHouse::Wall
       points << [x_midpoint + half_tab, c1.y, c1.z]
       points << c2
 
-      points << [c2.x , y_midpoint + half_tab, c2.z]
-      points << [c2.x + thickness,  y_midpoint + half_tab , c2.z]
+      points << [c2.x, y_midpoint + half_tab, c2.z]
+      points << [c2.x + thickness, y_midpoint + half_tab, c2.z]
       points << [c2.x + thickness, y_midpoint - half_tab, c2.z]
-      points << [c2.x ,  y_midpoint - half_tab, c2.z]
+      points << [c2.x, y_midpoint - half_tab, c2.z]
       points << c3
 
       points << [x_midpoint + half_tab, c3.y, c3.z]
       points << [x_midpoint + half_tab, c3.y - thickness, c3.z]
       points << [x_midpoint - half_tab, c3.y - thickness, c3.z]
-      points << [ x_midpoint - half_tab, c3.y, c3.z]
+      points << [x_midpoint - half_tab, c3.y, c3.z]
       points << c4
 
-      points << [c4.x ,  y_midpoint - half_tab, c4.z]
-      points << [c4.x - thickness,  y_midpoint - half_tab , c4.z]
+      points << [c4.x, y_midpoint - half_tab, c4.z]
+      points << [c4.x - thickness, y_midpoint - half_tab, c4.z]
       points << [c4.x - thickness, y_midpoint + half_tab, c4.z]
-      points << [c4.x , y_midpoint + half_tab, c4.z]
+      points << [c4.x, y_midpoint + half_tab, c4.z]
 
-      
+
       points
     end
 
@@ -289,55 +314,59 @@ class WikiHouse::Wall
   def wall_height
     80
   end
+
   def thickness
     @sheet.thickness
   end
+
   def draw!
 
     column_board = @column.draw!
 
-    @bottom_column_cap = ColumnCap.new(@column, origin: [0, 0, 0])
-    @bottom_column_cap.draw!
+     ribs = []
 
-    @lower_mid_column_cap = ColumnCap.new(@column, origin: [0, 0, 20])
-    @lower_mid_column_cap.draw!
+    rib = ColumnRib.new(@column, origin: [0, 0, 0])
+    rib.draw!
+    ribs << rib
+    @column.number_of_internal_supports.times do |index|
+      base = @column.support_section_height * (index + 1) - @column.thickness/2.0
 
-    @upper_mid_column_cap = ColumnCap.new(@column, origin: [0, 0, 40])
-    @upper_mid_column_cap.draw!
+      rib = ColumnRib.new(@column, origin: [0, 0, base ])
+      rib.draw!
+      ribs << rib
+    end
 
-    @top_column_cap = ColumnCap.new(@column, origin: [0, 0, 80 - thickness])
-    @top_column_cap.draw!
 
+    rib = ColumnRib.new(@column, origin: [0, 0, @column.left_side_length - thickness])
+    rib.draw!
+    ribs << rib
     column_board2 = column_board.copy
 
-    point = Geom::Point3d.new  0,0,0
+    point = Geom::Point3d.new 0, 0, 0
 
     #tm = Geom::Transformation.new( Geom::Point3d.new(@sheet.thickness,0, 0))
 
-    tr2 = Geom::Transformation.rotation point, [1,0, 0], 90.degrees
+    tr2 = Geom::Transformation.rotation point, [1, 0, 0], 90.degrees
 
-    column_board.move!  tr2
+    column_board.move! tr2
 
-   # tr = Geom::Transformation.rotation point, [1, 0, 0], -90.degrees
+    # tr = Geom::Transformation.rotation point, [1, 0, 0], -90.degrees
     #column_board.move! tr
 
-   # column_board3 = column_board.copy
-  #  column_board4 = column_board.copy
+    # column_board3 = column_board.copy
+    #  column_board4 = column_board.copy
 
     #
-     point = Geom::Point3d.new  0,0,0
+    point = Geom::Point3d.new 0, 0, 0
     tr = Geom::Transformation.rotation point, [0, 0, 1], 90.degrees
-    tm = Geom::Transformation.new( Geom::Point3d.new(-1 * @column.bottom_side_length,0, 0))
+    tm = Geom::Transformation.new(Geom::Point3d.new(-1 * @column.bottom_side_length, 0, 0))
 
-    tr2 = Geom::Transformation.rotation point, [1,0, 0], 90.degrees
+    tr2 = Geom::Transformation.rotation point, [1, 0, 0], 90.degrees
 
     column_board2.move! tr * tm * tr2
 
 
-
-
-
-    #    @top_column_cap = ColumnCap.new(@column, origin: [0, 0, @column.left_side_length])
+    #    @top_column_cap = ColumnRib.new(@column, origin: [0, 0, @column.left_side_length])
     #  @top_column_cap.draw!
   end
 end

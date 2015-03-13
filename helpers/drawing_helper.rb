@@ -110,7 +110,7 @@ module WikiHouse::DrawingHelper
 
   end
 
-  def connect_all_points(pts, group: nil)
+  def draw_all_points(pts, group: nil)
     lines = []
     pts.each_with_index do |pt, index|
       if index + 1 < pts.length
