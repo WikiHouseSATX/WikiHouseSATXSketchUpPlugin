@@ -1,39 +1,57 @@
-module WikiHouse::DrawingHelper
-  def self.included(base)
-    base.extend(ClassMethods)
+#This module is just a collection of helper methods to make it easier
+# to interact with SketchUp.
+#All the other classes call Sk. if they want to draw or do things in the
+#SketchUp model.
+
+module Sk
+
+  extend self
+
+  def degrees_to_radians(degrees)
+    degrees.to_f * Math::PI / 180
   end
 
-  module ClassMethods
-    def degrees_to_radians(degrees)
-      degrees.to_f * Math::PI / 180
+  def radians_to_degrees(radians)
+    radians.to_f / Math::PI / 180
+  end
+
+  def vertex_to_s(vertex)
+    point_to_s(vertex.position)
+  end
+
+  def point_to_s(point)
+    "X:#{point.x} Y:#{point.y} Z:#{point.z}"
+  end
+
+  def edge_to_s(edge)
+    "Edge: start #{point_to_s(edge.start.position)} end #{point_to_s(edge.end.position)}"
+  end
+
+  def color_material(name, color: nil)
+
+    Sketchup.active_model.materials.each do |mat|
+      return mat if mat.name == name
     end
 
-    def radians_to_degrees(radians)
-      radians.to_f / Math::PI / 180
-    end
+    mat = Sketchup.active_model.materials.add name
+    mat.color = color
+    mat
+  end
 
-    def vertex_to_s(vertex)
-      point_to_s(vertex.position)
-    end
+  def move_to!(group, point)
+    return if !group
+    point3d = Geom::Point3d.new 10, 0, 0
+    t = Geom::Transformation.new point3d
+    group.move! t
+    group
+  end
 
-    def point_to_s(point)
-      "X:#{point.x} Y:#{point.y} Z:#{point.z}"
-    end
+  def rotate(group: group, point: nil, vector: nil, rotation: nil)
+    tr = Geom::Transformation.rotation point, vector, rotation
+    group.move! tr
+  end
+  def rotate!(group: group, point: nil, vector: nil, rotation: nil)
 
-    def edge_to_s(edge)
-      "Edge: start #{point_to_s(edge.start.position)} end #{point_to_s(edge.end.position)}"
-    end
-
-    def color_material(name, color: nil)
-
-      Sketchup.active_model.materials.each do |mat|
-        return mat if mat.name == name
-      end
-
-      mat = Sketchup.active_model.materials.add name
-      mat.color = color
-      mat
-    end
   end
 
   def slope(x1, y1, x2, y2)
@@ -127,4 +145,13 @@ module WikiHouse::DrawingHelper
     line = draw_line(pt1, pt2)
     line.erase! if line
   end
+
+  def add_face(lines)
+    Sketchup.active_model.active_entities.add_face(lines)
+  end
+
+  def add_group(lines)
+    Sketchup.active_model.active_entities.add_group(lines)
+  end
+
 end
