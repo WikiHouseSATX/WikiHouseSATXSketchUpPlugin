@@ -7,7 +7,7 @@ class WikiHouse::Wall
 
 
     @left_column = WikiHouse::Column.new(label: "Left", origin: @origin, sheet: sheet)
-    @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + 40, @origin.y, @origin.z], sheet: sheet)
+    @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + 40, @origin.y + 40, @origin.z + 10], sheet: sheet)
   end
 
   def wall_height
@@ -16,10 +16,10 @@ class WikiHouse::Wall
 
 
   def draw!
-  #  @left_column.draw!
+    @left_column.draw!
     @right_column.draw!
-    raise ScriptError, "This doesn't draw correctly :("
-   # set_group([@left_column.group, @right_column.group])
+
+    set_group([@left_column.group, @right_column.group])
   end
 
 
