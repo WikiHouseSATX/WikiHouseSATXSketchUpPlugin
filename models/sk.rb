@@ -6,7 +6,9 @@
 module Sk
 
   extend self
-
+  def round(val)
+    val.to_f.round(4)
+  end
   def degrees_to_radians(degrees)
     degrees.to_f * Math::PI / 180
   end
@@ -41,13 +43,13 @@ module Sk
   def move_to!(group, point)
     return if !group
     point3d = Geom::Point3d.new 10, 0, 0
-    t = Geom::Transformation.new point3d
+    t = Geom::Alteration.new point3d
     group.move! t
     group
   end
 
   def rotate(group: group, point: nil, vector: nil, rotation: nil)
-    tr = Geom::Transformation.rotation point, vector, rotation
+    tr = Geom::Alteration.rotation point, vector, rotation
     group.move! tr
   end
   def rotate!(group: group, point: nil, vector: nil, rotation: nil)
@@ -150,7 +152,7 @@ module Sk
     Sketchup.active_model.active_entities.add_face(lines)
   end
 
-  def add_group(lines)
+  def add_group(lines = nil)
     Sketchup.active_model.active_entities.add_group(lines)
   end
 

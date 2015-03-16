@@ -2,8 +2,8 @@ class WikiHouse::ColumnBoard
 
   include WikiHouse::PartHelper
 
-  def initialize(column: nil, sheet: nil, group: nil, origin: nil)
-    part_init(origin: origin, sheet: sheet)
+  def initialize(column: nil, sheet: nil, group: nil, origin: nil, label: label)
+    part_init(origin: origin, sheet: sheet, label:label)
     @column = column ? column : raise(ArgumentError, "You must provide a Column")
   end
   def support_section_height
@@ -27,6 +27,14 @@ class WikiHouse::ColumnBoard
 
   def number_of_side_tabs
     3
+  end
+
+  def bottom_tab_start
+    bottom_side_length/2.0 - tab_width/2.0
+  end
+
+  def bottom_tab_end
+    bottom_side_length/2.0 + tab_width/2.0
   end
 
   def c1
@@ -54,7 +62,7 @@ class WikiHouse::ColumnBoard
     c6.y += thickness
 
     total_length = c5.y - c6.y
-    puts total_length
+
     section_width = total_length/number_of_side_tabs.to_f
     number_of_side_tabs.times do |i|
       start_y = c5.y - (i * section_width)
@@ -99,7 +107,7 @@ class WikiHouse::ColumnBoard
     Sk.draw_line(c1_5, c6)
     Sk.draw_line(c7, c4_5)
     total_length = c5.y - c8.y
-    puts total_length
+
     section_width = total_length/number_of_side_tabs.to_f
     last_point_1 = nil
     last_point_2 = c6
@@ -164,9 +172,9 @@ class WikiHouse::ColumnBoard
     support_pockets_list = []
     number_of_internal_supports.times do |index|
       base = support_section_height * (index + 1) * -1
-      c5 = [c1.x + mid_x - half_tab, base + thickness/2.0, c1.z]
+      c5 = [c1.x + mid_x - half_tab, c1.y + base + thickness/2.0, c1.z]
       c6 = [c1.x + mid_x + half_tab, c5.y, c1.z]
-      c7 = [c6.x, base - thickness/2.0, c1.z]
+      c7 = [c6.x, c1.y + base - thickness/2.0, c1.z]
       c8 = [c5.x, c7.y, c1.z]
       support_pockets_list << Sk.draw_all_points([c5, c6, c7, c8])
 
@@ -189,21 +197,9 @@ class WikiHouse::ColumnBoard
     end
     make_part_right_thickness(face)
     face2 = Sk.add_face(lines)
-    @group = Sk.add_group face.all_connected
-    #Need to make this kind of synaxt work
-     move_to([10,0,0]).rotate([10,0,0], [1,0,0], -90.degrees).go!
-    # rotate!([10,0,0], [1,0,0], -90.degrees)
-    # move_to!([10, 0, 0])
-    # rotate [10,0,0], [1, 0, 0], -90.degrees
+    set_group(face.all_connected)
+
   end
 
-
-  def bottom_tab_start
-    bottom_side_length/2.0 - tab_width/2.0
-  end
-
-  def bottom_tab_end
-    bottom_side_length/2.0 + tab_width/2.0
-  end
 
 end

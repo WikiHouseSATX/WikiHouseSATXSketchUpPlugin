@@ -3,7 +3,7 @@
 # but it won't change
 #This can also be used to store a synthetic edge - one that you use for reference, but don't ever draw
 class WikiHouse::EdgePosition
-  include WikiHouse::DrawingHelper
+
   attr_reader :start, :end
 
   def initialize(start_position: nil, end_position: nil)

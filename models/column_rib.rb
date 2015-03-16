@@ -2,8 +2,8 @@ class WikiHouse::ColumnRib
 
   include WikiHouse::PartHelper
 
-  def initialize(column: nil, sheet: nil, group: nil, origin: nil)
-    part_init(origin: origin, sheet: sheet)
+  def initialize(column: nil, sheet: nil, group: nil, origin: nil, label: nil)
+    part_init(origin: origin, sheet: sheet, label: label)
     @column = column ? column : raise(ArgumentError, "You must provide a Column")
     @bottom_face = nil
   end
@@ -64,6 +64,6 @@ class WikiHouse::ColumnRib
   def draw!
     @bottom_face = create_face(bottom_face_line_pts)
     make_part_right_thickness(@bottom_face)
-    @group = Sk.add_group @bottom_face.all_connected
+   set_group(@bottom_face.all_connected)
   end
 end
