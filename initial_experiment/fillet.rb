@@ -1,6 +1,6 @@
 class WikiHouse::Fillet
   attr_reader :c1, :c2, :c3, :c4, :face, :group
-  include WikiHouse::DrawingHelper
+
 
   def initialize(fillet_on: nil, fillet_off: nil, angle_in_degrees: 90, group: nil)
     @fillet_on = fillet_on
@@ -28,7 +28,7 @@ class WikiHouse::Fillet
   end
 
   def angle_in_radians
-    self.class.degrees_to_radians(angle_in_degrees)
+   Sk.degrees_to_radians(angle_in_degrees)
   end
 
   def angle_in_degrees
@@ -36,7 +36,7 @@ class WikiHouse::Fillet
   end
 
   def bit_radius
-    0.25
+    Cnc.bit_radius
   end
 
   def draw!

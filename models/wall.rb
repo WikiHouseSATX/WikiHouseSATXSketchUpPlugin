@@ -16,12 +16,12 @@ class WikiHouse::Wall
 
 
   def draw!
+
     @left_column.draw!
     @right_column.draw!
 
     set_group([@left_column.group, @right_column.group])
   end
-
 
 
 end

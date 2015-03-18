@@ -1,5 +1,5 @@
-Finish 4 sided column generation.
-Add fillets to the different parts
+
+
 tag parts with attributes - mark edges as outside or inside edges.
 Make a tool to decompose the parts out to flat outlines in svg - look at the old plugin
 make a single large sheet with the dimesions of the outer box

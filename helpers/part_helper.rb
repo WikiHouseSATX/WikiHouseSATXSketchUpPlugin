@@ -89,4 +89,9 @@ module WikiHouse::PartHelper
     @group = Sk.add_group entities
     @group.name = full_label
   end
+  def sub_group(entities, label: nil)
+    sub_group = Sk.add_group entities
+    sub_group.name = label if label
+    sub_group
+  end
 end

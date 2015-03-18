@@ -6,9 +6,11 @@
 module Sk
 
   extend self
+
   def round(val)
     val.to_f.round(4)
   end
+
   def degrees_to_radians(degrees)
     degrees.to_f * Math::PI / 180
   end
@@ -52,6 +54,7 @@ module Sk
     tr = Geom::Alteration.rotation point, vector, rotation
     group.move! tr
   end
+
   def rotate!(group: group, point: nil, vector: nil, rotation: nil)
 
   end
@@ -126,8 +129,12 @@ module Sk
   def draw_line(pt1, pt2, group: nil)
 
     #	puts "*******> DrawLine called without Group #{self.class}" unless group
-    group ? group.entities.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
-
+    begin
+      group ? group.entities.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
+    rescue ArgumentError, e
+      puts "Unable to make a line from #{pt1} #{pt2}"
+      raise
+    end
   end
 
   def draw_all_points(pts, group: nil)
@@ -142,7 +149,16 @@ module Sk
 
     lines
   end
+  def draw_points(pts, group: nil)
+    lines = []
+    pts.each_with_index do |pt, index|
+      if index + 1 < pts.length
+        lines << draw_line(pt, pts[index + 1])
+      end
+    end
 
+    lines
+  end
   def erase_line(pt1, pt2)
     line = draw_line(pt1, pt2)
     line.erase! if line
@@ -156,4 +172,11 @@ module Sk
     Sketchup.active_model.active_entities.add_group(lines)
   end
 
+  def set_attribute(item, dictionary, key, value)
+    item.set_attribute(dictionary, key, value)
+  end
+
+  def get_attribute(item, dictionary, key)
+    item.get_attribue(dictionary, key)
+  end
 end

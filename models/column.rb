@@ -41,7 +41,7 @@ class WikiHouse::Column
 
 
   def draw!
-    puts "Origin? #{@origin}"
+
     @ribs.each { |rib| rib.draw! }
     @column_boards.each_with_index do |board, index|
 

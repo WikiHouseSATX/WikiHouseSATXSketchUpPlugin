@@ -7,6 +7,7 @@ class WikiHouse::ColumnRib
     @column = column ? column : raise(ArgumentError, "You must provide a Column")
     @bottom_face = nil
   end
+
   def side_length
     @column.bottom_side_length
   end
@@ -35,35 +36,63 @@ class WikiHouse::ColumnRib
 
     points << [x_midpoint - half_tab, c1.y, c1.z]
     points << [x_midpoint - half_tab, c1.y + thickness, c1.z]
+
+    WikiHouse::Fillet.by_points(points,2,1,0, reverse_it: true)
+
+
+    points << [x_midpoint - half_tab, c1.y + thickness, c1.z]
+
+    index = points.length
     points << [x_midpoint + half_tab, c1.y + thickness, c1.z]
     points << [x_midpoint + half_tab, c1.y, c1.z]
+
     points << c2
+
+    WikiHouse::Fillet.by_points(points, index , index + 1 , index + 2)
+    index = points.length - 1
+
 
     points << [c2.x, y_midpoint + half_tab, c2.z]
     points << [c2.x + thickness, y_midpoint + half_tab, c2.z]
+
+    WikiHouse::Fillet.by_points(points, index + 2 , index + 1, index, reverse_it: true)
+    index = points.length
+
     points << [c2.x + thickness, y_midpoint - half_tab, c2.z]
     points << [c2.x, y_midpoint - half_tab, c2.z]
     points << c3
-
+    WikiHouse::Fillet.by_points(points, index , index + 1 , index + 2)
+    index = points.length - 1
     points << [x_midpoint + half_tab, c3.y, c3.z]
     points << [x_midpoint + half_tab, c3.y - thickness, c3.z]
+    WikiHouse::Fillet.by_points(points, index + 2 , index + 1, index, reverse_it: true)
+    index = points.length
     points << [x_midpoint - half_tab, c3.y - thickness, c3.z]
     points << [x_midpoint - half_tab, c3.y, c3.z]
     points << c4
-
+    WikiHouse::Fillet.by_points(points, index , index + 1 , index + 2)
+    index = points.length - 1
     points << [c4.x, y_midpoint - half_tab, c4.z]
     points << [c4.x - thickness, y_midpoint - half_tab, c4.z]
+    WikiHouse::Fillet.by_points(points, index + 2 , index + 1, index, reverse_it: true)
+    index = points.length
     points << [c4.x - thickness, y_midpoint + half_tab, c4.z]
     points << [c4.x, y_midpoint + half_tab, c4.z]
-
-
+     # Sk.draw_line([0,0,0], points[index])
+     # Sk.draw_line([0,0,0], points[index + 1])
+     # Sk.draw_line([0,0,0], points[index + 2])
+    points << c1
+    WikiHouse::Fillet.by_points(points, index , index + 1 , index + 2)
+    points.pop #Get rid of the c1 at the end - since it will be auto connected
     points
   end
 
 
+
   def draw!
     @bottom_face = create_face(bottom_face_line_pts)
+
     make_part_right_thickness(@bottom_face)
-   set_group(@bottom_face.all_connected)
+    set_group(@bottom_face.all_connected)
   end
 end

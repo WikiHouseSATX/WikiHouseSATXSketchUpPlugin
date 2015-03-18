@@ -3,12 +3,14 @@ class WikiHouse::ColumnBoard
   include WikiHouse::PartHelper
 
   def initialize(column: nil, sheet: nil, group: nil, origin: nil, label: label)
-    part_init(origin: origin, sheet: sheet, label:label)
+    part_init(origin: origin, sheet: sheet, label: label)
     @column = column ? column : raise(ArgumentError, "You must provide a Column")
   end
+
   def support_section_height
     @column.support_section_height
   end
+
   def number_of_internal_supports
     @column.number_of_internal_supports
   end
@@ -77,13 +79,13 @@ class WikiHouse::ColumnBoard
       pc2 = [c5.x, start_pocket, c5.z]
       pc3 = [c5.x, end_pocket, c5.z]
       pc4 = [c5.x - thickness, end_pocket, c5.z]
+      points = [pc2, pc1, pc4, pc3]
+      WikiHouse::Fillet.by_points(points, 0, 1, 2)
+      WikiHouse::Fillet.by_points(points, 5,4,3, reverse_it: true)
 
-      lines << Sk.draw_line(pc1, pc2)
+      lines.concat(Sk.draw_points(points))
       Sk.erase_line(pc2, pc3)
 
-      lines << Sk.draw_line(pc3, pc4)
-
-      lines << Sk.draw_line(pc4, pc1)
     end
     lines
   end
@@ -123,21 +125,54 @@ class WikiHouse::ColumnBoard
       pc2 = [c5.x + thickness, start_pocket, c5.z]
       pc3 = [c5.x + thickness, end_pocket, c5.z]
       pc4 = [c5.x, end_pocket, c5.z]
-      lines << Sk.draw_line(last_point_4, last_point_1) if last_point_4
-      lines << Sk.draw_line(last_point_1, last_point_2) if last_point_1 && last_point_2
-      lines << Sk.draw_line(last_point_2, pc2) if last_point_2
-      lines << Sk.draw_line(pc2, pc1)
 
+      points = []
+      points == [last_point_4, last_point_1] if last_point_4
+      if last_point_1 && last_point_2
+        points << last_point_1
+        points << last_point_2
+      end
+      if last_point_2
+        points << last_point_2 unless points.include? (last_point_2)
+
+      end
+
+      points << pc2
+      points << pc1
+      points << pc4
+
+      #  Sk.draw_line([-100,-100,0], pc4)
+      if last_point_1.nil?
+        WikiHouse::Fillet.by_points(points, 2, 1, 0, reverse_it: true)
+
+      else
+        WikiHouse::Fillet.by_points(points, 3, 2, 1, reverse_it: true)
+        WikiHouse::Fillet.by_points(points, 0, 1, 2)
+
+        # Sk.draw_line([-100,-100,0],points[1])
+        #   Sk.draw_line([-100,-100,0], points[0])
+        #  Sk.draw_line([-100,-100,0], points[9])
+      end
+
+
+      new_lines = Sk.draw_points(points)
+      lines.concat(new_lines)
       last_point_1 = pc4
       last_point_2 = pc3
       last_point_4 = pc1
 
 
     end
-    lines << Sk.draw_line(last_point_4, last_point_1) if last_point_4
-    lines << Sk.draw_line(last_point_1, last_point_2)
-    lines << Sk.draw_line(last_point_2, c7)
+    points = []
+    points << last_point_4 if last_point_4
+    points << last_point_1
+    points << last_point_2
+    points << c7
 
+    WikiHouse::Fillet.by_points(points, 1, 2, 3)
+    new_lines = Sk.draw_points(points)
+
+    lines.concat(new_lines)
     lines
   end
 
@@ -156,11 +191,17 @@ class WikiHouse::ColumnBoard
 
 
     pts = [c1, c5, c8, c7, c6, c2, c3, c11, c10, c9, c12, c4]
+    WikiHouse::Fillet.by_points(pts, 1, 2, 3)
 
 
+    WikiHouse::Fillet.by_points(pts, 6,5,4, reverse_it: true)
+
+
+    WikiHouse::Fillet.by_points(pts, 11, 12, 13)
+
+    WikiHouse::Fillet.by_points(pts, 16, 15, 14, reverse_it: true)
     Sk.draw_all_points(pts)
   end
-
 
 
   def support_pockets
@@ -176,9 +217,13 @@ class WikiHouse::ColumnBoard
       c6 = [c1.x + mid_x + half_tab, c5.y, c1.z]
       c7 = [c6.x, c1.y + base - thickness/2.0, c1.z]
       c8 = [c5.x, c7.y, c1.z]
-      support_pockets_list << Sk.draw_all_points([c5, c6, c7, c8])
+      points = [c5, c6, c7,c8]
+      WikiHouse::Fillet.pocket_by_points(points)
+
+      support_pockets_list << Sk.draw_all_points(points)
 
     end
+
     support_pockets_list
   end
 
