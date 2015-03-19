@@ -20,6 +20,9 @@ module WikiHouse::PartHelper
     @origin = origin ? origin : [0, 0, 0]
     @label = label
   end
+  def bounds
+    group ? group.bounds : nil
+  end
   def full_label
     "#{self.class.name} #{@label}".strip
   end
@@ -40,9 +43,9 @@ module WikiHouse::PartHelper
     face.pushpull thickness
   end
 
-  def copy
-
-  end
+  # def copy
+  #
+  # end
 
   def alter!(transformation, undoable: false)
     if @group
@@ -88,10 +91,29 @@ module WikiHouse::PartHelper
   def set_group(entities)
     @group = Sk.add_group entities
     @group.name = full_label
+    set_default_properties
+  end
+  def set_default_properties
+
+  end
+  def mark_cutable!
+      set_tag(tag_name: "cutable", value: true)
   end
   def sub_group(entities, label: nil)
     sub_group = Sk.add_group entities
     sub_group.name = label if label
     sub_group
+  end
+  def set_tag(tag_name:nil, value:nil)
+    return nil unless group
+    group.set_attribute DEFAULT_DICTIONARY, tag_name, value
+  end
+  def get_tag(tag_name: nil)
+    return nil unless group
+    group.get_attribute DEFAULT_DICTIONARY, tag_name
+  end
+  def remove_tag(tag_name:nil)
+    return unless group
+    group.delete_attribute DEFAULT_DICTIONARY, tag_name
   end
 end

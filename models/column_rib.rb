@@ -95,4 +95,7 @@ class WikiHouse::ColumnRib
     make_part_right_thickness(@bottom_face)
     set_group(@bottom_face.all_connected)
   end
+  def set_default_properties
+    mark_cutable!
+  end
 end

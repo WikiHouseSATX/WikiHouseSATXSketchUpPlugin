@@ -246,5 +246,7 @@ class WikiHouse::ColumnBoard
 
   end
 
-
+  def set_default_properties
+    mark_cutable!
+  end
 end

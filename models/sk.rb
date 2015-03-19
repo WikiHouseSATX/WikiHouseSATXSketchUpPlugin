@@ -149,6 +149,7 @@ module Sk
 
     lines
   end
+
   def draw_points(pts, group: nil)
     lines = []
     pts.each_with_index do |pt, index|
@@ -159,6 +160,7 @@ module Sk
 
     lines
   end
+
   def erase_line(pt1, pt2)
     line = draw_line(pt1, pt2)
     line.erase! if line
@@ -169,7 +171,15 @@ module Sk
   end
 
   def add_group(lines = nil)
-    Sketchup.active_model.active_entities.add_group(lines)
+    if lines
+      Sketchup.active_model.active_entities.add_group(lines)
+    else
+      Sketchup.active_model.active_entities.add_group
+    end
+  end
+
+  def add_global_group
+    Sketchup.active_model.entities.add_group
   end
 
   def set_attribute(item, dictionary, key, value)
@@ -178,5 +188,37 @@ module Sk
 
   def get_attribute(item, dictionary, key)
     item.get_attribue(dictionary, key)
+  end
+
+  def transfer_group(destination_group: nil, source_group: nil)
+    raise ArgumentError if destination_group.nil? || source_group.nil?
+    #http://sketchucation.com/forums/viewtopic.php?f=180&t=37940#p439270
+    destination_group.entities.add_instance(source_group.entities.parent, source_group.transformation)
+  end
+  def find_layer(name)
+    Sketchup.active_model.layers.each do |layer|
+      return layer if layer.name == name
+    end
+    nil
+  end
+  def create_layer(name)
+    Sketchup.active_model.layers.add name
+  end
+  def find_or_create_layer(name: name)
+    layer = find_layer(name)
+    if !layer
+      layer = create_layer(name)
+    end
+    layer
+  end
+  def make_layer_active_name(name: name)
+    layer = find_layer(name)
+    layer ? make_layer_active(layer) : raise(ArgumentError, "Unable to find the #{name} layer")
+  end
+  def make_layer_active(layer)
+    Sketchup.active_model.active_layer = layer
+  end
+  def current_active_layer
+    Sketchup.active_model.active_layer
   end
 end
