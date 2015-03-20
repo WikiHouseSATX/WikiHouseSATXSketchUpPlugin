@@ -91,9 +91,10 @@ class WikiHouse::ColumnRib
 
   def draw!
     @bottom_face = create_face(bottom_face_line_pts)
-
+    set_material(@bottom_face)
     make_part_right_thickness(@bottom_face)
     set_group(@bottom_face.all_connected)
+    mark_primary_face!(@bottom_face)
   end
   def set_default_properties
     mark_cutable!

@@ -235,15 +235,16 @@ class WikiHouse::ColumnBoard
 
     lines = top_bottom_lines.select { |l| !l.deleted? }.first.all_connected
     face = Sk.add_face(lines)
-
+    set_material(face)
     support_pockets_list.each do |sp|
       pocket_face = Sk.add_face(sp)
       pocket_face.erase!
     end
     make_part_right_thickness(face)
     face2 = Sk.add_face(lines)
-    set_group(face.all_connected)
 
+    set_group(face.all_connected)
+    mark_primary_face!(face)
   end
 
   def set_default_properties

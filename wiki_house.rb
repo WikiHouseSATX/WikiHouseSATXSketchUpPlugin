@@ -1,4 +1,4 @@
-#Copyright 2015 WikiHouseSATX
+#Copyright 2015 WikiHouseSATX, Dirk Elmendorf
 #UI.messagebox('Core')
 #Changes to this file require quiting SketchUp
 module WikiHouse

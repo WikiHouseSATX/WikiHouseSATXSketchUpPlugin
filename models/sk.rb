@@ -187,7 +187,7 @@ module Sk
   end
 
   def get_attribute(item, dictionary, key)
-    item.get_attribue(dictionary, key)
+    item.get_attribute(dictionary, key)
   end
 
   def transfer_group(destination_group: nil, source_group: nil)
@@ -195,15 +195,18 @@ module Sk
     #http://sketchucation.com/forums/viewtopic.php?f=180&t=37940#p439270
     destination_group.entities.add_instance(source_group.entities.parent, source_group.transformation)
   end
+
   def find_layer(name)
     Sketchup.active_model.layers.each do |layer|
       return layer if layer.name == name
     end
     nil
   end
+
   def create_layer(name)
     Sketchup.active_model.layers.add name
   end
+
   def find_or_create_layer(name: name)
     layer = find_layer(name)
     if !layer
@@ -211,14 +214,38 @@ module Sk
     end
     layer
   end
+
   def make_layer_active_name(name: name)
     layer = find_layer(name)
     layer ? make_layer_active(layer) : raise(ArgumentError, "Unable to find the #{name} layer")
   end
+
   def make_layer_active(layer)
     Sketchup.active_model.active_layer = layer
   end
+
   def current_active_layer
     Sketchup.active_model.active_layer
+  end
+
+  def edge_count(list)
+    list.find_all { |e| e.typename == "Edge" && !e.deleted? }.count
+  end
+
+  def face_count(list)
+    list.find_all { |e| e.typename == "Face" && !e.deleted? }.count
+  end
+
+  def add_material(material_name, filename: nil)
+    mats = Sketchup.active_model.materials
+    if !mats.collect { |m| m.name }.include?(material_name)
+
+      new_mat = mats.add material_name
+      new_mat.texture = filename if filename
+      return new_mat
+    else
+      mats.each {|m| return m if m.name == material_name}
+    end
+
   end
 end

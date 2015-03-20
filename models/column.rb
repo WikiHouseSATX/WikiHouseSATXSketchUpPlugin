@@ -5,16 +5,18 @@ class WikiHouse::Column
     part_init(sheet: sheet, origin: origin, label: label)
     @column_boards = []
     4.times do |index|
-      @column_boards << WikiHouse::ColumnBoard.new(label: "##{index + 1}", column: self, origin: [@origin.x, @origin.y , @origin.z], sheet: sheet)
+      @column_boards << WikiHouse::ColumnBoard.new(label: "#{label} Column ##{index + 1}", column: self, origin: [@origin.x, @origin.y , @origin.z], sheet: sheet)
     end
     @ribs = []
-    @ribs << WikiHouse::ColumnRib.new(column: self, origin: @origin, label: "Bottom")
+    @ribs << WikiHouse::ColumnRib.new(column: self, origin: @origin, label: "#{label} Column Bottom")
     number_of_internal_supports.times do |index|
       height = support_section_height * (index + 1) - thickness/2.0
-      rib = WikiHouse::ColumnRib.new(label: "Mid", column: self, origin: [@origin.x, @origin.y, @origin.z + height])
+      rib = WikiHouse::ColumnRib.new(label: "#{label} Column Mid ##{index + 1}", column: self, origin: [@origin.x, @origin.y, @origin.z + height])
       @ribs << rib
     end
-    rib = WikiHouse::ColumnRib.new(label: "Top", column: self, origin: [@origin.x, @origin.y, @origin.z + left_side_length - thickness])
+    rib = WikiHouse::ColumnRib.new(label: "#{label} Column Top",
+                                   column: self,
+                                   origin: [@origin.x, @origin.y, @origin.z + left_side_length - thickness])
     @ribs << rib
 
   end
@@ -42,7 +44,6 @@ class WikiHouse::Column
 
   def draw!
 
-    @ribs.each { |rib| rib.draw! }
     @column_boards.each_with_index do |board, index|
 
       board.draw!
@@ -63,6 +64,8 @@ class WikiHouse::Column
       end
       alteration.go!
     end
+    @ribs.each { |rib| rib.draw! }
+
     groups = @ribs.collect { |r| r.group }.concat(@column_boards.collect { |b| b.group })
 
 

@@ -3,6 +3,7 @@
 module WikiHouse::PartHelper
 
   DEFAULT_DICTIONARY = "WikiHouse" unless defined? DEFAULT_DICTIONARY
+  DEFAULT_MATERIAL = "Wood_Plywood_Knots"
 
   def self.included(base)
     base.extend(ClassMethods)
@@ -20,12 +21,15 @@ module WikiHouse::PartHelper
     @origin = origin ? origin : [0, 0, 0]
     @label = label
   end
+
   def bounds
     group ? group.bounds : nil
   end
+
   def full_label
     "#{self.class.name} #{@label}".strip
   end
+
   def origin
     @origin
   end
@@ -73,6 +77,7 @@ module WikiHouse::PartHelper
   def move_to!(point: nil)
     alteration.move_to!(point: point)
   end
+
   def move_by(x: 0, y: 0, z: 0)
     alteration.move_by(x: x, y: y, z: z)
   end
@@ -88,31 +93,53 @@ module WikiHouse::PartHelper
   def rotate!(point: nil, vector: nil, rotation: nil)
     alteration.rotate!(point: point, vector: vector, rotation: rotation)
   end
+
+  def group= (new_group)
+    @group = new_group
+  end
+
   def set_group(entities)
     @group = Sk.add_group entities
     @group.name = full_label
     set_default_properties
   end
+
   def set_default_properties
 
   end
+
   def mark_cutable!
-      set_tag(tag_name: "cutable", value: true)
+    set_tag(tag_name: "cutable", value: true)
   end
+
+  def mark_primary_face!(face)
+    Sk.set_attribute(face, WikiHouse::PartHelper::DEFAULT_DICTIONARY, "primary_face", true)
+  end
+
+  def set_material(face, material: nil)
+    if material.nil?
+      material = Sk.add_material(DEFAULT_MATERIAL, filename: WikiHouse.plugin_file("plywood.jpg", "images"))
+    end
+    face.material = material
+  end
+
   def sub_group(entities, label: nil)
     sub_group = Sk.add_group entities
     sub_group.name = label if label
     sub_group
   end
-  def set_tag(tag_name:nil, value:nil)
+
+  def set_tag(tag_name: nil, value: nil)
     return nil unless group
     group.set_attribute DEFAULT_DICTIONARY, tag_name, value
   end
+
   def get_tag(tag_name: nil)
     return nil unless group
     group.get_attribute DEFAULT_DICTIONARY, tag_name
   end
-  def remove_tag(tag_name:nil)
+
+  def remove_tag(tag_name: nil)
     return unless group
     group.delete_attribute DEFAULT_DICTIONARY, tag_name
   end
