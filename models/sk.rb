@@ -248,4 +248,11 @@ module Sk
     end
 
   end
+  def find_group_by_name(name, match_ok: true)
+    Sketchup.active_model.entities.each do |e|
+      if e.typename == "Group" && e.name == name || (match_ok && e.name.match(name))
+        return(e)
+      end
+    end
+  end
 end
