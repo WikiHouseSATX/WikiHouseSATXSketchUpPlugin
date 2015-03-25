@@ -6,6 +6,21 @@
 module Sk
 
   extend self
+  def model
+    Sketchup.active_model
+  end
+  def start_operation(op_name, disable_ui: false, transparent: false, prev_trans: false)
+    model.start_operation(op_name, disable_ui, transparent, prev_trans)
+  end
+  def commit_operation
+   model.commit_operation
+  end
+  def abort_operation
+    model.abort_operation
+  end
+  def active_entities
+    model.active_entities
+  end
 
   def round(val)
     val.to_f.round(4)
@@ -254,5 +269,6 @@ module Sk
         return(e)
       end
     end
+    nil
   end
 end

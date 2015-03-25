@@ -1,5 +1,5 @@
 class WikiHouse::Flattener
-  LAYER_NAME = "Flat View"
+  LAYER_NAME = "WikiHouse::Flat"
 
   def initialize
     @flat_group = nil
@@ -26,15 +26,15 @@ class WikiHouse::Flattener
   end
 
   def flatten!(group)
-    model = Sketchup.active_model
-    model.start_operation('Flattening Item', true)
+    Sk.start_operation("Flattening Item", disable_ui: true)
+
 
     original_layer = Sk.current_active_layer
     Sk.make_layer_active_name(name: LAYER_NAME)
     puts "Flattening #{group.name} #{group.entityID}"
     if !@flat_group
       @flat_group = Sk.add_group
-      @flat_group.name = "Flat Version"
+      @flat_group.name = LAYER_NAME
       @parts = []
       @last_x = 100
     end
@@ -116,7 +116,9 @@ class WikiHouse::Flattener
     part.set_tag(tag_name: "source", value: group.entityID)
     @parts << part
     Sk.make_layer_active(original_layer)
-    model.commit_operation
+
+    Sk.commit_operation
+
 
 
   end
@@ -141,9 +143,8 @@ class WikiHouse::Flattener
 
   def draw!
     @flat_group = nil
-    model = Sketchup.active_model
-    entities = model.entities
-    entities.each do |top|
+
+    Sk.active_entities.each do |top|
       if is_cutable?(top)
         flatten!(top)
       end
