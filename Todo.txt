@@ -10,11 +10,14 @@ setting up tool paths need to be outside or inside.
 
 
 
+Need to have the inside and outside cuts on different flat layers
 
 
 
 
-
+Need to be able to nest parts
+Generate Gcode
+Need to be able to generate tabs for the part
 
 
 

@@ -1,7 +1,9 @@
 class WikiHouse::Flattener
   LAYER_NAME = "WikiHouse::Flat"
 
-  def initialize
+  def initialize(starting_x: 100, starting_y: 100)
+    @starting_x = starting_x
+    @starting_y = starting_y
     @flat_group = nil
     @sheet = WikiHouse::Sheet.new
     Sk.find_or_create_layer(name: LAYER_NAME)
@@ -36,10 +38,10 @@ class WikiHouse::Flattener
       @flat_group = Sk.add_group
       @flat_group.name = LAYER_NAME
       @parts = []
-      @last_x = 100
+      @last_x = @starting_x
     end
 
-    gcopy = Sk.transfer_group(destination_group: @flat_group, source_group: group)
+    gcopy = Sk.copy_group(destination_group: @flat_group, source_group: group)
     gcopy.make_unique
     gcopy.name = group.name + " Copy"
     gcopy.entities.each { |e| e.layer = LAYER_NAME }
@@ -62,7 +64,7 @@ class WikiHouse::Flattener
     end
     #  puts "Moveing to #{x}"
     @last_x = x
-    part.move_to!(point: [x, 100, 0])
+    part.move_to!(point: [x, @starting_y, 0])
 
     primary_face = nil
     part.group.entities.each do |entity|

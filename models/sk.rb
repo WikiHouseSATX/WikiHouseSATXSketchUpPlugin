@@ -205,10 +205,17 @@ module Sk
     item.get_attribute(dictionary, key)
   end
 
-  def transfer_group(destination_group: nil, source_group: nil)
+  def copy_group(destination_group: nil, source_group: nil)
     raise ArgumentError if destination_group.nil? || source_group.nil?
     #http://sketchucation.com/forums/viewtopic.php?f=180&t=37940#p439270
-    destination_group.entities.add_instance(source_group.entities.parent, source_group.transformation)
+    gcopy = destination_group.entities.add_instance(source_group.entities.parent, source_group.transformation)
+    gcopy.name = source_group.name
+    gcopy
+  end
+  def nest_group(destination_group: nil, source_group: nil)
+    gcopy = copy_group(destination_group: destination_group, source_group: source_group)
+    source_group.erase!
+    gcopy
   end
 
   def find_layer(name)

@@ -65,7 +65,9 @@ module WikiHouse::PartHelper
     end
 
   end
-
+  def set_layer(layer_name)
+    @group.entities.each { |e| e.layer = layer_name }
+  end
   def alteration
     WikiHouse::Alteration.new(part: self)
   end
