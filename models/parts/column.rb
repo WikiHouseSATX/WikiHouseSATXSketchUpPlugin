@@ -29,6 +29,7 @@ class WikiHouse::Column
     2
   end
 
+
   def bottom_side_length
     10
   end

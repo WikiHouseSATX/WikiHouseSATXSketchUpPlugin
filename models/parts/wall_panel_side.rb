@@ -1,30 +1,32 @@
-class WikiHouse::ColumnBoard
+class WikiHouse::WallPanelSide
 
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper
-  def initialize(column: nil, sheet: nil, group: nil, origin: nil, label: label)
+
+  def initialize(panel: nil, sheet: nil, group: nil, origin: nil, label: label)
     part_init(origin: origin, sheet: sheet, label: label)
-    @column = column ? column : raise(ArgumentError, "You must provide a Column")
+    @panel = panel ? panel : raise(ArgumentError, "You must provide a WallPanel")
   end
+
   def parent_part
-    @column
-  end
-  def support_section_height
-    @column.support_section_height
+    @panel
   end
 
   def number_of_internal_supports
-    @column.number_of_internal_supports
+    parent_part.number_of_internal_supports
+  end
+  def bottom_side_length
+    parent_part.panel_depth
   end
 
-  def number_of_side_tabs
-    3
+  def left_side_length
+    parent_part.panel_width
   end
-
-
+  def support_section_height
+    left_side_length/(number_of_internal_supports.to_f + 1.0)
+  end
 
   def rib_pockets
-
     half_tab = tab_width/2.0
 
     mid_x = bottom_side_length/2.0
@@ -47,12 +49,9 @@ class WikiHouse::ColumnBoard
   end
 
   def draw!
+
     top_bottom_lines = top_bottom_slots
-    right_slots
-    left_tabs
     rib_pockets_list = rib_pockets
-
-
     lines = top_bottom_lines.select { |l| !l.deleted? }.first.all_connected
     face = Sk.add_face(lines)
     set_material(face)
@@ -67,7 +66,5 @@ class WikiHouse::ColumnBoard
     mark_primary_face!(face)
   end
 
-  def set_default_properties
-    mark_cutable!
-  end
+
 end
