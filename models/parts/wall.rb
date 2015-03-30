@@ -21,7 +21,7 @@ class WikiHouse::Wall
     @left_column.draw!
     @right_column.draw!
 
-   # set_group([@left_column.group])
+    #set_group([@left_column.group])
     set_group([@left_column.group, @right_column.group])
 
 

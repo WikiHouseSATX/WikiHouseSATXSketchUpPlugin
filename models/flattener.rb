@@ -1,13 +1,22 @@
 class WikiHouse::Flattener
-  LAYER_NAME = "WikiHouse::Flat"
+
 
   def initialize(starting_x: 100, starting_y: 100)
     @starting_x = starting_x
     @starting_y = starting_y
     @flat_group = nil
     @sheet = WikiHouse::Sheet.new
-    Sk.find_or_create_layer(name: LAYER_NAME)
+    Sk.find_or_create_layer(name: outside_edge_layer_name)
+    Sk.find_or_create_layer(name: inside_edge_layer_name)
 
+  end
+
+  def outside_edge_layer_name
+    "WikiHouse::Flat::OutsideEdge"
+  end
+
+  def inside_edge_layer_name
+    "WikiHouse::Flat::InsideEdge"
   end
 
   def thickness
@@ -32,11 +41,11 @@ class WikiHouse::Flattener
 
 
     original_layer = Sk.current_active_layer
-    Sk.make_layer_active_name(name: LAYER_NAME)
+    Sk.make_layer_active_name(name: outside_edge_layer_name)
     puts "Flattening #{group.name} #{group.entityID}"
     if !@flat_group
       @flat_group = Sk.add_group
-      @flat_group.name = LAYER_NAME
+      @flat_group.name = outside_edge_layer_name
       @parts = []
       @last_x = @starting_x
     end
@@ -44,7 +53,7 @@ class WikiHouse::Flattener
     gcopy = Sk.copy_group(destination_group: @flat_group, source_group: group)
     gcopy.make_unique
     gcopy.name = group.name + " Copy"
-    gcopy.entities.each { |e| e.layer = LAYER_NAME }
+    gcopy.entities.each { |e| e.layer = outside_edge_layer_name }
     part = FlatPart.new(group: gcopy)
 
 
@@ -69,7 +78,7 @@ class WikiHouse::Flattener
     primary_face = nil
     part.group.entities.each do |entity|
       if entity.typename == "Face" &&
-          Sk.get_attribute(entity, WikiHouse::PartHelper::DEFAULT_DICTIONARY, "primary_face")
+          Sk.get_attribute(entity, WikiHouse::PartHelper.tag_dictionary, "primary_face")
         primary_face = entity
         break
       end
@@ -112,7 +121,13 @@ class WikiHouse::Flattener
     else
       puts "This part does not have a primary face :("
     end
-
+    part.group.entities.each do |e|
+      next if !e.valid? || e.deleted?
+      if  is_inside_edge?(e)
+    #   puts "Found an inside edge"
+        e.layer = inside_edge_layer_name
+      end
+    end
     part.set_tag(tag_name: "group_source", value: group.name)
     part.set_tag(tag_name: "flat", value: true)
     part.set_tag(tag_name: "source", value: group.entityID)
@@ -122,12 +137,15 @@ class WikiHouse::Flattener
     Sk.commit_operation
 
 
-
   end
 
   def is_cutable?(item)
-    item.get_attribute(WikiHouse::PartHelper::DEFAULT_DICTIONARY, "cutable") == true
+    item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "cutable") == true
   end
+  def is_inside_edge?(item)
+    item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "inside_edge") == true
+  end
+
 
   def crawl(item)
     return unless item.respond_to?(:entities)

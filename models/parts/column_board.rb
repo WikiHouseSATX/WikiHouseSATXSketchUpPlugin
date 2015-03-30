@@ -81,7 +81,7 @@ class WikiHouse::ColumnBoard
       pc4 = [c5.x - thickness, end_pocket, c5.z]
       points = [pc2, pc1, pc4, pc3]
       WikiHouse::Fillet.by_points(points, 0, 1, 2)
-      WikiHouse::Fillet.by_points(points, 5,4,3, reverse_it: true)
+      WikiHouse::Fillet.by_points(points, 5, 4, 3, reverse_it: true)
 
       lines.concat(Sk.draw_points(points))
       Sk.erase_line(pc2, pc3)
@@ -194,7 +194,7 @@ class WikiHouse::ColumnBoard
     WikiHouse::Fillet.by_points(pts, 1, 2, 3)
 
 
-    WikiHouse::Fillet.by_points(pts, 6,5,4, reverse_it: true)
+    WikiHouse::Fillet.by_points(pts, 6, 5, 4, reverse_it: true)
 
 
     WikiHouse::Fillet.by_points(pts, 11, 12, 13)
@@ -217,11 +217,11 @@ class WikiHouse::ColumnBoard
       c6 = [c1.x + mid_x + half_tab, c5.y, c1.z]
       c7 = [c6.x, c1.y + base - thickness/2.0, c1.z]
       c8 = [c5.x, c7.y, c1.z]
-      points = [c5, c6, c7,c8]
+      points = [c5, c6, c7, c8]
       WikiHouse::Fillet.pocket_by_points(points)
 
       support_pockets_list << Sk.draw_all_points(points)
-
+      support_pockets_list.last.each{ |e| mark_inside_edge!(e)}
     end
 
     support_pockets_list
@@ -231,7 +231,8 @@ class WikiHouse::ColumnBoard
     top_bottom_lines = top_bottom_pockets
     right_pockets
     left_tabs
-    support_pockets_list =support_pockets
+    support_pockets_list = support_pockets
+
 
     lines = top_bottom_lines.select { |l| !l.deleted? }.first.all_connected
     face = Sk.add_face(lines)
