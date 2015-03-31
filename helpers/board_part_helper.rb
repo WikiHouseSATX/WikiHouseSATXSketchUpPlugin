@@ -15,44 +15,47 @@ module WikiHouse::BoardPartHelper
     end
   end
 
+  def init_board(top_connector: nil, bottom_connector: nil, left_connector: nil, right_connector: nil)
+    @top_side_points = @right_side_points = @bottom_side_points = @left_side_points = []
+    @top_connector = top_connector ? top_connector : WikiHouse::NoneConnector.new()
+    @right_connector = right_connector ? right_connector : WikiHouse::NoneConnector.new()
+    @bottom_connector = bottom_connector ? bottom_connector : WikiHouse::NoneConnector.new()
+    @left_connector = left_connector ? left_connector : WikiHouse::NoneConnector.new()
+
+
+  end
+
+  def points
+    [@top_side_points[0...-1], @right_side_points[0...-1], @bottom_side_points[0...-1], @left_side_points[0...-1]].flatten(1)
+  end
+
   def parent_part
     raise ScriptError, "You must define a parent"
   end
 
-  def bottom_side_length
-    parent_part.bottom_side_length
+  def length
+    parent_part.send(@length_method)
   end
 
-  def left_side_length
-    parent_part.left_side_length
+  def width
+    parent_part.send(@width_method)
   end
 
-  def tab_width
-    parent_part.tab_width
-  end
-
-  def bottom_tab_start
-    bottom_side_length/2.0 - tab_width/2.0
-  end
-
-  def bottom_tab_end
-    bottom_side_length/2.0 + tab_width/2.0
-  end
 
   def c1
     @origin.dup
   end
 
   def c2
-    [c1.x + bottom_side_length, c1.y, c1.z]
+    [c1.x + width, c1.y, c1.z]
   end
 
   def c3
-    [c1.x + bottom_side_length, c1.y - left_side_length, c1.z]
+    [c1.x + width, c1.y - length, c1.z]
   end
 
   def c4
-    [c1.x, c1.y - left_side_length, c1.z]
+    [c1.x, c1.y - length, c1.z]
   end
 
   def top_bottom_builder(top: :tab, bottom: :tab)
@@ -120,44 +123,92 @@ module WikiHouse::BoardPartHelper
 
   end
 
-  def right_slots
-    lines = []
-    c5 = c2
-    c5.y -= thickness
+  def build_slots(connector: nil, start_pt: nil, end_pt: nil)
 
-    c6 = c3
-    c6.y += thickness
+    total_length = top?(connector) || bottom?(connector) ? width : length
+    c5 = start_pt
+    c6 = end_pt
 
-    total_length = c5.y - c6.y
 
-    section_width = total_length/number_of_side_tabs.to_f
-    number_of_side_tabs.times do |i|
-      start_y = c5.y - (i * section_width)
+    slot_size = connector.size
+    slot_count = connector.count
+    if top?(connector) || bottom?(connector)
+      total_length -= thickness unless @right_connector.none?
+      total_length -= thickness unless @left_connector.none?
+    elsif left?(connector) || right?(connector)
+      total_length -= thickness unless @top_connector.none?
+      total_length -= thickness unless @bottom_connector.none?
+    end
 
-      mid_point = start_y - section_width/2.0
+    slot_points = [c5]
+    section_width = total_length/slot_count.to_f
+    slot_count.times do |i|
+      if right?(connector)
+        start_y = c5.y - (i * section_width)
 
-      start_pocket = mid_point + tab_width/2.0
-      end_pocket = mid_point - tab_width/2.0
-      end_y = (i + 1) * section_width
+        mid_point = start_y - section_width/2.0
 
-      pc1 = [c5.x - thickness, start_pocket, c5.z]
-      pc2 = [c5.x, start_pocket, c5.z]
-      pc3 = [c5.x, end_pocket, c5.z]
-      pc4 = [c5.x - thickness, end_pocket, c5.z]
-      points = [pc2, pc1, pc4, pc3]
-      WikiHouse::Fillet.by_points(points, 0, 1, 2)
-      WikiHouse::Fillet.by_points(points, 5, 4, 3, reverse_it: true)
+        start_slot = mid_point + slot_size/2.0
+        end_slot = mid_point - slot_size/2.0
 
-      lines.concat(Sk.draw_points(points))
-      Sk.erase_line(pc2, pc3)
+
+        pc1 = [c5.x - thickness, start_slot, c5.z]
+        pc2 = [c5.x, start_slot, c5.z]
+        pc3 = [c5.x, end_slot, c5.z]
+        pc4 = [c5.x - thickness, end_slot, c5.z]
+
+
+      elsif left?(connector)
+        start_y = c5.y + (i * section_width )
+
+        mid_point = start_y + section_width/2.0
+
+        start_slot = mid_point + slot_size/2.0
+        end_slot = mid_point - slot_size/2.0
+
+
+        pc4 = [c5.x, end_slot, c5.z]
+        pc3 = [c5.x + thickness, end_slot, c5.z]
+        pc2 = [pc3.x, start_slot, c5.z]
+        pc1 = [c5.x, start_slot, c5.z]
+
+
+      elsif top?(connector)
+        start_x = c5.x + (i * section_width )
+
+        mid_point = start_x + section_width/2.0
+
+        start_slot = mid_point + slot_size/2.0
+        end_slot = mid_point - slot_size/2.0
+
+
+        pc4 = [end_slot, c5.y,  c5.z]
+        pc3 = [end_slot, c5.y - thickness, c5.z]
+        pc2 = [start_slot, pc3.y, c5.z]
+        pc1 = [start_slot, c5.y,  c5.z]
+
+
+
+
+      elsif bottom?(connector)
+      end
+      if top?(connector) || left?(connector)
+        current_points = [pc4, pc3, pc2, pc1]
+      else
+        current_points = [pc2, pc1, pc4, pc3]
+      end
+      WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
+      WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
+      #   WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
+      #   WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
+      slot_points.concat(current_points)
 
     end
-    lines
+    slot_points << [c6]
+
   end
-  def side_tabs(orientation: :left)
-    #need a generic way to handle building multiple tabs on the side of the board(or top)
-    #need a gerneic way to handle builidng multiple slots on teh side of the board (or top)
-  end
+
+
   def left_tabs(top: :slot, bottom: :slot)
 
     if top == :slot
@@ -181,16 +232,12 @@ module WikiHouse::BoardPartHelper
     lines = []
 
 
-
-
-
     c7 = [c6.x, c6.y - left_side_length + (2 * thickness), c6.z]
     c8 = [c5.x, c7.y, c5.z]
 
     Sk.erase_line(c5, c9)
     Sk.erase_line(c5, c1_5)
     Sk.erase_line(c9, c4_5)
-
 
 
     Sk.draw_line(c1_5, c6)
@@ -268,6 +315,86 @@ module WikiHouse::BoardPartHelper
 
   def top_bottom_slots
     top_bottom_builder(top: :slot, bottom: :slot)
+  end
+
+  def build_top_side
+    if @top_connector.slot?
+      top_first = c1
+      top_last = c2
+      @top_side_points = build_slots(connector: @top_connector,
+                                       start_pt: top_first,
+                                       end_pt: top_last)
+    elsif @top_connector.tab?
+    else
+      @top_side_points = [c1, c2]
+
+    end
+  end
+
+  def build_right_side
+    if @right_connector.slot?
+      @right_side_points = build_slots(connector: @right_connector,
+                                       start_pt: @top_side_points.last,
+                                       end_pt: @bottom_side_points.first)
+    elsif @right_connector.tab?
+    else
+      @right_side_points = [c2, c3]
+    end
+  end
+
+  def build_bottom_side
+    if @bottom_connector.slot?
+    elsif @bottom_connector.tab?
+    else
+      @bottom_side_points = [c3, c4]
+    end
+  end
+
+  def build_left_side
+    if @left_connector.slot?
+      @left_side_points = build_slots(connector: @left_connector,
+                                      start_pt: @bottom_side_points.last,
+                                      end_pt: @top_side_points.first)
+    elsif @left_connector.tab?
+    else
+      @left_side_points = [c4, c1]
+    end
+  end
+
+  def top?(c)
+    c == @top_connector
+  end
+
+  def left?(c)
+    c == @left_connector
+  end
+
+  def right?(c)
+    c == @right_connector
+  end
+
+  def bottom?(c)
+    c == @bottom_connector
+  end
+
+  def draw!
+
+    build_top_side
+    build_bottom_side
+
+    build_right_side
+    build_left_side
+
+    #what about pockets
+    lines = Sk.draw_all_points(points)
+    face = Sk.add_face(lines)
+    set_material(face)
+
+    make_part_right_thickness(face)
+    face2 = Sk.add_face(lines)
+
+    set_group(face.all_connected)
+    mark_primary_face!(face)
   end
 
 end

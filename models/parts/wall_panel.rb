@@ -25,7 +25,8 @@ class WikiHouse::WallPanel
     40
   end
   def panel_depth
-    10
+    #10
+    40
   end
   def tab_width
     5
