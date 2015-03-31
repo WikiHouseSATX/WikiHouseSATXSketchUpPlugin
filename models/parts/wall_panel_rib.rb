@@ -8,10 +8,10 @@ class WikiHouse::WallPanelRib
     @panel = panel ? panel : raise(ArgumentError, "You must provide a WallPanel")
     @length_method = :panel_depth
     @width_method = :panel_rib_width
-    init_board(right_connector:  WikiHouse::NoneConnector.new(count: 2),
+    init_board(right_connector:  WikiHouse::SlotConnector.new(count: 2),
                top_connector:  WikiHouse::SlotConnector.new(count: 2),
                bottom_connector:  WikiHouse::SlotConnector.new(count: 2),
-               left_connector:  WikiHouse::NoneConnector.new(count: 2))
+               left_connector:  WikiHouse::SlotConnector.new(count: 2))
 
   end
 

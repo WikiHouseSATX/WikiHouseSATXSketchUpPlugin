@@ -60,7 +60,7 @@ module WikiHouse::BoardPartHelper
 
   def top_bottom_builder(top: :tab, bottom: :tab)
     raise ArgumentError, "Only tab and slot are supported" if ![:tab, :slot].include?(top) || ![:tab, :slot].include?(bottom)
-    puts "Top #{top} Bottom #{bottom}"
+
     #Top Tab
     z = c1.z
     high_y = c1.y
@@ -132,6 +132,7 @@ module WikiHouse::BoardPartHelper
 
     slot_size = connector.size
     slot_count = connector.count
+
     if top?(connector) || bottom?(connector)
       total_length -= thickness unless @right_connector.none?
       total_length -= thickness unless @left_connector.none?
@@ -144,6 +145,7 @@ module WikiHouse::BoardPartHelper
     section_width = total_length/slot_count.to_f
     slot_count.times do |i|
       if right?(connector)
+
         start_y = c5.y - (i * section_width)
 
         mid_point = start_y - section_width/2.0
@@ -159,7 +161,7 @@ module WikiHouse::BoardPartHelper
 
 
       elsif left?(connector)
-        start_y = c5.y + (i * section_width )
+        start_y = c5.y + (i * section_width)
 
         mid_point = start_y + section_width/2.0
 
@@ -174,7 +176,7 @@ module WikiHouse::BoardPartHelper
 
 
       elsif top?(connector)
-        start_x = c5.x + (i * section_width )
+        start_x = c5.x + (i * section_width)
 
         mid_point = start_x + section_width/2.0
 
@@ -182,15 +184,25 @@ module WikiHouse::BoardPartHelper
         end_slot = mid_point - slot_size/2.0
 
 
-        pc4 = [end_slot, c5.y,  c5.z]
+        pc4 = [end_slot, c5.y, c5.z]
         pc3 = [end_slot, c5.y - thickness, c5.z]
         pc2 = [start_slot, pc3.y, c5.z]
-        pc1 = [start_slot, c5.y,  c5.z]
-
-
+        pc1 = [start_slot, c5.y, c5.z]
 
 
       elsif bottom?(connector)
+        start_x = c5.x - (i * section_width)
+
+        mid_point = start_x - section_width/2.0
+
+        start_slot = mid_point + slot_size/2.0
+        end_slot = mid_point - slot_size/2.0
+
+
+        pc1 = [start_slot, c5.y + thickness, c5.z]
+        pc2 = [start_slot, c5.y, c5.z]
+        pc3 = [end_slot, c5.y, c5.z]
+        pc4 = [end_slot, c5.y + thickness, c5.z]
       end
       if top?(connector) || left?(connector)
         current_points = [pc4, pc3, pc2, pc1]
@@ -199,15 +211,20 @@ module WikiHouse::BoardPartHelper
       end
       WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
       WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
-      #   WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
-      #   WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
       slot_points.concat(current_points)
 
     end
-    slot_points << [c6]
+    slot_points << c6
 
   end
 
+  def side_name(connector)
+    return :top if top?(connector)
+    return :left if left?(connector)
+    return :right if right?(connector)
+    return :bottom if bottom?(connector)
+    nil
+  end
 
   def left_tabs(top: :slot, bottom: :slot)
 
@@ -322,17 +339,19 @@ module WikiHouse::BoardPartHelper
       top_first = c1
       top_last = c2
       @top_side_points = build_slots(connector: @top_connector,
-                                       start_pt: top_first,
-                                       end_pt: top_last)
+                                     start_pt: top_first,
+                                     end_pt: top_last)
     elsif @top_connector.tab?
     else
       @top_side_points = [c1, c2]
 
     end
+
   end
 
   def build_right_side
     if @right_connector.slot?
+
       @right_side_points = build_slots(connector: @right_connector,
                                        start_pt: @top_side_points.last,
                                        end_pt: @bottom_side_points.first)
@@ -344,6 +363,11 @@ module WikiHouse::BoardPartHelper
 
   def build_bottom_side
     if @bottom_connector.slot?
+      bottom_first = c3
+      bottom_last = c4
+      @bottom_side_points = build_slots(connector: @bottom_connector,
+                                        start_pt: bottom_first,
+                                        end_pt: bottom_last)
     elsif @bottom_connector.tab?
     else
       @bottom_side_points = [c3, c4]
