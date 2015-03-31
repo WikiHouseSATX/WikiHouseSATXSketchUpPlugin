@@ -80,17 +80,14 @@ module WikiHouse::BoardPartHelper
 
 
     slot_points = [c5]
-    section_width = total_length/(slot_count.to_f + 1.0)
+    section_gap = Sk.round((total_length - (slot_count * slot_size))/(slot_count.to_f + 1.0))
+
     slot_count.times do |i|
-      current_section_width = (i + 1) * section_width
+      starting_length = ((i + 1) * section_gap) + (i * slot_size) + thickness
       if right?(connector)
 
-        start_y = c5.y - current_section_width - thickness
-
-        mid_point = start_y# - section_width/2.0
-
-        start_slot = mid_point + slot_size/2.0
-        end_slot = mid_point - slot_size/2.0
+        start_slot =  c5.y - starting_length
+        end_slot = start_slot - slot_size
 
 
         pc1 = [c5.x - thickness, start_slot, c5.z]
@@ -100,42 +97,34 @@ module WikiHouse::BoardPartHelper
 
 
       elsif left?(connector)
-        start_y = c5.y + current_section_width + thickness
 
-        mid_point = start_y #+ section_width/2.0
-
-        start_slot = mid_point + slot_size/2.0
-        end_slot = mid_point - slot_size/2.0
+        start_slot = c5.y + starting_length
+        end_slot = start_slot + slot_size
 
 
-        pc4 = [c5.x, end_slot, c5.z]
-        pc3 = [c5.x + thickness, end_slot, c5.z]
-        pc2 = [pc3.x, start_slot, c5.z]
-        pc1 = [c5.x, start_slot, c5.z]
+        pc4 = [c5.x, start_slot, c5.z]
+        pc3 = [c5.x + thickness, start_slot, c5.z]
+        pc2 = [pc3.x, end_slot, c5.z]
+        pc1 = [c5.x, end_slot, c5.z]
 
 
       elsif top?(connector)
-        start_x = c5.x + current_section_width + thickness
 
-        mid_point = start_x #+ section_width/2.0
+        start_slot = c5.x + starting_length
 
-        start_slot = mid_point + slot_size/2.0
-        end_slot = mid_point - slot_size/2.0
+        end_slot = start_slot + slot_size
 
 
-        pc4 = [end_slot, c5.y, c5.z]
-        pc3 = [end_slot, c5.y - thickness, c5.z]
-        pc2 = [start_slot, pc3.y, c5.z]
-        pc1 = [start_slot, c5.y, c5.z]
+        pc4 = [start_slot, c5.y, c5.z]
+        pc3 = [start_slot, c5.y - thickness, c5.z]
+        pc2 = [end_slot, pc3.y, c5.z]
+        pc1 = [end_slot, c5.y, c5.z]
 
 
       elsif bottom?(connector)
-        start_x = c5.x - current_section_width - thickness
 
-        mid_point = start_x #- section_width/2.0
-
-        start_slot = mid_point + slot_size/2.0
-        end_slot = mid_point - slot_size/2.0
+        start_slot =  c5.x - starting_length
+        end_slot = start_slot - slot_size
 
 
         pc1 = [start_slot, c5.y + thickness, c5.z]
@@ -148,8 +137,8 @@ module WikiHouse::BoardPartHelper
       else
         current_points = [pc2, pc1, pc4, pc3]
       end
-      WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
-      WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
+   #   WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
+   # WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
       slot_points.concat(current_points)
 
     end
@@ -371,7 +360,7 @@ module WikiHouse::BoardPartHelper
     #what about pockets
     lines = Sk.draw_all_points(points)
     face = Sk.add_face(lines)
-   # set_material(face)
+    set_material(face)
 
     make_part_right_thickness(face)
     face2 = Sk.add_face(lines)
