@@ -67,7 +67,5 @@ class WikiHouse::ColumnBoard
     mark_primary_face!(face)
   end
 
-  def set_default_properties
-    mark_cutable!
-  end
+
 end
