@@ -1,10 +1,14 @@
 class WikiHouse::NoneConnector < WikiHouse::Connector
-  def initialize(length: nil, count: 0)
+  def initialize(length: 0, count: 0, width: 0)
     super
     @length = 0
     @count = 0
+    @width = 0
   end
   def length
+    0
+  end
+  def width
     0
   end
   def count

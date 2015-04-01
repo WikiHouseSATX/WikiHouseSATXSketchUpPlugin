@@ -8,10 +8,10 @@ class WikiHouse::WallPanelRib
     @panel = panel ? panel : raise(ArgumentError, "You must provide a WallPanel")
     @length_method = :panel_rib_width
     @width_method = :panel_depth
-    init_board(right_connector:  WikiHouse::TabConnector.new(count: 2),
-               top_connector:  WikiHouse::TabConnector.new(count: 1),
-               bottom_connector:  WikiHouse::TabConnector.new(count: 1),
-               left_connector:  WikiHouse::TabConnector.new(count: 2))
+    init_board(right_connector:  WikiHouse::TabConnector.new(count: 2, width: @sheet.thickness),
+               top_connector:  WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
+               bottom_connector:  WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
+               left_connector:  WikiHouse::TabConnector.new(count: 2, width: @sheet.thickness))
 
   end
 
