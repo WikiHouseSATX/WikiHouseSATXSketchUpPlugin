@@ -73,22 +73,22 @@ module WikiHouse::BoardPartHelper
     starting_thickness = 0
     if top?(connector) || bottom?(connector)
       if @right_connector.slot? || @right_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @right_connector.width
+        starting_thickness =  @right_connector.width
       end
 
       if @left_connector.slot? || @left_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @left_connector.width
+        starting_thickness = @left_connector.width
       end
     elsif left?(connector) || right?(connector)
       if @top_connector.slot? || @top_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @top_connector.width
+        starting_thickness = @top_connector.width
       end
       if @bottom_connector.slot? || @bottom_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @bottom_connector.width
+        starting_thickness = @bottom_connector.width
       end
     end
 
@@ -105,10 +105,10 @@ module WikiHouse::BoardPartHelper
         end_slot = start_slot - slot_length
 
 
-        pc1 = [c5.x - thickness, start_slot, c5.z]
+        pc1 = [c5.x - connector.width, start_slot, c5.z]
         pc2 = [c5.x, start_slot, c5.z]
         pc3 = [c5.x, end_slot, c5.z]
-        pc4 = [c5.x - thickness, end_slot, c5.z]
+        pc4 = [c5.x - connector.width, end_slot, c5.z]
 
 
       elsif left?(connector)
@@ -118,7 +118,7 @@ module WikiHouse::BoardPartHelper
 
 
         pc4 = [c5.x, start_slot, c5.z]
-        pc3 = [c5.x + thickness, start_slot, c5.z]
+        pc3 = [c5.x + connector.width, start_slot, c5.z]
         pc2 = [pc3.x, end_slot, c5.z]
         pc1 = [c5.x, end_slot, c5.z]
 
@@ -131,7 +131,7 @@ module WikiHouse::BoardPartHelper
 
 
         pc4 = [start_slot, c5.y, c5.z]
-        pc3 = [start_slot, c5.y - thickness, c5.z]
+        pc3 = [start_slot, c5.y - connector.width, c5.z]
         pc2 = [end_slot, pc3.y, c5.z]
         pc1 = [end_slot, c5.y, c5.z]
 
@@ -142,10 +142,10 @@ module WikiHouse::BoardPartHelper
         end_slot = start_slot - slot_length
 
 
-        pc1 = [start_slot, c5.y + thickness, c5.z]
+        pc1 = [start_slot, c5.y + connector.width, c5.z]
         pc2 = [start_slot, c5.y, c5.z]
         pc3 = [end_slot, c5.y, c5.z]
-        pc4 = [end_slot, c5.y + thickness, c5.z]
+        pc4 = [end_slot, c5.y + connector.width, c5.z]
       end
       if top?(connector) || left?(connector)
         current_points = [pc4, pc3, pc2, pc1]
@@ -172,47 +172,50 @@ module WikiHouse::BoardPartHelper
     tabs_too_big?(total_length, tab_count * tab_length, connector: connector)
 
     starting_thickness = 0
+
     if top?(connector) || bottom?(connector)
       if @right_connector.slot? || @right_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @right_connector.width
+        starting_thickness =  @right_connector.width
       end
 
       if @left_connector.slot? || @left_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @left_connector.width
+        starting_thickness = @left_connector.width
       end
     elsif left?(connector) || right?(connector)
       if @top_connector.slot? || @top_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @top_connector.width
+        starting_thickness = @top_connector.width
       end
       if @bottom_connector.slot? || @bottom_connector.tab?
-        total_length -= thickness
-        starting_thickness = thickness
+        total_length -= @bottom_connector.width
+        starting_thickness = @bottom_connector.width
       end
     end
+
+
     if right?(connector)
       if c5.x == c2.x
-        c5.x -= thickness
+        c5.x -= connector.width
 
       end
       c6.x = c5.x
     elsif left?(connector)
       if c5.x == c4.x
-        c5.x += thickness
+        c5.x += connector.width
 
       end
       c6.x = c5.x
     elsif top?(connector)
       if c5.y == c1.y
-        c5.y -= thickness
+        c5.y -= connector.width
 
       end
       c6.y = c5.y
     elsif bottom?(connector)
       if c5.y == c3.y
-        c5.y += thickness
+        c5.y += connector.width
 
       end
       c6.y = c5.y
@@ -231,8 +234,8 @@ module WikiHouse::BoardPartHelper
 
 
         pc1 = [c5.x, start_tab, c5.z]
-        pc2 = [c5.x + thickness, start_tab, c5.z]
-        pc3 = [c5.x + thickness, end_tab, c5.z]
+        pc2 = [c5.x + connector.width, start_tab, c5.z]
+        pc3 = [c5.x + connector.width, end_tab, c5.z]
         pc4 = [c5.x, end_tab, c5.z]
 
 
@@ -242,10 +245,10 @@ module WikiHouse::BoardPartHelper
         end_tab = start_tab + tab_length
 
 
-        pc4 = [c5.x - thickness, start_tab, c5.z]
+        pc4 = [c5.x - connector.width, start_tab, c5.z]
         pc3 = [c5.x, start_tab, c5.z]
         pc2 = [pc3.x, end_tab, c5.z]
-        pc1 = [c5.x - thickness, end_tab, c5.z]
+        pc1 = [c5.x - connector.width, end_tab, c5.z]
 
 
       elsif top?(connector)
@@ -255,10 +258,10 @@ module WikiHouse::BoardPartHelper
         end_tab = start_tab + tab_length
 
 
-        pc4 = [start_tab, c5.y + thickness, c5.z]
+        pc4 = [start_tab, c5.y + connector.width, c5.z]
         pc3 = [start_tab, c5.y, c5.z]
         pc2 = [end_tab, pc3.y, c5.z]
-        pc1 = [end_tab, c5.y + thickness, c5.z]
+        pc1 = [end_tab, c5.y + connector.width, c5.z]
 
 
       elsif bottom?(connector)
@@ -268,8 +271,8 @@ module WikiHouse::BoardPartHelper
 
 
         pc1 = [start_tab, c5.y, c5.z]
-        pc2 = [start_tab, c5.y - thickness, c5.z]
-        pc3 = [end_tab, c5.y - thickness, c5.z]
+        pc2 = [start_tab, c5.y - connector.width, c5.z]
+        pc3 = [end_tab, c5.y - connector.width, c5.z]
         pc4 = [end_tab, c5.y, c5.z]
       end
       if top?(connector) || left?(connector)
