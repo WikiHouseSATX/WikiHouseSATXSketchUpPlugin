@@ -23,4 +23,7 @@ class WikiHouse::Connector
   def none?
     false
   end
+  def pocket?
+    false
+  end
 end
