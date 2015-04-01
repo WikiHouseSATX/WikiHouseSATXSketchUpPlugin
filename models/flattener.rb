@@ -19,8 +19,17 @@ class WikiHouse::Flattener
     "WikiHouse::Flat::InsideEdge"
   end
 
+  def flat_group_name
+    "WikiHouse::Flat"
+  end
   def thickness
     @sheet.thickness
+  end
+
+  def median(array)
+    sorted = array.sort
+    len = sorted.length
+    return (sorted[(len - 1) / 2] + sorted[len / 2]) / 2.0
   end
 
   def find_wiki_parent(entity)
@@ -44,8 +53,9 @@ class WikiHouse::Flattener
     Sk.make_layer_active_name(name: outside_edge_layer_name)
     puts "Flattening #{group.name} #{group.entityID}"
     if !@flat_group
+      puts "Creating Flat Group"
       @flat_group = Sk.add_group
-      @flat_group.name = outside_edge_layer_name
+      @flat_group.name = flat_group_name
       @parts = []
       @last_x = @starting_x
     end
@@ -57,24 +67,24 @@ class WikiHouse::Flattener
     part = FlatPart.new(group: gcopy)
 
 
-    last_part = @parts.last
+    x = @last_x - 3
+
+    part.move_to!(point: [ x, @starting_y, 0])
 
 
-    x = @last_x + 1
-    if last_part
-      width = part.bounds.width
-      if width == thickness
-        #  puts "Overriding"
-        width = part.bounds.height
+      box = [part.bounds.width, part.bounds.height, part.bounds.depth ].reject {|i| i ==  thickness}
+      if box == []
+        width = thickness
+      elsif box.first > 40
+        width = box.last
+      else
+        width = box.first
       end
-      # puts "Width is #{width}"
-      x += width
+      x -= width
 
-    end
-    #  puts "Moveing to #{x}"
+
+
     @last_x = x
-    part.move_to!(point: [x, @starting_y, 0])
-
     primary_face = nil
     part.group.entities.each do |entity|
       if entity.typename == "Face" &&
@@ -124,7 +134,7 @@ class WikiHouse::Flattener
     part.group.entities.each do |e|
       next if !e.valid? || e.deleted?
       if  is_inside_edge?(e)
-    #   puts "Found an inside edge"
+     #  puts "Found an inside edge"
         e.layer = inside_edge_layer_name
       end
     end

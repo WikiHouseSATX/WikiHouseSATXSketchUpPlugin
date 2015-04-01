@@ -1,4 +1,4 @@
-class WikiHouse::WallPanelSide
+class WikiHouse::WallPanelOuterSide
 
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper

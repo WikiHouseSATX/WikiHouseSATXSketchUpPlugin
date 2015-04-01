@@ -7,13 +7,13 @@ class WikiHouse::WallPanelFace
     part_init(origin: origin, sheet: sheet, label: label)
     @panel = panel ? panel : raise(ArgumentError, "You must provide a WallPanel")
 
-    @length_method = :panel_width
-    @width_method = :panel_depth
+    @length_method = :panel_height
+    @width_method = :panel_rib_width
     init_board(right_connector: WikiHouse::NoneConnector.new(),
-               top_connector: WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
-               bottom_connector: WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
+               top_connector: WikiHouse::NoneConnector.new(),
+               bottom_connector: WikiHouse::NoneConnector.new(),
                left_connector: WikiHouse::NoneConnector.new(),
-               face_connector: WikiHouse::PocketConnector.new(count: 1, rows: 2))
+               face_connector: WikiHouse::PocketConnector.new(count: 3, rows: 2))
 
   end
 
