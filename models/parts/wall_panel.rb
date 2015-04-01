@@ -6,7 +6,7 @@ class WikiHouse::WallPanel
     part_init(sheet: sheet, origin: origin)
   #has 2 caps, 4 faces, 6 ribs, 4 sides
     @top_cap = WikiHouse::WallPanelCap.new(label: "Top", origin: @origin, sheet: sheet, panel: self)
-    @bottom_cap = WikiHouse::WallPanelCap.new(label: "Bottom", origin: [@origin.x + 12 , @origin.y, @origin.z ], sheet: sheet, panel: self)
+    @bottom_cap = WikiHouse::WallPanelCap.new(label: "Bottom", origin: [@origin.x + 50 , @origin.y, @origin.z ], sheet: sheet, panel: self)
   #  @left_outer_side = WikiHouse::WallPanelSide.new(label: "Left Outer", origin: @origin, sheet: sheet, panel: self)
     # @left_column = WikiHouse::Column.new(label: "Left", origin: @origin, sheet: sheet)
     # @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + 40, @origin.y + 40, @origin.z + 10], sheet: sheet)
@@ -26,7 +26,6 @@ class WikiHouse::WallPanel
   end
   def panel_depth
     10
-
   end
   def tab_width
     5

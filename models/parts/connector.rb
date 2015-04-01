@@ -1,17 +1,17 @@
 class WikiHouse::Connector
 
-  def self.standard_size
+  def self.standard_length
     5
   end
-  def self.small_size
-    standard_size/2.0
+  def self.small_length
+    standard_length/2.0
   end
-  def self.large_size
-    standard_size * 2.0
+  def self.large_length
+    standard_length * 2.0
   end
-  attr_reader :size, :count
-  def initialize(size: nil, count: 1)
-    @size = size ? size : self.class.standard_size
+  attr_reader :length, :count
+  def initialize(length: nil, count: 1)
+    @length = length ? length : self.class.standard_length
     @count = count
   end
   def slot?

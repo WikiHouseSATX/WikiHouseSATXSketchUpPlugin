@@ -67,9 +67,9 @@ module WikiHouse::BoardPartHelper
     c6 = end_pt
 
 
-    slot_size = connector.size
+    slot_length = connector.length
     slot_count = connector.count
-    tabs_too_big?(total_length, slot_count * slot_size, connector: connector)
+    tabs_too_big?(total_length, slot_count * slot_length, connector: connector)
     starting_thickness = 0
     if top?(connector) || bottom?(connector)
       if @right_connector.slot? || @right_connector.tab?
@@ -95,14 +95,14 @@ module WikiHouse::BoardPartHelper
     slot_points = [c5]
 
 
-    section_gap = Sk.round((total_length - (slot_count * slot_size))/(slot_count.to_f + 1.0))
+    section_gap = Sk.round((total_length - (slot_count * slot_length))/(slot_count.to_f + 1.0))
 
     slot_count.times do |i|
-      starting_length = ((i + 1) * section_gap) + (i * slot_size) + starting_thickness
+      starting_length = ((i + 1) * section_gap) + (i * slot_length) + starting_thickness
       if right?(connector)
 
         start_slot = c5.y - starting_length
-        end_slot = start_slot - slot_size
+        end_slot = start_slot - slot_length
 
 
         pc1 = [c5.x - thickness, start_slot, c5.z]
@@ -114,7 +114,7 @@ module WikiHouse::BoardPartHelper
       elsif left?(connector)
 
         start_slot = c5.y + starting_length
-        end_slot = start_slot + slot_size
+        end_slot = start_slot + slot_length
 
 
         pc4 = [c5.x, start_slot, c5.z]
@@ -127,7 +127,7 @@ module WikiHouse::BoardPartHelper
 
         start_slot = c5.x + starting_length
 
-        end_slot = start_slot + slot_size
+        end_slot = start_slot + slot_length
 
 
         pc4 = [start_slot, c5.y, c5.z]
@@ -139,7 +139,7 @@ module WikiHouse::BoardPartHelper
       elsif bottom?(connector)
 
         start_slot = c5.x - starting_length
-        end_slot = start_slot - slot_size
+        end_slot = start_slot - slot_length
 
 
         pc1 = [start_slot, c5.y + thickness, c5.z]
@@ -167,9 +167,9 @@ module WikiHouse::BoardPartHelper
     c6 = end_pt
 
 
-    tab_size = connector.size
+    tab_length = connector.length
     tab_count = connector.count
-    tabs_too_big?(total_length, tab_count * tab_size, connector: connector)
+    tabs_too_big?(total_length, tab_count * tab_length, connector: connector)
 
     starting_thickness = 0
     if top?(connector) || bottom?(connector)
@@ -219,14 +219,15 @@ module WikiHouse::BoardPartHelper
     end
 
     tab_points = [c5]
-    section_gap = Sk.round((total_length - (tab_count * tab_size))/(tab_count.to_f + 1.0))
+    section_gap = Sk.round((total_length - (tab_count * tab_length))/(tab_count.to_f + 1.0))
 
     tab_count.times do |i|
-      starting_length = ((i + 1) * section_gap) + (i * tab_size) + starting_thickness
+      starting_length = ((i + 1) * section_gap) + (i * tab_length) + starting_thickness
+
       if right?(connector)
 
         start_tab = c5.y - starting_length
-        end_tab = start_tab - tab_size
+        end_tab = start_tab - tab_length
 
 
         pc1 = [c5.x, start_tab, c5.z]
@@ -238,7 +239,7 @@ module WikiHouse::BoardPartHelper
       elsif left?(connector)
 
         start_tab = c5.y + starting_length
-        end_tab = start_tab + tab_size
+        end_tab = start_tab + tab_length
 
 
         pc4 = [c5.x - thickness, start_tab, c5.z]
@@ -251,7 +252,7 @@ module WikiHouse::BoardPartHelper
 
         start_tab = c5.x + starting_length
 
-        end_tab = start_tab + tab_size
+        end_tab = start_tab + tab_length
 
 
         pc4 = [start_tab, c5.y + thickness, c5.z]
@@ -263,7 +264,7 @@ module WikiHouse::BoardPartHelper
       elsif bottom?(connector)
 
         start_tab = c5.x - starting_length
-        end_tab = start_tab - tab_size
+        end_tab = start_tab - tab_length
 
 
         pc1 = [start_tab, c5.y, c5.z]
@@ -276,15 +277,22 @@ module WikiHouse::BoardPartHelper
       else
         current_points = [pc1, pc2, pc3, pc4]
       end
-      # WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
-      #  WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
-      tab_points.concat(current_points)
+
+       tab_points.concat(current_points)
+      WikiHouse::Fillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 4, tab_points.length - 5, reverse_it: true)
+
+      if i > 0
+
+        WikiHouse::Fillet.by_points(tab_points, tab_points.length - 8, tab_points.length - 7, tab_points.length - 6)
+
+      end
 
     end
 
     tab_points << c6
 
-
+    WikiHouse::Fillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 2, tab_points.length - 1)
+    tab_points
   end
 
   def side_name(connector)
@@ -390,6 +398,10 @@ module WikiHouse::BoardPartHelper
     c == @bottom_connector
   end
 
+  def draw_pockets!
+
+  end
+
   def rib_pockets
     #Single rib - that is double thickness
     half_tab = tab_width/2.0
@@ -423,13 +435,11 @@ module WikiHouse::BoardPartHelper
     build_right_side
     build_left_side
 
-    #Need to fillet the tabs
-
     lines = Sk.draw_all_points(points)
 
     unless @face_connector.none?
-      #draw them
-      #rib_pockets_list = rib_pockets
+
+      pockets_list = draw_pockets!
     end
 
     face = Sk.add_face(lines)

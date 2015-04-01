@@ -13,7 +13,7 @@ class WikiHouse::WallPanelCap
                top_connector: WikiHouse::TabConnector.new(count: 1),
                bottom_connector: WikiHouse::TabConnector.new(count: 1),
                left_connector: WikiHouse::NoneConnector.new(),
-               face_connector: WikiHouse::PocketConnector.new(count: 1, size: 2.0 * WikiHouse::PocketConnector.standard_size))
+               face_connector: WikiHouse::PocketConnector.new(count: 1, width: 2.0 * thickness))
 
   end
 
