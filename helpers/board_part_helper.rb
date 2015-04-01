@@ -70,27 +70,8 @@ module WikiHouse::BoardPartHelper
     slot_length = connector.length
     slot_count = connector.count
     tabs_too_big?(total_length, slot_count * slot_length, connector: connector)
-    starting_thickness = 0
-    if top?(connector) || bottom?(connector)
-      if @right_connector.slot? || @right_connector.tab?
-        total_length -= @right_connector.width
-        starting_thickness =  @right_connector.width
-      end
-
-      if @left_connector.slot? || @left_connector.tab?
-        total_length -= @left_connector.width
-        starting_thickness = @left_connector.width
-      end
-    elsif left?(connector) || right?(connector)
-      if @top_connector.slot? || @top_connector.tab?
-        total_length -= @top_connector.width
-        starting_thickness = @top_connector.width
-      end
-      if @bottom_connector.slot? || @bottom_connector.tab?
-        total_length -= @bottom_connector.width
-        starting_thickness = @bottom_connector.width
-      end
-    end
+    total_length = calculate_total_length(original_length: total_length, connector: connector)
+    starting_thickness = calculate_starting_thickness(connector: connector)
 
     slot_points = [c5]
 
@@ -161,6 +142,35 @@ module WikiHouse::BoardPartHelper
 
   end
 
+  def calculate_total_length(original_length: nil, connector: nil)
+    total_length = original_length
+
+    if top?(connector) || bottom?(connector)
+      total_length -= @right_connector.width
+      total_length -= @left_connector.width
+    elsif left?(connector) || right?(connector)
+      total_length -= @top_connector.width
+      total_length -= @bottom_connector.width
+    end
+    total_length
+  end
+
+  def calculate_starting_thickness(connector: connector)
+    starting_thickness = 0
+
+    if top?(connector)
+      starting_thickness = @left_connector.width
+    elsif bottom?(connector)
+      starting_thickness = @right_connector.width
+    elsif right?(connector)
+      starting_thickness = @top_connector.width
+    elsif left?(connector)
+      starting_thickness = @bottom_connector.width
+
+    end
+    starting_thickness
+  end
+
   def build_tabs(connector: nil, start_pt: nil, end_pt: nil)
     total_length = top?(connector) || bottom?(connector) ? width : length
     c5 = start_pt
@@ -170,30 +180,8 @@ module WikiHouse::BoardPartHelper
     tab_length = connector.length
     tab_count = connector.count
     tabs_too_big?(total_length, tab_count * tab_length, connector: connector)
-
-    starting_thickness = 0
-
-    if top?(connector) || bottom?(connector)
-      if @right_connector.slot? || @right_connector.tab?
-        total_length -= @right_connector.width
-        starting_thickness =  @right_connector.width
-      end
-
-      if @left_connector.slot? || @left_connector.tab?
-        total_length -= @left_connector.width
-        starting_thickness = @left_connector.width
-      end
-    elsif left?(connector) || right?(connector)
-      if @top_connector.slot? || @top_connector.tab?
-        total_length -= @top_connector.width
-        starting_thickness = @top_connector.width
-      end
-      if @bottom_connector.slot? || @bottom_connector.tab?
-        total_length -= @bottom_connector.width
-        starting_thickness = @bottom_connector.width
-      end
-    end
-
+    total_length = calculate_total_length(original_length: total_length, connector: connector)
+    starting_thickness = calculate_starting_thickness(connector: connector)
 
     if right?(connector)
       if c5.x == c2.x
@@ -281,7 +269,7 @@ module WikiHouse::BoardPartHelper
         current_points = [pc1, pc2, pc3, pc4]
       end
 
-       tab_points.concat(current_points)
+      tab_points.concat(current_points)
       WikiHouse::Fillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 4, tab_points.length - 5, reverse_it: true)
 
       if i > 0
@@ -296,6 +284,47 @@ module WikiHouse::BoardPartHelper
 
     WikiHouse::Fillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 2, tab_points.length - 1)
     tab_points
+  end
+
+  def build_rip(connector: nil, start_pt: nil, end_pt: nil)
+    total_length = top?(connector) || bottom?(connector) ? width : length
+    c5 = start_pt
+    c6 = end_pt
+
+
+    tab_length = connector.length
+    tab_count = connector.count
+    tabs_too_big?(total_length, tab_count * tab_length, connector: connector)
+    total_length = calculate_total_length(original_length: total_length, connector: connector)
+    starting_thickness = calculate_starting_thickness(connector: connector)
+
+    if right?(connector)
+      if c5.x == c2.x
+        c5.x -= connector.width
+
+      end
+      c6.x = c5.x
+    elsif left?(connector)
+      if c5.x == c4.x
+        c5.x += connector.width
+
+      end
+      c6.x = c5.x
+    elsif top?(connector)
+      if c5.y == c1.y
+        c5.y -= connector.width
+
+      end
+      c6.y = c5.y
+    elsif bottom?(connector)
+      if c5.y == c3.y
+        c5.y += connector.width
+
+      end
+      c6.y = c5.y
+    end
+
+    return([c5, c6])
   end
 
   def side_name(connector)
@@ -320,6 +349,10 @@ module WikiHouse::BoardPartHelper
       @top_side_points = build_slots(connector: @top_connector,
                                      start_pt: top_first,
                                      end_pt: top_last)
+    elsif @top_connector.rip?
+      @top_side_points = build_rip(connector: @top_connector,
+                                   start_pt: top_first,
+                                   end_pt: top_last)
     elsif @top_connector.tab?
       @top_side_points = build_tabs(connector: @top_connector,
                                     start_pt: top_first,
@@ -336,6 +369,12 @@ module WikiHouse::BoardPartHelper
       @right_side_points = build_slots(connector: @right_connector,
                                        start_pt: @top_side_points.last,
                                        end_pt: @bottom_side_points.first)
+    elsif @right_connector.rip?
+      @right_side_points = build_rip(connector: @right_connector,
+                                     start_pt: @top_side_points.last,
+                                     end_pt: @bottom_side_points.first)
+      @top_side_points[@top_side_points.length - 1] = @right_side_points.first
+      @bottom_side_points[0] = @right_side_points.last
     elsif @right_connector.tab?
       @right_side_points = build_tabs(connector: @right_connector,
                                       start_pt: @top_side_points.last,
@@ -355,6 +394,10 @@ module WikiHouse::BoardPartHelper
       @bottom_side_points = build_slots(connector: @bottom_connector,
                                         start_pt: bottom_first,
                                         end_pt: bottom_last)
+    elsif @bottom_connector.rip?
+      @bottom_side_points = build_rip(connector: @bottom_connector,
+                                      start_pt: bottom_first,
+                                      end_pt: bottom_last)
     elsif @bottom_connector.tab?
       @bottom_side_points = build_tabs(connector: @bottom_connector,
                                        start_pt: bottom_first,
@@ -369,6 +412,13 @@ module WikiHouse::BoardPartHelper
       @left_side_points = build_slots(connector: @left_connector,
                                       start_pt: @bottom_side_points.last,
                                       end_pt: @top_side_points.first)
+    elsif @left_connector.rip?
+      @left_side_points = build_rip(connector: @left_connector,
+                                    start_pt: @bottom_side_points.last,
+                                    end_pt: @top_side_points.first)
+      @bottom_side_points[@bottom_side_points.length - 1] = @left_side_points.first
+      @top_side_points[0] = @left_side_points.last
+
     elsif @left_connector.tab?
       @left_side_points = build_tabs(connector: @left_connector,
                                      start_pt: @bottom_side_points.last,
@@ -401,33 +451,29 @@ module WikiHouse::BoardPartHelper
     c == @bottom_connector
   end
 
-  def draw_pockets!
 
-  end
+  def draw_pockets!(connector: nil)
 
-  def rib_pockets
-    #Single rib - that is double thickness
-    half_tab = tab_width/2.0
+    half_tab = connector.length/2.0
 
-    mid_x = bottom_side_length/2.0
+    mid_x = width/2.0
 
-    pocket_thickness = thickness * 2.0
+    pockets_list = []
+    section_height = (length/(connector.count.to_f + 1.0))
+    connector.count.times do |index|
+      base = section_height * (index + 1) * -1
+      c5 = [c1.x + mid_x - half_tab, c1.y + base + connector.width/2.0, c1.z]
+      c6 = [c1.x + mid_x + half_tab, c5.y, c1.z]
+      c7 = [c6.x, c1.y + base - connector.width/2.0, c1.z]
+      c8 = [c5.x, c7.y, c1.z]
+      points = [c5, c6, c7, c8]
+      WikiHouse::Fillet.pocket_by_points(points)
 
-    rib_pockets_list = []
+      pockets_list << Sk.draw_all_points(points)
+      pockets_list.last.each { |e| mark_inside_edge!(e) }
+    end
 
-    base = left_side_length/2.0 * -1
-    c5 = [c1.x + mid_x - half_tab, c1.y + base + pocket_thickness/2.0, c1.z]
-    c6 = [c1.x + mid_x + half_tab, c5.y, c1.z]
-    c7 = [c6.x, c1.y + base - pocket_thickness/2.0, c1.z]
-    c8 = [c5.x, c7.y, c1.z]
-    points = [c5, c6, c7, c8]
-    WikiHouse::Fillet.pocket_by_points(points)
-
-    rib_pockets_list << Sk.draw_all_points(points)
-    rib_pockets_list.last.each { |e| mark_inside_edge!(e) }
-
-
-    rib_pockets_list
+    pockets_list
   end
 
   def draw!
@@ -442,18 +488,18 @@ module WikiHouse::BoardPartHelper
 
     unless @face_connector.none?
 
-      pockets_list = draw_pockets!
+      pockets_list = draw_pockets!(connector: @face_connector)
     end
 
     face = Sk.add_face(lines)
     set_material(face)
 
     unless @face_connector.none?
-      #erase the faces
-      # rib_pockets_list.each do |sp|
-      #   pocket_face = Sk.add_face(sp)
-      #   pocket_face.erase!
-      # end
+
+      pockets_list.each do |sp|
+        pocket_face = Sk.add_face(sp)
+        pocket_face.erase!
+      end
     end
 
     make_part_right_thickness(face)

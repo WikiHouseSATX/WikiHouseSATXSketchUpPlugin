@@ -35,4 +35,10 @@ class WikiHouse::Connector
   def pocket?
     false
   end
+  def rip?
+    false
+  end
+  def name
+    :connector
+  end
 end

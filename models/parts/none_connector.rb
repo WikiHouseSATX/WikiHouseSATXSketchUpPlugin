@@ -17,4 +17,7 @@ class WikiHouse::NoneConnector < WikiHouse::Connector
   def none?
     true
   end
+  def name
+    :none
+  end
 end
