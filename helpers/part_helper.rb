@@ -141,6 +141,7 @@ module WikiHouse::PartHelper
 
   def set_tag(tag_name: nil, value: nil, entity: nil)
     return nil if entity.nil? && group.nil?
+
     if entity
       entity.set_attribute tag_dictionary, tag_name, value
     else

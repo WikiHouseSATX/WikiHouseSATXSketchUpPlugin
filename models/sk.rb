@@ -152,6 +152,10 @@ module Sk
     end
   end
 
+  def draw_circle(center_point: nil, radius: nil, numsegs: 24, normal: nil, group: nil)
+    normal ||= Geom::Vector3d.new 0,0,1
+    group ? group.entities.add_circle(center_point, normal, radius, numsegs) : Sketchup.active_model.active_entities.add_circle(center_point, normal, radius, numsegs)
+  end
   def draw_all_points(pts, group: nil)
     lines = []
     pts.each_with_index do |pt, index|

@@ -1,7 +1,10 @@
 
 class WikiHouse::Cnc
 
+  def self.bit_diameter
+    0.26
+  end
   def self.bit_radius
-    0.25
+    bit_diameter/2.0
   end
 end
