@@ -8,9 +8,28 @@ class WikiHouse::ZPeg
     part_init(origin: origin, sheet: sheet, label: label)
 
   end
+  def length
+    thickness * 12
+  end
 
-  def c1
-    [@origin.x, @origin.y, @origin.z]
+  def width
+    thickness * 12
+  end
+
+  def bounding_c1
+    @origin.dup
+  end
+
+  def bounding_c2
+    [bounding_c1.x + width, bounding_c1.y, bounding_c1.z]
+  end
+
+  def bounding_c3
+    [bounding_c1.x + width, bounding_c1.y - length, bounding_c1.z]
+  end
+
+  def bounding_c4
+    [bounding_c1.x, bounding_c1.y - length, bounding_c1.z]
   end
 
   def make_peg

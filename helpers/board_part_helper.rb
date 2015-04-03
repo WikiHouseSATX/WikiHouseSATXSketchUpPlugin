@@ -44,21 +44,25 @@ module WikiHouse::BoardPartHelper
     parent_part.send(@width_method)
   end
 
-
-  def c1
+  #Bounding points define the platonic ideal of the baord
+  #bounding_c1 - upper left corner
+  #bounding_c2 - upper right corner
+  #bounding_c3 - lower right corner
+  #bounding_c4 - lower left corner
+  def bounding_c1
     @origin.dup
   end
 
-  def c2
-    [c1.x + width, c1.y, c1.z]
+  def bounding_c2
+    [bounding_c1.x + width, bounding_c1.y, bounding_c1.z]
   end
 
-  def c3
-    [c1.x + width, c1.y - length, c1.z]
+  def bounding_c3
+    [bounding_c1.x + width, bounding_c1.y - length, bounding_c1.z]
   end
 
-  def c4
-    [c1.x, c1.y - length, c1.z]
+  def bounding_c4
+    [bounding_c1.x, bounding_c1.y - length, bounding_c1.z]
   end
 
 
@@ -184,25 +188,25 @@ module WikiHouse::BoardPartHelper
       c5.x -= starting_thickness
     end
     if right?(connector)
-      if c5.x == c2.x
+      if c5.x == bounding_c2.x
         c5.x -= connector.width
 
       end
       c6.x = c5.x
     elsif left?(connector)
-      if c5.x == c4.x
+      if c5.x == bounding_c4.x
         c5.x += connector.width
 
       end
       c6.x = c5.x
     elsif top?(connector)
-      if c5.y == c1.y
+      if c5.y == bounding_c1.y
         c5.y -= connector.width
 
       end
       c6.y = c5.y
     elsif bottom?(connector)
-      if c5.y == c3.y
+      if c5.y == bounding_c3.y
         c5.y += connector.width
 
       end
@@ -301,25 +305,25 @@ module WikiHouse::BoardPartHelper
     starting_thickness = calculate_starting_thickness(connector: connector)
 
     if right?(connector)
-      if c5.x == c2.x
+      if c5.x == bounding_c2.x
         c5.x -= connector.width
 
       end
       c6.x = c5.x
     elsif left?(connector)
-      if c5.x == c4.x
+      if c5.x == bounding_c4.x
         c5.x += connector.width
 
       end
       c6.x = c5.x
     elsif top?(connector)
-      if c5.y == c1.y
+      if c5.y == bounding_c1.y
         c5.y -= connector.width
 
       end
       c6.y = c5.y
     elsif bottom?(connector)
-      if c5.y == c3.y
+      if c5.y == bounding_c3.y
         c5.y += connector.width
 
       end
@@ -328,6 +332,7 @@ module WikiHouse::BoardPartHelper
 
     return([c5, c6])
   end
+
 
   def side_name(connector)
     return :top if top?(connector)
@@ -344,8 +349,8 @@ module WikiHouse::BoardPartHelper
   end
 
   def build_top_side
-    top_first = c1
-    top_last = c2
+    top_first = bounding_c1
+    top_last = bounding_c2
     if @top_connector.slot?
 
       @top_side_points = build_slots(connector: @top_connector,
@@ -389,8 +394,8 @@ module WikiHouse::BoardPartHelper
   end
 
   def build_bottom_side
-    bottom_first = c3
-    bottom_last = c4
+    bottom_first = bounding_c3
+    bottom_last = bounding_c4
     if @bottom_connector.slot?
 
       @bottom_side_points = build_slots(connector: @bottom_connector,
@@ -472,10 +477,10 @@ module WikiHouse::BoardPartHelper
       connector.count.times do |i|
         base_y = ((i + 1) * length_gap) + (i * connector.width)
 
-        c5 = [c1.x + base_x, c1.y - base_y, c1.z]
-        c6 = [c1.x + base_x + connector.length, c5.y, c1.z]
-        c7 = [c6.x, c1.y - base_y - connector.width, c1.z]
-        c8 = [c5.x, c7.y, c1.z]
+        c5 = [bounding_c1.x + base_x, bounding_c1.y - base_y, bounding_c1.z]
+        c6 = [bounding_c1.x + base_x + connector.length, c5.y, bounding_c1.z]
+        c7 = [c6.x, bounding_c1.y - base_y - connector.width, bounding_c1.z]
+        c8 = [c5.x, c7.y, bounding_c1.z]
         points = [c5, c6, c7, c8]
 
         WikiHouse::Fillet.pocket_by_points(points)
@@ -497,6 +502,7 @@ module WikiHouse::BoardPartHelper
     build_left_side
 
     lines = Sk.draw_all_points(points)
+  #  @face_connector.draw!(bounding_c1)
 
     unless @face_connector.none?
 

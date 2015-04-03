@@ -8,10 +8,10 @@ class WikiHouse::ColumnRib
     @column = column ? column : raise(ArgumentError, "You must provide a Column")
     @length_method = :width
     @width_method = :width
-    init_board(right_connector:  WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
-               top_connector:  WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
-               bottom_connector:  WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
-               left_connector:  WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
+    init_board(right_connector:  WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
+               top_connector:  WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
+               bottom_connector:  WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
+               left_connector:  WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
                )
 
   end

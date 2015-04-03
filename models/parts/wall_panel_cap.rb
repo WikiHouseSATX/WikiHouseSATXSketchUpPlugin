@@ -9,11 +9,11 @@ class WikiHouse::WallPanelCap
 
     @length_method = :panel_width
     @width_method = :panel_depth
-    init_board(right_connector: WikiHouse::RipConnector.new(width: @sheet.thickness),
-               top_connector: WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
-               bottom_connector: WikiHouse::TabConnector.new(count: 1, width: @sheet.thickness),
-               left_connector: WikiHouse::RipConnector.new(width: @sheet.thickness),
-               face_connector: WikiHouse::PocketConnector.new(count: 1, width: 2.0 * thickness))
+    init_board(right_connector: WikiHouse::RipConnector.new(thickness: @sheet.thickness),
+               top_connector: WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
+               bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
+               left_connector: WikiHouse::RipConnector.new(thickness: @sheet.thickness),
+               face_connector: WikiHouse::PocketConnector.new(count: 1, thickness: thickness, width_in_t: 2))
 
   end
 

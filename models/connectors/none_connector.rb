@@ -1,14 +1,17 @@
 class WikiHouse::NoneConnector < WikiHouse::Connector
-  def initialize(length: 0, count: 0, width: 0)
+  def initialize(length_in_t: 0, count: 0, width_in_t: 0)
     super
-    @length = 0
+    @length_in_t = 0
     @count = 0
-    @width = 0
+    @width_in_t = 0
   end
-  def length
+  def draw!(origin: nil)
+    []
+  end
+  def length_in_t
     0
   end
-  def width
+  def width_in_t
     0
   end
   def count

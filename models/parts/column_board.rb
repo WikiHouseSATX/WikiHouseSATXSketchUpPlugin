@@ -8,11 +8,12 @@ class WikiHouse::ColumnBoard
     @column = column ? column : raise(ArgumentError, "You must provide a Column")
     @length_method = :length
     @width_method = :width
-    init_board(right_connector:  WikiHouse::TabConnector.new(count: 3, width: @sheet.thickness),
-               top_connector:  WikiHouse::SlotConnector.new(count: 1, width: @sheet.thickness),
-               bottom_connector:  WikiHouse::SlotConnector.new(count: 1, width: @sheet.thickness),
-               left_connector:  WikiHouse::SlotConnector.new(count: 3, width: @sheet.thickness),
-                face_connector: WikiHouse::PocketConnector.new(count: @column.number_of_internal_supports, width: @sheet.thickness))
+
+    init_board(right_connector:  WikiHouse::TabConnector.new(count: 3, thickness: thickness),
+               top_connector:  WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
+               bottom_connector:  WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
+               left_connector:  WikiHouse::SlotConnector.new(count: 3, thickness: thickness),
+                face_connector: WikiHouse::PocketConnector.new(count: @column.number_of_internal_supports, thickness: thickness))
 
   end
 
