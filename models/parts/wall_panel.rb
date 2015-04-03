@@ -75,7 +75,7 @@ class WikiHouse::WallPanel
     # @bottom_cap.move_to!(point: origin).
     #     rotate(vector: [0, 0, 1], rotation: -90.degrees).move_by(x: self.panel_height - @bottom_cap.thickness, y: 0, z: origin.z).go!
     #
-    # @left_outer_side.draw!
+     @left_outer_side.draw!
     # @left_outer_side.move_to!(point: origin).
     #     rotate(vector: [1, 0, 0], rotation: 90.degrees).rotate(vector: [0, 1, 0], rotation: 90.degrees).
     #     move_by(x: (-1 * self.panel_width) - @left_outer_side.width + (3 * @left_outer_side.thickness), y: 0, z: 0).go!
@@ -95,17 +95,17 @@ class WikiHouse::WallPanel
     #     move_by(x: (-1 * self.panel_width) - @left_outer_side.width + (3 * @left_outer_side.thickness), y: 0, z: panel_width - @right_outer_side.thickness).go!
     #
 
-    section_gap = Sk.round((@left_outer_side.length - (@left_outer_side.face_connector.count * @left_outer_side.face_connector.width))/(@left_outer_side.face_connector.count.to_f + 1.0))
-
-    rib_count = @left_outer_side.face_connector.count
-    @left_ribs.each_with_index do |rib, i|
-      rib.draw!
-break
-      rib.move_to!(point: origin).
-          move_by(x: origin.x, y: origin.y, z: origin.z + self.panel_height - rib.thickness).
-          rotate(vector: [0, 0, 1], rotation: -90.degrees).move_by(x: self.panel_height - 2 * rib.thickness, y: 0, z: 0 - (((rib_count - i)) * section_gap) - ((rib_count - i - 1) * rib.thickness)).go!
-
-    end
+    # section_gap = Sk.round((@left_outer_side.length - (@left_outer_side.face_connector.count * @left_outer_side.face_connector.width))/(@left_outer_side.face_connector.count.to_f + 1.0))
+    #
+    # rib_count = @left_outer_side.face_connector.count
+    # @left_ribs.each_with_index do |rib, i|
+    #   rib.draw!
+    #
+    #   rib.move_to!(point: origin).
+    #       move_by(x: origin.x, y: origin.y, z: origin.z + self.panel_height - rib.thickness).
+    #       rotate(vector: [0, 0, 1], rotation: -90.degrees).move_by(x: self.panel_height - 2 * rib.thickness, y: 0, z: 0 - (((rib_count - i)) * section_gap) - ((rib_count - i - 1) * rib.thickness)).go!
+    #
+    # end
     # @right_ribs.each_with_index do |rib, i|
     #   rib.draw!
     #   rib.move_to!(point: origin).

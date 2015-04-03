@@ -14,7 +14,7 @@ class WikiHouse::WallPanelOuterSide
                top_connector: WikiHouse::SlotConnector.new(count: 1, thickness: @sheet.thickness),
                bottom_connector: WikiHouse::SlotConnector.new(count: 1, thickness: @sheet.thickness),
                left_connector: WikiHouse::RipConnector.new( thickness: @sheet.thickness),
-               face_connector: WikiHouse::PocketConnector.new(count: 3))
+               face_connector: WikiHouse::TPocketConnector.new(count: 3))
 
   end
 

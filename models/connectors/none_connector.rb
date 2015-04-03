@@ -5,7 +5,7 @@ class WikiHouse::NoneConnector < WikiHouse::Connector
     @count = 0
     @width_in_t = 0
   end
-  def draw!(origin: nil)
+  def draw!(bounding_origin: nil, part_length: nil, part_width: nil)
     []
   end
   def length_in_t

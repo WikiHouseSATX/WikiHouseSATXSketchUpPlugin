@@ -4,12 +4,12 @@
 # even if they are on connecting in three dimensions
 
 class WikiHouse::Connector
-
+include WikiHouse::AttributeHelper
   def self.standard_length_in_t
-    6
+    1
   end
   def self.standard_width_in_t
-    1
+    6
   end
 
 
