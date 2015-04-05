@@ -1,7 +1,7 @@
 class WikiHouse::ZPegTopConnector < WikiHouse::PocketConnector
 
 
-  def initialize(thickness: nil, rows: 1)
+  def initialize(thickness: nil)
     super(length_in_t: 4, width_in_t: 2, thickness: thickness, rows: 1, count: 1)
 
   end

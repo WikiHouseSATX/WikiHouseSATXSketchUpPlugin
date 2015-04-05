@@ -6,14 +6,16 @@ class WikiHouse::Wall
     part_init(sheet: sheet, origin: origin)
 
 
-    @left_column = WikiHouse::Column.new(label: "Left", origin: @origin, sheet: sheet)
-    @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + 40, @origin.y + 40, @origin.z + 10], sheet: sheet)
+    @left_column = WikiHouse::Column.new(label: "Left", origin: @origin, sheet: sheet, wall_panels_on:[0,1,2,3], parent_part: self)
+    @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + 40, @origin.y + 40, @origin.z + 10], sheet: sheet, parent_part: self)
   end
 
   def wall_height
     80
   end
-
+  def wall_panel_zpegs
+    3
+  end
 
   def draw!
     Sk.find_or_create_layer(name: self.class.name)

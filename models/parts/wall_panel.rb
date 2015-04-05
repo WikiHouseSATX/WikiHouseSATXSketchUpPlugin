@@ -5,30 +5,30 @@ class WikiHouse::WallPanel
   def initialize(origin: nil, sheet: nil, label: nil)
     part_init(sheet: sheet, origin: origin)
     #has 2 caps, 4 faces, 6 ribs, 4 sides
-    @top_cap = WikiHouse::WallPanelCap.new(label: "Top", origin: @origin, sheet: sheet, panel: self)
-    @bottom_cap = WikiHouse::WallPanelCap.new(label: "Bottom", origin: [@origin.x + 50, @origin.y, @origin.z], sheet: sheet, panel: self)
+    @top_cap = WikiHouse::WallPanelCap.new(label: "Top", origin: @origin, sheet: sheet, parent_part: self)
+    @bottom_cap = WikiHouse::WallPanelCap.new(label: "Bottom", origin: [@origin.x + 50, @origin.y, @origin.z], sheet: sheet, parent_part: self)
 
 
-    @left_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Left Outer", origin: @origin, sheet: sheet, panel: self)
-    @left_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Left Inner", origin: @origin, sheet: sheet, panel: self)
-    @right_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Right Outer", origin: @origin, sheet: sheet, panel: self)
-    @right_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Right Inner", origin: @origin, sheet: sheet, panel: self)
-    @left_face_front_panel = WikiHouse::WallPanelFace.new(label: "Left Front", origin: @origin, sheet: sheet, panel: self)
-    @left_face_back_panel = WikiHouse::WallPanelFace.new(label: "Left Back", origin: @origin, sheet: sheet, panel: self)
-    @right_face_front_panel = WikiHouse::WallPanelFace.new(label: "Right Front", origin: @origin, sheet: sheet, panel: self)
-    @right_face_back_panel = WikiHouse::WallPanelFace.new(label: "Right Back", origin: @origin, sheet: sheet, panel: self)
+    @left_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Left Outer", origin: @origin, sheet: sheet, parent_part: self)
+    @left_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Left Inner", origin: @origin, sheet: sheet, parent_part: self)
+    @right_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Right Outer", origin: @origin, sheet: sheet, parent_part: self)
+    @right_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Right Inner", origin: @origin, sheet: sheet, parent_part: self)
+    @left_face_front_panel = WikiHouse::WallPanelFace.new(label: "Left Front", origin: @origin, sheet: sheet, parent_part: self)
+    @left_face_back_panel = WikiHouse::WallPanelFace.new(label: "Left Back", origin: @origin, sheet: sheet, parent_part: self)
+    @right_face_front_panel = WikiHouse::WallPanelFace.new(label: "Right Front", origin: @origin, sheet: sheet, parent_part: self)
+    @right_face_back_panel = WikiHouse::WallPanelFace.new(label: "Right Back", origin: @origin, sheet: sheet, parent_part: self)
 
     @left_ribs = []
-    @left_ribs << WikiHouse::WallPanelRib.new(label: "Left Rib #1", origin: @origin, sheet: sheet, panel: self)
-    @left_ribs << WikiHouse::WallPanelRib.new(label: "Left Rib #2", origin: @origin, sheet: sheet, panel: self)
+    @left_ribs << WikiHouse::WallPanelRib.new(label: "Left Rib #1", origin: @origin, sheet: sheet, parent_part: self)
+    @left_ribs << WikiHouse::WallPanelRib.new(label: "Left Rib #2", origin: @origin, sheet: sheet, parent_part: self)
 
-    @left_ribs << WikiHouse::WallPanelRib.new(label: "Left Rib #3", origin: @origin, sheet: sheet, panel: self)
+    @left_ribs << WikiHouse::WallPanelRib.new(label: "Left Rib #3", origin: @origin, sheet: sheet, parent_part: self)
 
     @right_ribs = []
-    @right_ribs << WikiHouse::WallPanelRib.new(label: "Right Rib #1", origin: @origin, sheet: sheet, panel: self)
-    @right_ribs << WikiHouse::WallPanelRib.new(label: "Right Rib #2", origin: @origin, sheet: sheet, panel: self)
+    @right_ribs << WikiHouse::WallPanelRib.new(label: "Right Rib #1", origin: @origin, sheet: sheet, parent_part: self)
+    @right_ribs << WikiHouse::WallPanelRib.new(label: "Right Rib #2", origin: @origin, sheet: sheet, parent_part: self)
 
-    @right_ribs << WikiHouse::WallPanelRib.new(label: "Right Rib #3", origin: @origin, sheet: sheet, panel: self)
+    @right_ribs << WikiHouse::WallPanelRib.new(label: "Right Rib #3", origin: @origin, sheet: sheet, parent_part: self)
 
 
   end

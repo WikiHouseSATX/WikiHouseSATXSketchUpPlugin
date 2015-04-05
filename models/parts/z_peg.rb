@@ -4,8 +4,8 @@ class WikiHouse::ZPeg
   include WikiHouse::PartHelper
 
 
-  def initialize(sheet: nil, group: nil, origin: nil, label: label)
-    part_init(origin: origin, sheet: sheet, label: label)
+  def initialize(sheet: nil, group: nil, origin: nil, label: label, parent_part: nil)
+    part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
   end
   def length

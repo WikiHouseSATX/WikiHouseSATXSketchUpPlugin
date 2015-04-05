@@ -32,9 +32,6 @@ module WikiHouse::BoardPartHelper
     [@top_side_points[0...-1], @right_side_points[0...-1], @bottom_side_points[0...-1], @left_side_points[0...-1]].flatten(1)
   end
 
-  def parent_part
-    raise ScriptError, "You must define a parent"
-  end
 
   def length
     parent_part.send(@length_method)
@@ -459,7 +456,14 @@ module WikiHouse::BoardPartHelper
   end
 
 
-
+  def add_face_connector(connector)
+    if @face_connector.is_a?(Array)
+      @face_connector.concat(connector)
+    else
+      @face_connector = [@face_connector, connector]
+    end
+    @face_connector
+  end
 
   def draw!
 
@@ -472,11 +476,14 @@ module WikiHouse::BoardPartHelper
     lines = Sk.draw_all_points(points)
 
     face = Sk.add_face(lines)
+    if @face_connector.is_a?(Array)
+      @face_connector.each { |c| c.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width) }
+    else
+      @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width)
 
-    @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width)
+    end
 
     set_material(face)
-
 
 
     make_part_right_thickness(face)

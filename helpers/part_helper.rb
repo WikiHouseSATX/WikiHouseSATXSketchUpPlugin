@@ -5,11 +5,11 @@ module WikiHouse::PartHelper
   DEFAULT_MATERIAL = "Wood_Plywood_Knots"
 
 
-  attr_reader :sheet, :group, :label
+  attr_reader :sheet, :group, :label, :parent_part
 
-  def part_init(sheet: nil, group: nil, origin: nil, label: nil)
+  def part_init(sheet: nil, group: nil, origin: nil, label: nil, parent_part: nil)
     @sheet = sheet ? sheet : WikiHouse::Sheet.new
-
+    @parent_part = parent_part
     @group = group
     @origin = origin ? origin : [0, 0, 0]
     @label = label
@@ -105,7 +105,7 @@ module WikiHouse::PartHelper
 
   end
 
-   def set_material(face, material: nil)
+  def set_material(face, material: nil)
     if material.nil?
       material = Sk.add_material(DEFAULT_MATERIAL, filename: WikiHouse.plugin_file("plywood.jpg", "images"))
     end
