@@ -4,10 +4,10 @@ class WikiHouse::Fillet
   end
 
   def self.upper_to_right(corner)
-    pt1 = corner
+
     pt2 = [corner.x, Sk.round(corner.y + bit_radius), corner.z]
     pt3 = [Sk.round(corner.x + 2 * bit_radius), pt2.y, corner.z]
-    pt4 = [pt3.x, pt1.y, corner.z]
+    pt4 = [pt3.x, corner.y, corner.z]
     [pt2, pt3, pt4]
   end
 
@@ -16,7 +16,7 @@ class WikiHouse::Fillet
     pt1 = [Sk.round(corner.x - 2 * bit_radius), corner.y, corner.z]
     pt2 = [pt1.x, Sk.round(pt1.y + bit_radius), corner.z]
     pt3 = [corner.x, pt2.y, corner.z]
-    pt4 = corner
+
     [pt1, pt2, pt3]
 
 
@@ -26,16 +26,64 @@ class WikiHouse::Fillet
     pt1 = [Sk.round(corner.x + 2 * bit_radius), corner.y, corner.z]
     pt2 = [pt1.x, Sk.round(pt1.y - bit_radius), corner.z]
     pt3 = [corner.x, pt2.y, corner.z]
-    pt4 = corner
+
     [pt1, pt2, pt3]
   end
 
+  def self.stem_to_right(corner)
+    pt1 = [corner.x, Sk.round(corner.y + 2 * bit_radius), corner.z]
+    pt2 = [Sk.round(pt1.x + bit_radius), pt1.y, corner.z]
+    pt3 = [pt2.x, corner.y, corner.z]
+
+    [pt1, pt2, pt3]
+
+  end
+
+  def self.stem_to_left(corner)
+    pt1 = [Sk.round(corner.x - bit_radius), Sk.round(corner.y + 2 * bit_radius), corner.z]
+    pt2 = [corner.x, pt1.y, corner.z]
+    pt4 = [pt1.x, corner.y, corner.z]
+
+    [pt4, pt1, pt2]
+
+  end
+
   def self.lower_to_left(corner)
-    pt1 = corner
+
     pt2 = [corner.x, Sk.round(corner.y - bit_radius), corner.z]
     pt3 = [Sk.round(corner.x - 2 * bit_radius), pt2.y, corner.z]
-    pt4 = [pt3.x, pt1.y, corner.z]
+    pt4 = [pt3.x, corner.y, corner.z]
     [pt2, pt3, pt4]
+
+  end
+
+
+  def self.t_pocket_by_points(point_list)
+
+    raise ArgumentError, "Expected only 8 corners" if point_list.length != 8
+    pt1 = point_list[0]
+    pt2 = point_list[1]
+    pt3 = point_list[2]
+    pt4 = point_list[3]
+    pt5 = point_list[4]
+    pt6 = point_list[5]
+    pt7 = point_list[6]
+    pt8 = point_list[7]
+
+    point_list.clear
+    point_list.concat(upper_to_right(pt1))
+    point_list.concat(upper_to_left(pt2))
+    point_list.concat(lower_to_left(pt3))
+    point_list.concat([pt4])
+    point_list.concat(stem_to_right(pt5))
+    point_list.concat(stem_to_left(pt6))
+    point_list.concat([pt7])
+    point_list.concat(lower_to_right(pt8))
+
+
+    point_list
+
+
   end
 
   def self.pocket_by_points(point_list)

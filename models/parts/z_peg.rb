@@ -35,26 +35,26 @@ class WikiHouse::ZPeg
   def make_peg
     t = thickness
 
-    c2 = [c1.x, c1.y + 8 * t, c1.z]
-    c3 = [c1.x + 8 * t, c1.y + 8 * t, c1.z]
-    c4 = [c1.x + 8 * t, c1.y + 12 * t, c1.z]
-    c5 = [c1.x + 12 * t, c1.y + 12 * t, c1.z]
+    c2 = [bounding_c1.x, bounding_c1.y + 8 * t, bounding_c1.z]
+    c3 = [bounding_c1.x + 8 * t, bounding_c1.y + 8 * t, bounding_c1.z]
+    c4 = [bounding_c1.x + 8 * t, bounding_c1.y + 12 * t, bounding_c1.z]
+    c5 = [bounding_c1.x + 12 * t, bounding_c1.y + 12 * t, bounding_c1.z]
 
-    c6 = [c1.x + 12 * t, c1.y + 4 * t, c1.z]
-    c7 = [c1.x + 4 * t, c1.y + 4 * t, c1.z]
-    c8 = [c1.x + 4 * t, c1.y, c1.z]
+    c6 = [bounding_c1.x + 12 * t, bounding_c1.y + 4 * t, bounding_c1.z]
+    c7 = [bounding_c1.x + 4 * t, bounding_c1.y + 4 * t, bounding_c1.z]
+    c8 = [bounding_c1.x + 4 * t, bounding_c1.y, bounding_c1.z]
 
-    [c1, c2, c3, c4, c5, c6, c7, c8]
+    [bounding_c1, c2, c3, c4, c5, c6, c7, c8]
   end
 
   def make_dowels!
     t = thickness
 
-    d1 = [c1.x + 2 * t, c1.y + 2 * t, c1.z]
-    d2 = [c1.x + 2 * t, c1.y + 6 * t, c1.z]
-    d3 = [c1.x + 6 * t, c1.y + 6 * t, c1.z]
-    d4 = [c1.x + 10 * t, c1.y + 6 * t, c1.z]
-    d5 = [c1.x + 10 * t, c1.y + 10 * t, c1.z]
+    d1 = [bounding_c1.x + 2 * t, bounding_c1.y + 2 * t, bounding_c1.z]
+    d2 = [bounding_c1.x + 2 * t, bounding_c1.y + 6 * t, bounding_c1.z]
+    d3 = [bounding_c1.x + 6 * t, bounding_c1.y + 6 * t, bounding_c1.z]
+    d4 = [bounding_c1.x + 10 * t, bounding_c1.y + 6 * t, bounding_c1.z]
+    d5 = [bounding_c1.x + 10 * t, bounding_c1.y + 10 * t, bounding_c1.z]
     dowels = []
     [d1, d2, d3, d4, d5].each { |d| dowels << Sk.draw_circle(center_point: d, radius: WikiHouse::Cnc.bit_radius) }
     dowels.each { |d| d.each { |e| mark_inside_edge!(e) } }
