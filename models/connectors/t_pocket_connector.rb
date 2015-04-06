@@ -45,7 +45,7 @@ class WikiHouse::TPocketConnector < WikiHouse::PocketConnector
     c5 = [c4.x, c4.y - stem_length, c1.z]
     c7 = [stem_x, c3.y , c1.z]
     c6 = [c7.x, c7.y - stem_length, c1.z]
-    puts "#{c4.x - c7.x} #{c8.x - c7.x}"
+
     points = [c1,c2,c3,c4,c5,c6,c7,c8]
     WikiHouse::Fillet.t_pocket_by_points(points)
 

@@ -29,10 +29,10 @@ class WikiHouse::PocketConnector < WikiHouse::Connector
 
     pockets_list = []
     rows.times do |row|
-      base_x = ((row + 1) * width_gap) + (row * length)
+      base_x = ((row + 1) * width_gap) + (row * width)
 
       count.times do |i|
-        base_y = ((i + 1) * length_gap) + (i * width)
+        base_y = ((i + 1) * length_gap) + (i * length)
         pockets_list << draw_pocket!(location: [bounding_origin.x + base_x, bounding_origin.y - base_y, bounding_origin.z])
       end
     end

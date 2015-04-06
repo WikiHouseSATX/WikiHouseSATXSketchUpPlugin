@@ -36,7 +36,7 @@ class WikiHouse::Column
     parent_part.wall_panel_zpegs
   end
   def number_of_internal_supports
-    2
+    3
   end
 
 
