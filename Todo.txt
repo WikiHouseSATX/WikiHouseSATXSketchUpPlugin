@@ -1,20 +1,14 @@
+Pending Work
+=====================
 
-
-tag parts with attributes - mark edges as outside or inside edges.
-Make a tool to decompose the parts out to flat outlines in svg - look at the old plugin
-make a single large sheet with the dimesions of the outer box
-
-setting up tool paths need to be outside or inside.
-
+Build a real wall with all the parts configured
+Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
 
 
 
 
-Need to have the inside and outside cuts on different flat layers
-
-
-
-
+To Replace Aspire
+====================
 Need to be able to nest parts
 Generate Gcode
 Need to be able to generate tabs for the part
