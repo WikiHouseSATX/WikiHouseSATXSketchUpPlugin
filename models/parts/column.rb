@@ -15,21 +15,16 @@ class WikiHouse::Column
 
       end
     end
-    @ribs = []
-    @ribs << WikiHouse::ColumnRib.new(parent_part: self, origin: [@origin.x, @origin.y + width, @origin.z], label: "#{label} Column Bottom")
-    section_gap = Sk.round((length - (number_of_internal_supports * thickness))/(number_of_internal_supports.to_f + 1.0))
+    @mid_ribs = []
+    @bottom_rib = WikiHouse::ColumnRib.new(parent_part: self, origin: [@origin.x, @origin.y + width, @origin.z - thickness], label: "#{label} Column Bottom")
+     number_of_internal_supports.times do |index|
 
+      @mid_ribs <<  WikiHouse::ColumnRib.new(label: "#{label} Column Mid ##{index + 1}", parent_part: self, origin: @origin)
 
-    number_of_internal_supports.times do |index|
-
-      rib = WikiHouse::ColumnRib.new(label: "#{label} Column Mid ##{index + 1}", parent_part: self, origin: [@origin.x, @origin.y + width, @origin.z + ((index + 1) * section_gap) + (index * thickness)])
-      @ribs << rib
     end
-    rib = WikiHouse::ColumnRib.new(label: "#{label} Column Top",
+    @top_rib = WikiHouse::ColumnRib.new(label: "#{label} Column Top",
                                    parent_part: self,
-                                   origin: [@origin.x, @origin.y + width, @origin.z + length - thickness])
-    @ribs << rib
-
+                                   origin: [@origin.x, @origin.y + width, @origin.z + length -  2 * thickness])
   end
 
   def wall_panel_zpegs
@@ -61,32 +56,55 @@ class WikiHouse::Column
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             move_to(point: origin)
-        alteration.move_by(x: 0, y: 0, z: width * -1)
+        alteration.move_by(x: 0, y: thickness * -1, z: width * -1)
       elsif index == 1
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 90.degrees).
             move_to(point: origin).
-            move_by(x: 0, y: 0, z: 0)
+            move_by(x: 0, y: thickness * -1, z: 0)
       elsif index == 2
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 180.degrees).
             move_to(point: origin).
-            move_by(x: board.width * -1, y: 0, z: 0)
+            move_by(x: board.width * -1, y: thickness * -1, z: 0)
       elsif index == 3
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 270.degrees).
             move_to(point: origin).
-            move_by(x: board.width * -1, y: 0 , z:  -1 * width)
+            move_by(x: board.width * -1, y: thickness * -1 , z:  -1 * width)
       end
       alteration.go!
 
     end
-    @ribs.each { |rib| rib.draw! }
+   @top_rib.draw!
+    @bottom_rib.draw!
+    raise ScriptError, "The mid ribs need to be put in the right place"
+     # column_board = @column_boards.first
+     #  connector = column_board.face_connector
+     #  connector.class.drawing_points(bounding_origin: origin,
+     #                                 count: number_of_internal_supports,
+     #                                 rows: 1,
+     #                                 part_length: length,
+     #                                 part_width: width,
+     #                                 item_length: @top_rib.length,
+     #                                 item_width: @top_rib.width) do |row, col, location|
+     #    rib = @left_ribs[col]
+     #    rib.draw!
+     #
+     #
+     #    rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
+     #        move_to(point: origin).
+     #        move_by(x: 0,
+     #                y: panel_rib_width * -1,
+     #                z: -1 * location.y + Sk.abs(origin.y)).
+     #        go!
+     #
+     #  end
 
-    groups = @ribs.collect { |r| r.group }.concat(@column_boards.collect { |b| b.group }).compact
+    groups = @mid_ribs.collect { |r| r.group }.concat(@column_boards.collect { |b| b.group }).concat([@top_rib.group, @bottom_rib.group]).compact
 
 
     set_group(groups)
