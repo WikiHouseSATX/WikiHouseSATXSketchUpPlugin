@@ -4,8 +4,6 @@ class WikiHouse::WallPanel
 
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil)
     part_init(sheet: sheet, origin: origin, parent_part: parent_part)
-    @origin = [@origin.x + 20, @origin.y + 60, @origin.z + 0]
-    #@origin = [0,0,0]
 
     #has 2 caps, 4 faces, 6 ribs, 4 sides
     @top_cap = WikiHouse::WallPanelCap.new(label: "Top", origin: @origin, sheet: sheet, parent_part: self)
@@ -66,20 +64,22 @@ class WikiHouse::WallPanel
 
     @top_cap.draw!
     @top_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
-        move_by(x: (@top_cap.width - 2 * thickness) * -1,
+        move_by(x: (@top_cap.width -  thickness) * -1,
                 y: 0,
                 z: length - @top_cap.thickness).
         go!
     @bottom_cap.draw!
     @bottom_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
-        move_by(x: (@bottom_cap.width - 2 * thickness) * -1, y: 0, z: 0).
+        move_by(x: (@bottom_cap.width -  thickness) * -1,
+                y: 0,
+                z: 0).
         go!
 
     @left_outer_side.draw!
     @left_outer_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x:0,
+        move_by(x:  @left_outer_side.thickness,
                 y: 0,
                 z: 0).
         go!
@@ -87,25 +87,25 @@ class WikiHouse::WallPanel
     @left_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: 0,
+        move_by(x: @left_inner_side.thickness,
                 y: 0,
-                z:  panel_rib_width - @left_inner_side.thickness).
+                z: panel_rib_width - @left_inner_side.thickness).
         go!
     @right_inner_side.draw!
     @right_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: 0,
+        move_by(x: @right_inner_side.thickness,
                 y: 0,
-                z:  panel_rib_width ).
+                z: panel_rib_width).
         go!
     @right_outer_side.draw!
     @right_outer_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: 0,
+        move_by(x: @right_outer_side.thickness,
                 y: 0,
-                z:  panel_rib_width * 2 - @right_outer_side.thickness ).
+                z: panel_rib_width * 2 - @right_outer_side.thickness).
         go!
 
     first_left_rib = @left_ribs.first
@@ -124,60 +124,67 @@ class WikiHouse::WallPanel
 
         rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
             move_to(point: origin).
-            move_by(x: rib.thickness * -1 ,
-                    y:  panel_rib_width * -1,
+            move_by(x: 0,
+                    y: panel_rib_width * -1,
                     z: -1 * location.y + Sk.abs(origin.y)).
             go!
 
       end
     end
-    # first_right_rib = @right_ribs.first
-    # if first_right_rib
-    #   connector = first_right_rib.right_connector
-    #   connector.class.drawing_points(bounding_origin: origin,
-    #                                  count: @right_ribs.count,
-    #                                  rows: 1,
-    #                                  part_length: length,
-    #                                  part_width: width,
-    #                                  item_length: connector.length,
-    #                                  item_width: connector.width) do |row, col, location|
-    #     rib = @right_ribs[col]
-    #     rib.draw!
-    #     rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
-    #         move_to(point: origin).
-    #         rotate(vector: [1, 0, 0], rotation: 180.degrees).
-    #         move_to(point: origin).
-    #         move_by(x:  -1 * rib.thickness ,
-    #                 y:  panel_rib_width,
-    #                 z:  location.y + -1 * Sk.abs(origin.y) - rib.thickness).
-    #         go!
-    #
-    #
-    #
-    #   end
-    # end
-    #@left_face_front_panel.draw!
-    #
-    # @left_face_front_panel.move_to!(point: origin).
-    #     rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     move_by(x: -1 * @left_face_front_panel.width, y: 0, z: length + depth - @left_face_front_panel.thickness * 4).go!
-    #
-    # @left_face_back_panel.draw!
-    # @left_face_back_panel.move_to!(point: origin).
-    #     rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     move_by(x: -1 * @left_face_front_panel.width, y: 0, z: length - @left_face_front_panel.thickness * 3).go!
-    #
-    # @right_face_front_panel.draw!
-    #
-    # @right_face_front_panel.move_to!(point: origin).
-    #     rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     move_by(x: 0, y: 0, z: length + depth - @right_face_front_panel.thickness * 4).go!
-    #
-    # @right_face_back_panel.draw!
-    # @right_face_back_panel.move_to!(point: origin).
-    #     rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     move_by(x: 0, y: 0, z: length - @right_face_front_panel.thickness * 3).go!
-    #
+    first_right_rib = @right_ribs.first
+    if first_right_rib
+      connector = first_right_rib.right_connector
+      connector.class.drawing_points(bounding_origin: origin,
+                                     count: @right_ribs.count,
+                                     rows: 1,
+                                     part_length: length,
+                                     part_width: width,
+                                     item_length: connector.length,
+                                     item_width: connector.width) do |row, col, location|
+        rib = @right_ribs[col]
+
+        rib.draw!
+
+        rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
+            rotate(vector: [1, 0, 0], rotation: 180.degrees).
+            move_to(point: origin).
+            move_by(x: 0,
+                    y: panel_rib_width,
+                    z: -1 * (-1 * location.y + Sk.abs(origin.y)) - rib.thickness).
+            go!
+      end
+    end
+    @left_face_front_panel.draw!
+    @left_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: 0,
+                y: 0,
+                z: - 1 * @left_face_front_panel.thickness).
+        go!
+
+    @left_face_back_panel.draw!
+    @left_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: 0,
+                y: 0,
+                z: -1 * depth).
+        go!
+
+    @right_face_front_panel.draw!
+    @right_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: @right_face_front_panel.width,
+                y: 0,
+                z: - 1 * @left_face_front_panel.thickness).
+        go!
+
+    @right_face_back_panel.draw!
+    @right_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: @right_face_front_panel.width,
+                y: 0,
+                z: -1 * depth ).
+        go!
 
     groups = @left_ribs.collect { |r| r.group }.concat(@right_ribs.collect { |r| r.group })
     groups.concat([@top_cap.group, @bottom_cap.group])
