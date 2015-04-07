@@ -54,7 +54,7 @@ class WikiHouse::Column
     @column_boards.each_with_index do |board, index|
 
       board.draw!
-    break
+
       alteration = board.move_to!(point: origin).
           rotate(vector: [1, 0, 0], rotation: 90.degrees).
           rotate(vector: [0, 0, 1], rotation: 0.degrees)
@@ -72,8 +72,8 @@ class WikiHouse::Column
       end
       alteration.go!
     end
-    # @ribs.each { |rib| rib.draw! }
-    #
+     @ribs.each { |rib| rib.draw! }
+
      groups = @ribs.collect { |r| r.group }.concat(@column_boards.collect { |b| b.group }).compact
 
 

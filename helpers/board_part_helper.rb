@@ -477,6 +477,7 @@ module WikiHouse::BoardPartHelper
 
     face = Sk.add_face(lines)
     if @face_connector.is_a?(Array)
+
       @face_connector.each { |c| c.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width) }
     else
       @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width)

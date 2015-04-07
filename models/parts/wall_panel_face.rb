@@ -5,7 +5,7 @@ class WikiHouse::WallPanelFace
 
   def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
-     @length_method = :panel_height
+     @length_method = :length
     @width_method = :panel_rib_width
     init_board(right_connector: WikiHouse::NoneConnector.new(),
                top_connector: WikiHouse::NoneConnector.new(),

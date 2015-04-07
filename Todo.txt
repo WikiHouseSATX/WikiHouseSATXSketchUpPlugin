@@ -2,8 +2,9 @@ Pending Work
 =====================
 
 Build a real wall with all the parts configured
+Place the z pegs in there as well
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
-
+Build a button to center/top the view
 
 
 

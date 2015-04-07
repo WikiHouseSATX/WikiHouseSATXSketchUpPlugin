@@ -6,6 +6,9 @@
 module Sk
 
   extend self
+  def abs(val)
+    val < 0 ? -1.0 * val : val
+  end
   def model
     Sketchup.active_model
   end
