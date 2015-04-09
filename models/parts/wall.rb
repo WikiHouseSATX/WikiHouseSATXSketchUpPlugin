@@ -1,19 +1,21 @@
 class WikiHouse::Wall
 
   include WikiHouse::PartHelper
-
+  LEFT_COLUMN_BOARD_PEG_FACE = 3
+  RIGHT_COLUMN_BOARD_PEG_FACE = 1
 
   def initialize(origin: nil, sheet: nil, label: nil)
+    origin = [ 27,56, 0]
     part_init(sheet: sheet, origin: origin)
 
-    @left_column = WikiHouse::Column.new(label: "Left", origin: @origin, sheet: @sheet, wall_panels_on: [0, 1, 2, 3], parent_part: self)
-    @wall_panel = WikiHouse::WallPanel.new(label: "Wall Panel", origin: [@origin.x + @left_column.width, @origin.y, @origin.y], sheet: @sheet, parent_part: self)
-    @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + @left_column.width + @wall_panel.width, @origin.y, @origin.z], sheet: @sheet, parent_part: self)
+    @left_column = WikiHouse::Column.new(label: "Left", origin: @origin, sheet: @sheet, wall_panels_on: [LEFT_COLUMN_BOARD_PEG_FACE], parent_part: self)
+    @wall_panel = WikiHouse::WallPanel.new(label: "Wall Panel", origin: [@origin.x + @left_column.width, @origin.y, @origin.z], sheet: @sheet, parent_part: self)
+    @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + @left_column.width + @wall_panel.width, @origin.y, @origin.z], wall_panels_on: [RIGHT_COLUMN_BOARD_PEG_FACE], sheet: @sheet, parent_part: self)
     @left_column_zpegs = []
     @right_column_zpegs = []
     wall_panel_zpegs.times do |index|
-      @left_column_zpegs << WikiHouse::DoubleZPeg.new(label: "LeftColumn #{index + 1}", origin: @origin, sheet: @sheet)
-      @right_column_zpegs << WikiHouse::DoubleZPeg.new(label: "RightColumn #{index + 1}", origin: @origin, sheet: @sheet)
+      @left_column_zpegs << WikiHouse::DoubleZPeg.new(label: "LeftColumn #{index + 1}", origin: @left_column.origin, sheet: @sheet)
+      @right_column_zpegs << WikiHouse::DoubleZPeg.new(label: "RightColumn #{index + 1}", origin: @right_column.origin, sheet: @sheet)
     end
 
   end
@@ -32,11 +34,52 @@ class WikiHouse::Wall
     @left_column.draw!
     @wall_panel.draw!
     @right_column.draw!
+    column_board = @left_column.column_board(LEFT_COLUMN_BOARD_PEG_FACE)
+    connector = column_board.face_connector
+    connector.class.drawing_points(bounding_origin: origin,
+                                   count: wall_panel_zpegs,
+                                   rows: 1,
+                                   part_length: column_board.length,
+                                   part_width: column_board.width,
+                                   item_length: connector.top_slot_length,
+                                   item_width: connector.top_slot_width) do |row, col, location|
+      zpeg = @left_column_zpegs[col]
+      zpeg.draw!
 
-    #Draw in the Zpegs
-    #move them into place
 
-    groups = [@left_column.group, @wall_panel.group, @right_column.group].compact
+      zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          rotate(vector: [0, 0, 1], rotation: 0.degrees).
+          move_to(point: origin).
+          move_by(z: -1 * zpeg.thickness - column_board.width/2.0,
+                 x: zpeg.width * 0.75,
+                  y: -1 * location.y + Sk.abs(origin.y)  - zpeg.length * 0.75).
+          go!
+    end
+
+    column_board = @right_column.column_board(RIGHT_COLUMN_BOARD_PEG_FACE)
+    connector = column_board.face_connector
+    connector.class.drawing_points(bounding_origin: @right_column.origin,
+                                   count: wall_panel_zpegs,
+                                   rows: 1,
+                                   part_length: column_board.length,
+                                   part_width: column_board.width,
+                                   item_length: connector.top_slot_length,
+                                   item_width: connector.top_slot_width) do |row, col, location|
+      zpeg = @right_column_zpegs[wall_panel_zpegs - col - 1]
+      zpeg.draw!
+
+
+      zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          rotate(vector: [0, 0, 1], rotation: 180.degrees).
+          rotate(vector: [0, 1, 0], rotation: 180.degrees).
+          move_to(point: zpeg.origin).
+          move_by(z: -1 * zpeg.thickness + column_board.width/2.0 ,
+                 x:  zpeg.width * -0.5 - thickness , #Left right
+                   y: -1 * location.y + Sk.abs(column_board.origin.y)  - thickness * 2 - column_board.length).
+          go!
+    end
+
+    groups = @left_column_zpegs.collect{|p| p.group}.concat(@right_column_zpegs.collect {|p| p.group}).concat([@left_column.group, @wall_panel.group, @right_column.group]).compact
     set_group(groups)
   end
 

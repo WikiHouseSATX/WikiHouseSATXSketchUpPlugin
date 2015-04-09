@@ -12,6 +12,7 @@ module WikiHouse::PartHelper
     @parent_part = parent_part
     @group = group
     @origin = origin ? origin : [0, 0, 0]
+   # puts "#{self.class.name} origin #{Sk.point_to_s(@origin)}"
     @label = label
   end
 

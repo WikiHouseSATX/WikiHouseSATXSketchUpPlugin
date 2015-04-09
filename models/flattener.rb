@@ -127,7 +127,7 @@ class WikiHouse::Flattener
         #puts "Reversing #{primary_face.normal.z}"
         primary_face.reverse!
       end
-      part.move_to!(point: [x, 100, -1 * z_filter])
+      part.move_to!(point: [x, 200, -1 * z_filter])
     else
       puts "This part does not have a primary face :("
     end

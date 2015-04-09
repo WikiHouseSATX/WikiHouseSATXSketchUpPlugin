@@ -66,13 +66,13 @@ class WikiHouse::WallPanel
     @top_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
         move_by(x: (@top_cap.width -  thickness) * -1,
                 y: 0,
-                z: length - @top_cap.thickness).
+                z: length - 2 * @top_cap.thickness).
         go!
     @bottom_cap.draw!
     @bottom_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
         move_by(x: (@bottom_cap.width -  thickness) * -1,
                 y: 0,
-                z: 0).
+                z: -1 * @bottom_cap.thickness).
         go!
 
     @left_outer_side.draw!
@@ -80,7 +80,7 @@ class WikiHouse::WallPanel
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x:  @left_outer_side.thickness,
-                y: 0,
+                y: -1 * @left_outer_side.thickness,
                 z: 0).
         go!
     @left_inner_side.draw!
@@ -88,7 +88,7 @@ class WikiHouse::WallPanel
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: @left_inner_side.thickness,
-                y: 0,
+                y: -1 * @left_inner_side.thickness,
                 z: panel_rib_width - @left_inner_side.thickness).
         go!
     @right_inner_side.draw!
@@ -96,7 +96,7 @@ class WikiHouse::WallPanel
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: @right_inner_side.thickness,
-                y: 0,
+                y: -1 * @right_inner_side.thickness,
                 z: panel_rib_width).
         go!
     @right_outer_side.draw!
@@ -104,7 +104,7 @@ class WikiHouse::WallPanel
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: @right_outer_side.thickness,
-                y: 0,
+                y: -1 * @right_outer_side.thickness,
                 z: panel_rib_width * 2 - @right_outer_side.thickness).
         go!
 
@@ -125,8 +125,8 @@ class WikiHouse::WallPanel
         rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
             move_to(point: origin).
             move_by(x: 0,
-                    y: panel_rib_width * -1,
-                    z: -1 * location.y + Sk.abs(origin.y)).
+                    y: panel_rib_width * -1 ,
+                    z: -1 * location.y + Sk.abs(origin.y) - rib.thickness).
             go!
 
       end
@@ -149,8 +149,8 @@ class WikiHouse::WallPanel
             rotate(vector: [1, 0, 0], rotation: 180.degrees).
             move_to(point: origin).
             move_by(x: 0,
-                    y: panel_rib_width,
-                    z: -1 * (-1 * location.y + Sk.abs(origin.y)) - rib.thickness).
+                    y: panel_rib_width ,
+                    z: -1 * (-1 * location.y + Sk.abs(origin.y)) ).
             go!
       end
     end
@@ -158,7 +158,7 @@ class WikiHouse::WallPanel
     @left_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: 0,
-                y: 0,
+                y: -1 * @left_face_front_panel.thickness,
                 z: - 1 * @left_face_front_panel.thickness).
         go!
 
@@ -166,7 +166,7 @@ class WikiHouse::WallPanel
     @left_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: 0,
-                y: 0,
+                y: -1 * @left_face_back_panel.thickness,
                 z: -1 * depth).
         go!
 
@@ -174,7 +174,7 @@ class WikiHouse::WallPanel
     @right_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: @right_face_front_panel.width,
-                y: 0,
+                y: -1 * @right_face_front_panel.thickness,
                 z: - 1 * @left_face_front_panel.thickness).
         go!
 
@@ -182,7 +182,7 @@ class WikiHouse::WallPanel
     @right_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: @right_face_front_panel.width,
-                y: 0,
+                y: -1 * @right_face_front_panel.thickness,
                 z: -1 * depth ).
         go!
 
