@@ -51,7 +51,11 @@ class WikiHouse::WallCorner
   end
 
   def wall_height
-    80
+    if sheet.length == 24
+      22.5
+    else
+      90
+    end
   end
 
   def wall_panel_zpegs

@@ -5,7 +5,7 @@ class WikiHouse::Flattener
     @starting_x = starting_x
     @starting_y = starting_y
     @flat_group = nil
-    @sheet = WikiHouse::Sheet.new
+    @sheet = WikiHouse.sheet.new
     Sk.find_or_create_layer(name: outside_edge_layer_name)
     Sk.find_or_create_layer(name: inside_edge_layer_name)
 

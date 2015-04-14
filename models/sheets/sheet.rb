@@ -1,4 +1,5 @@
 class WikiHouse::Sheet
+
   include WikiHouse::PartHelper
   attr_reader :origin, :orientation
 
@@ -13,33 +14,7 @@ class WikiHouse::Sheet
     @flat ? true : false
   end
 
-  def units
-    :inches
-  end
 
-  def horizontal?
-    @orientation == :horizontal
-  end
-
-  def vertical?
-    !horizontal?
-  end
-
-  def width
-    vertical? ? 48 : 96
-  end
-
-  def length
-    vertical? ? 96 : 48
-  end
-
-  def thickness
-    0.718
-  end
-
-  def margin
-    0.5
-  end
 
   def width_with_margin
     width - margin * 2
@@ -53,6 +28,15 @@ class WikiHouse::Sheet
     edge_length < width_with_margin.to_l || edge_length < length_with_margin.to_l ? true : false
   end
 
+  def self.material_name
+    "Wood_Plywood_Knots"
+  end
+  def self.material_filename
+    WikiHouse.plugin_file("plywood.jpg", "images")
+  end
+  def material
+    Sk.add_material(self.class.material_name, filename: self.class.material_filename )
+  end
   def draw!
 
     if flat?

@@ -21,7 +21,7 @@ class WikiHouse::SingleNesting
         nested_sheet = Sk.add_group
         nested_sheet.name = "#{e.name} Sheet"
         origin = [last_x, @starting_y, 0]
-        sheet = WikiHouse::Sheet.new(origin: origin, orientation: :vertical, flat: true)
+        sheet = WikiHouse.sheet.new(origin: origin, orientation: :vertical, flat: true)
         sheet.draw!
 
         sheet.set_layer(WikiHouse::Nester::LAYER_NAME)

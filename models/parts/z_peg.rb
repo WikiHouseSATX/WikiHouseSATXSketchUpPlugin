@@ -48,6 +48,7 @@ class WikiHouse::ZPeg
   end
 
   def make_dowels!
+    return if WikiHouse.machine.bit_radius == 0
     t = thickness
 
     d1 = [bounding_c1.x + 2 * t, bounding_c1.y + 2 * t, bounding_c1.z]
@@ -56,7 +57,7 @@ class WikiHouse::ZPeg
     d4 = [bounding_c1.x + 10 * t, bounding_c1.y + 6 * t, bounding_c1.z]
     d5 = [bounding_c1.x + 10 * t, bounding_c1.y + 10 * t, bounding_c1.z]
     dowels = []
-    [d1, d2, d3, d4, d5].each { |d| dowels << Sk.draw_circle(center_point: d, radius: WikiHouse::Cnc.bit_radius) }
+    [d1, d2, d3, d4, d5].each { |d| dowels << Sk.draw_circle(center_point: d, radius: WikiHouse.machine.bit_radius) }
     dowels.each { |d| d.each { |e| mark_inside_edge!(e) } }
 
     dowels

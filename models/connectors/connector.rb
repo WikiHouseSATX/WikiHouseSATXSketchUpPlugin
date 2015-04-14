@@ -17,7 +17,7 @@ include WikiHouse::AttributeHelper
   attr_reader :length_in_t, :count, :width_in_t,:thickness
 
   def initialize(length_in_t: nil, count: 1, width_in_t: nil, thickness: nil)
-    @thickness = thickness ? thickness : WikiHouse::Sheet.new.thickness
+    @thickness = thickness ? thickness : WikiHouse.sheet.new.thickness
     @length_in_t = length_in_t ? length_in_t : self.class.standard_length_in_t
     @count = count
     @width_in_t = width_in_t ? width_in_t : self.class.standard_width_in_t

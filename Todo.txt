@@ -1,5 +1,8 @@
 Pending Work
 =====================
+Add support for material in the sheet
+Added a new sheet type - fiberboard (for laser)
+Add a new machine type - laser
 Make a triangle corner
 Refactor Wall/Corner Wall to share more code
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
@@ -25,17 +28,5 @@ Need to be able to generate tabs for the part
 
 
 
-
-
-
 http://sketchupapi.blogspot.com/2011/07/gofaster-parameter.html (Group operations to make them easier to handle)
-Transformational matrix
-Lock pieces
-Pull to thickness
-group as components
-label parts with carving
-determine if right thickness
-
-set attributes
-
 Make a rake task to auto generate an .rbz for easy install  It's simple. RBZ files are nothing more than ZIP files. You can use your favorite ZIP tool (I like 7-zip on Windows) to create the archive, then rename it to have a .RBZ extension. Anything you put inside of this RBZ file, including files and subfolders, will be unpacked into the user's Plugins folder. That's it!

@@ -11,6 +11,13 @@ module WikiHouse
     @build_menus.nil? || @build_menus ? true : false
   end
 
+  def self.machine
+    WikiHouse::Config.machine
+  end
+  def self.sheet
+
+    WikiHouse::Config.sheet
+  end
   def self.error(msg)
     UI.messagebox(msg)
     return false
@@ -44,12 +51,20 @@ module WikiHouse
       #puts file if LOG_ON
       load file
     end
+    base_files = []
+    base_classes = [["connector.rb", "connectors"],
+                    ["machine.rb", "machines"],
+                    ["sheet.rb", "sheets"],
+                    ["tools.rb", "tools"]]
+    base_classes.each do  |item|
+      load plugin_file(item[0], ["models", item[1]]) #Other files depend on this
+      base_files << item[0]
+    end
 
-    load plugin_file("tools.rb", ["models", "tools"]) #Other files depend on this
 
     Dir[plugin_file("*.rb", ["models", "**"])].each do |file|
       #puts file if LOG_ON
-      load file unless ["tools.rb"].include? File.basename(file)
+      load file unless base_files.include? File.basename(file)
     end
 
 

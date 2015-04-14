@@ -35,19 +35,32 @@ class WikiHouse::WallPanel
   end
 
   def length
-    80
+    if sheet.length == 24
+      22.5
+    else
+      90
+    end
   end
 
   def width
-    80
+    if sheet.length == 24
+      22.5
+    else
+      90
+    end
   end
 
   def panel_rib_width
-    40
+    width/2.0
   end
 
   def depth
-    10
+    if sheet.width == 12
+      2.5
+    else
+      10
+    end
+
   end
 
   def number_of_internal_supports

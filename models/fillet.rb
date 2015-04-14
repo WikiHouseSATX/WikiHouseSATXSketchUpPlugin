@@ -1,6 +1,6 @@
 class WikiHouse::Fillet
   def self.bit_radius
-    WikiHouse::Cnc.bit_radius
+    WikiHouse.machine.bit_radius
   end
 
   def self.upper_to_right(corner)
@@ -59,7 +59,7 @@ class WikiHouse::Fillet
 
 
   def self.t_pocket_by_points(point_list)
-
+    return point_list unless  WikiHouse.machine.fillet?
     raise ArgumentError, "Expected only 8 corners" if point_list.length != 8
     pt1 = point_list[0]
     pt2 = point_list[1]
@@ -87,6 +87,7 @@ class WikiHouse::Fillet
   end
 
   def self.pocket_by_points(point_list)
+    return point_list unless  WikiHouse.machine.fillet?
     raise ArgumentError, "Expected only 4 corners" if point_list.length != 4
     pt1 = point_list[0]
     pt2 = point_list[1]
@@ -107,7 +108,7 @@ class WikiHouse::Fillet
 
   def self.by_points(point_list, pt1_index, pt2_index, pt3_index, reverse_it: false,
       angel_in_degrees: 90)
-
+    return point_list unless  WikiHouse.machine.fillet?
     raise ArgumentError, "Angle not supported" if angel_in_degrees != 90
     pt1 = point_list[pt1_index]
     pt2 = point_list[pt2_index]

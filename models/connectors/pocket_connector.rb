@@ -14,6 +14,7 @@ class WikiHouse::PocketConnector < WikiHouse::Connector
     c7 = [c6.x, c5.y - length, c5.z]
     c8 = [c5.x, c7.y, c5.z]
     points = [c5, c6, c7, c8]
+
     WikiHouse::Fillet.pocket_by_points(points)
 
     pocket_lines = Sk.draw_all_points(points)
@@ -21,6 +22,7 @@ class WikiHouse::PocketConnector < WikiHouse::Connector
     pocket_face = Sk.add_face(pocket_lines)
     pocket_face.erase!
     pocket_lines
+
   end
 
   def draw!(bounding_origin: nil, part_length: nil, part_width: nil)
@@ -31,7 +33,7 @@ class WikiHouse::PocketConnector < WikiHouse::Connector
                               part_length: part_length,
                               part_width: part_width,
                               item_length: length,
-                              item_width: width) { |row, col,location|
+                              item_width: width) { |row, col, location|
       pockets_list << draw_pocket!(location: location)
     }
     pockets_list
