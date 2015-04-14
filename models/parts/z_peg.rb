@@ -8,6 +8,7 @@ class WikiHouse::ZPeg
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
   end
+
   def length
     thickness * 12
   end
@@ -69,8 +70,11 @@ class WikiHouse::ZPeg
 
 
     lines = Sk.draw_all_points(points)
-    dowels = make_dowels!
-
+    if WikiHouse.machine.bit_radius != 0
+      dowels = make_dowels!
+    else
+      dowels = []
+    end
 
     face = Sk.add_face(lines)
     set_material(face)
