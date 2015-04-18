@@ -1,13 +1,11 @@
 Pending Work
 =====================
-Add support for material in the sheet
-Added a new sheet type - fiberboard (for laser)
-Add a new machine type - laser
+Build a 90 degree wall
+
 Make a triangle corner
 Refactor Wall/Corner Wall to share more code
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
-Build a 90 degree wall
-Add zpeg placement for the other two faces
+
 Build a button to center/top the view
 Move the spacing method out of connector into a helper
 

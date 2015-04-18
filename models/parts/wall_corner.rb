@@ -2,7 +2,7 @@ class WikiHouse::WallCorner
 
   include WikiHouse::PartHelper
   LEFT_COLUMN_BOARD_PEG_FACES = [3]
-  MIDDLE_COLUMN_BOARD_PEG_FACES = [1, 3]
+  MIDDLE_COLUMN_BOARD_PEG_FACES = [0,1,2,3]
   RIGHT_COLUMN_BOARD_PEG_FACES = [1]
 
   def initialize(origin: nil, sheet: nil, label: nil)
@@ -75,7 +75,20 @@ class WikiHouse::WallCorner
                                      item_length: connector.top_slot_length,
                                      item_width: connector.top_slot_width) do |row, col, location|
 
-        if key == 1
+        if key == 0
+          zpeg = zpegs[key][col]
+          zpeg.draw!
+
+
+          zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+              rotate(vector: [0, 1, 0], rotation: 90.degrees).
+              move_to(point: zpeg.origin).
+               move_by(z: -1 * zpeg.thickness + column_board.width/2.0,
+                       x: zpeg.width * 0.75,
+                       y: -1 * location.y + Sk.abs(origin.y) - zpeg.length * 0.75).
+              go!
+
+        elsif key == 1
           zpeg = zpegs[key][wall_panel_zpegs - col - 1]
           zpeg.draw!
 
@@ -88,6 +101,19 @@ class WikiHouse::WallCorner
                       x: zpeg.width * -0.5 - thickness, #Left right
                       y: -1 * location.y + Sk.abs(column_board.origin.y) - thickness * 2 - column_board.length).
               go!
+        elsif key == 2
+          zpeg = zpegs[key][wall_panel_zpegs - col - 1]
+          zpeg.draw!
+
+
+          zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+              rotate(vector: [0, 1, 0], rotation: -90.degrees).
+              move_to(point: zpeg.origin).
+               move_by(z: -1 * zpeg.thickness - column_board.width/2.0,
+                       x: zpeg.width * -0.5 + thickness , #In/Out
+                       y: -1 * location.y + Sk.abs(column_board.origin.y) - thickness * 3  - zpeg.width/2.0).
+              go!
+
         elsif key == 3
           zpeg = zpegs[key][col]
           zpeg.draw!
@@ -100,8 +126,7 @@ class WikiHouse::WallCorner
                       x: zpeg.width * 0.75,
                       y: -1 * location.y + Sk.abs(origin.y) - zpeg.length * 0.75).
               go!
-
-        else
+           else
           raise ScriptError, "Unsupported face"
         end
 
@@ -113,14 +138,14 @@ class WikiHouse::WallCorner
   def draw!
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
-    @left_column.draw!
-    @left_wall_panel.draw!
-    @middle_column.draw!
-    @right_wall_panel.draw!
-    @right_column.draw!
+    # @left_column.draw!
+    # @left_wall_panel.draw!
+     @middle_column.draw!
+    # @right_wall_panel.draw!
+    # @right_column.draw!
 
-    draw_zpegs!(column: @left_column, zpegs: @left_column_zpegs)
-    draw_zpegs!(column: @right_column, zpegs: @right_column_zpegs)
+    # draw_zpegs!(column: @left_column, zpegs: @left_column_zpegs)
+    # draw_zpegs!(column: @right_column, zpegs: @right_column_zpegs)
 
     draw_zpegs!(column: @middle_column, zpegs: @middle_column_zpegs)
 
