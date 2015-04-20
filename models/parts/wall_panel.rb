@@ -38,7 +38,7 @@ class WikiHouse::WallPanel
     if sheet.length == 24
       22.5
     else
-      90
+      94
     end
   end
 
@@ -46,7 +46,7 @@ class WikiHouse::WallPanel
     if sheet.length == 24
       22.5
     else
-      90
+      94
     end
   end
 

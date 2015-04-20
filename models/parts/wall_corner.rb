@@ -2,7 +2,7 @@ class WikiHouse::WallCorner
 
   include WikiHouse::PartHelper
   LEFT_COLUMN_BOARD_PEG_FACES = [3]
-  MIDDLE_COLUMN_BOARD_PEG_FACES = [0,1,2,3]
+  MIDDLE_COLUMN_BOARD_PEG_FACES = [1,3]
   RIGHT_COLUMN_BOARD_PEG_FACES = [1]
 
   def initialize(origin: nil, sheet: nil, label: nil)
@@ -54,7 +54,7 @@ class WikiHouse::WallCorner
     if sheet.length == 24
       22.5
     else
-      90
+      94
     end
   end
 
@@ -138,14 +138,14 @@ class WikiHouse::WallCorner
   def draw!
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
-    # @left_column.draw!
-    # @left_wall_panel.draw!
+     @left_column.draw!
+     @left_wall_panel.draw!
      @middle_column.draw!
-    # @right_wall_panel.draw!
-    # @right_column.draw!
+     @right_wall_panel.draw!
+     @right_column.draw!
 
-    # draw_zpegs!(column: @left_column, zpegs: @left_column_zpegs)
-    # draw_zpegs!(column: @right_column, zpegs: @right_column_zpegs)
+     draw_zpegs!(column: @left_column, zpegs: @left_column_zpegs)
+     draw_zpegs!(column: @right_column, zpegs: @right_column_zpegs)
 
     draw_zpegs!(column: @middle_column, zpegs: @middle_column_zpegs)
 
