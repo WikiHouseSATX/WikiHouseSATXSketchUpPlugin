@@ -149,7 +149,7 @@ module Sk
     #	puts "*******> DrawLine called without Group #{self.class}" unless group
     begin
       group ? group.entities.add_line(pt1, pt2) : Sketchup.active_model.active_entities.add_line(pt1, pt2)
-    rescue ArgumentError, e
+    rescue ArgumentError
       puts "Unable to make a line from #{pt1} #{pt2}"
       raise
     end

@@ -44,8 +44,12 @@ class WikiHouse::ZPeg
     c6 = [bounding_c1.x + 12 * t, bounding_c1.y + 4 * t, bounding_c1.z]
     c7 = [bounding_c1.x + 4 * t, bounding_c1.y + 4 * t, bounding_c1.z]
     c8 = [bounding_c1.x + 4 * t, bounding_c1.y, bounding_c1.z]
-
-    [bounding_c1, c2, c3, c4, c5, c6, c7, c8]
+    points = [bounding_c1, c2, c3, c4, c5, c6, c7, c8]
+    if WikiHouse.machine.fillet?
+      WikiHouse::Fillet.by_points(points, 3, 2, 1, reverse_it: true)
+      WikiHouse::Fillet.by_points(points, 9, 8, 7, reverse_it: true)
+    end
+    points
   end
 
   def make_dowels!
