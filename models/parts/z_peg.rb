@@ -35,20 +35,25 @@ class WikiHouse::ZPeg
 
   def make_peg
     t = thickness
-
+    c1 = [bounding_c1.x, bounding_c1.y + t, bounding_c1.z]
     c2 = [bounding_c1.x, bounding_c1.y + 8 * t, bounding_c1.z]
     c3 = [bounding_c1.x + 8 * t, bounding_c1.y + 8 * t, bounding_c1.z]
     c4 = [bounding_c1.x + 8 * t, bounding_c1.y + 12 * t, bounding_c1.z]
-    c5 = [bounding_c1.x + 12 * t, bounding_c1.y + 12 * t, bounding_c1.z]
 
+    c5 = [bounding_c1.x + 12 * t , bounding_c1.y + 12 * t, bounding_c1.z]
+    c4_5 =  [bounding_c1.x + 12 * t - 1 * t , bounding_c1.y + 12 * t , bounding_c1.z]
+    c5_6 = [bounding_c1.x + 12 * t, bounding_c1.y + 8 * t, bounding_c1.z]
     c6 = [bounding_c1.x + 12 * t, bounding_c1.y + 4 * t, bounding_c1.z]
+    c6_5 = [c6.x, c6.y + 1 * t, c6.z]
+    c6_7 = [c6.x - 1 * t, c6.y, c6.z]
     c7 = [bounding_c1.x + 4 * t, bounding_c1.y + 4 * t, bounding_c1.z]
     c8 = [bounding_c1.x + 4 * t, bounding_c1.y, bounding_c1.z]
-    points = [bounding_c1, c2, c3, c4, c5, c6, c7, c8]
-    if WikiHouse.machine.fillet?
-      WikiHouse::Fillet.by_points(points, 3, 2, 1, reverse_it: true)
-      WikiHouse::Fillet.by_points(points, 9, 8, 7, reverse_it: true)
-    end
+   points = [c1, c2, c3, c4, c4_5, c5_6, c6_5, c6_7, c7, c8]
+
+     if WikiHouse.machine.fillet?
+       WikiHouse::Fillet.by_points(points, 3, 2, 1, reverse_it: true)
+       WikiHouse::Fillet.by_points(points, 11, 10, 9, reverse_it: true)
+     end
     points
   end
 

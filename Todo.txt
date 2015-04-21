@@ -1,7 +1,6 @@
 Pending Work
 =====================
 
-Zpeg angle
 Make a triangle corner
 Refactor Wall/Corner Wall to share more code
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
