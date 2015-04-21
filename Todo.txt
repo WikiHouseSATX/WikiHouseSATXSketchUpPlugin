@@ -1,10 +1,11 @@
 Pending Work
 =====================
-Build a 90 degree wall
-
+Zpeg Fillet
+Zpeg angle
 Make a triangle corner
 Refactor Wall/Corner Wall to share more code
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
+Build a 90 degree wall
 
 Build a button to center/top the view
 Move the spacing method out of connector into a helper

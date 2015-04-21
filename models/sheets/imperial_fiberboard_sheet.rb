@@ -20,7 +20,7 @@ class WikiHouse::ImperialFiberboardSheet < WikiHouse::Sheet
   end
 
   def thickness
-    0.118
+    0.126
   end
 
   def margin
