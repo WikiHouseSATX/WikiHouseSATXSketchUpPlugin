@@ -9,11 +9,9 @@ class WikiHouse::Column
     @column_boards = []
     4.times do |index|
       if wall_panels_on.include?(index)
-        @column_boards << WikiHouse::WallColumnBoard.new(label: "#{label} Column ##{index + 1}", parent_part: self, origin: @origin, sheet: sheet)
-
+        mark_wall_panel_on!(index)
       else
-        @column_boards << WikiHouse::ColumnBoard.new(label: "#{label} Column ##{index + 1}", parent_part: self, origin: @origin, sheet: sheet)
-
+        mark_no_wall_panel_on!(index)
       end
     end
     @mid_ribs = []
@@ -26,6 +24,14 @@ class WikiHouse::Column
     @top_rib = WikiHouse::ColumnRib.new(label: "#{label} Column Top",
                                         parent_part: self,
                                         origin: [@origin.x, @origin.y + width, @origin.z + length - 2 * thickness])
+  end
+
+  def mark_no_wall_panel_on!(index)
+    @column_boards[index] = WikiHouse::ColumnBoard.new(label: "#{label} Column ##{index + 1}", parent_part: self, origin: @origin, sheet: sheet)
+  end
+
+  def mark_wall_panel_on!(index)
+    @column_boards[index] = WikiHouse::WallColumnBoard.new(label: "#{label} Column ##{index + 1}", parent_part: self, origin: @origin, sheet: sheet)
   end
 
   def column_board(index)

@@ -34,78 +34,7 @@ class WikiHouse::Wall
     3
   end
 
-  def draw_zpegs!(column: nil, zpegs: nil)
-    zpegs.each do |key, value|
-      column_board = column.column_board(key)
-      #  puts "Board #{column_board.group.name}"
-      connector = column_board.face_connector
-      connector.class.drawing_points(bounding_origin: column.origin,
-                                     count: wall_panel_zpegs,
-                                     rows: 1,
-                                     part_length: column_board.length,
-                                     part_width: column_board.width,
-                                     item_length: connector.top_slot_length,
-                                     item_width: connector.top_slot_width) do |row, col, location|
 
-        if key == 0
-          zpeg = zpegs[key][col]
-          zpeg.draw!
-
-
-          zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-              rotate(vector: [0, 1, 0], rotation: 90.degrees).
-              move_to(point: zpeg.origin).
-              move_by(z: -1 * zpeg.thickness + column_board.width/2.0,
-                      x: zpeg.width * 0.75,
-                      y: -1 * location.y + Sk.abs(origin.y) - zpeg.length * 0.75).
-              go!
-
-        elsif key == 1
-          zpeg = zpegs[key][wall_panel_zpegs - col - 1]
-          zpeg.draw!
-
-
-          zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-              rotate(vector: [0, 0, 1], rotation: 180.degrees).
-              rotate(vector: [0, 1, 0], rotation: 180.degrees).
-              move_to(point: zpeg.origin).
-              move_by(z: -1 * zpeg.thickness + column_board.width/2.0,
-                      x: zpeg.width * -0.5 - thickness, #Left right
-                      y: -1 * location.y + Sk.abs(column_board.origin.y) - thickness * 2 - column_board.length).
-              go!
-        elsif key == 2
-          zpeg = zpegs[key][wall_panel_zpegs - col - 1]
-          zpeg.draw!
-
-
-          zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-              rotate(vector: [0, 1, 0], rotation: -90.degrees).
-              move_to(point: zpeg.origin).
-              move_by(z: -1 * zpeg.thickness - column_board.width/2.0,
-                      x: zpeg.width * -0.5 + thickness, #In/Out
-                      y: -1 * location.y + Sk.abs(column_board.origin.y) - thickness * 3 - zpeg.width/2.0).
-              go!
-
-        elsif key == 3
-          zpeg = zpegs[key][col]
-          zpeg.draw!
-
-
-          zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-              rotate(vector: [0, 0, 1], rotation: 0.degrees).
-              move_to(point: zpeg.origin).
-              move_by(z: -1 * zpeg.thickness - column_board.width/2.0,
-                      x: zpeg.width * 0.75,
-                      y: -1 * location.y + Sk.abs(origin.y) - zpeg.length * 0.75).
-              go!
-        else
-          raise ScriptError, "Unsupported face"
-        end
-
-      end
-
-    end
-  end
 
   def draw!
     Sk.find_or_create_layer(name: self.class.name)

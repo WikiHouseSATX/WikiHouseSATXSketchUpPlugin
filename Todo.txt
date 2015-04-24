@@ -1,6 +1,9 @@
 Pending Work
 =====================
 
+Fix the zpeg 45 degree side
+Finish the wall refactor
+
 Make a triangle corner
 Refactor Wall/Corner Wall to share more code
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
@@ -10,7 +13,7 @@ Build a button to center/top the view
 Move the spacing method out of connector into a helper
 
 Refactor the fillet to only need a single index instead of three
-
+Refactor the draw! method so the bookkeeping of of drawn! is handled automatically
 To Replace Aspire
 ====================
 Need to be able to nest parts

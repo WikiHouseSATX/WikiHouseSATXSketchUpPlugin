@@ -14,8 +14,12 @@ module WikiHouse::PartHelper
     @origin = origin ? origin : [0, 0, 0]
    # puts "#{self.class.name} origin #{Sk.point_to_s(@origin)}"
     @label = label
+
   end
 
+  def drawn?
+    @group ? true : false
+  end
   def bounds
     group ? group.bounds : nil
   end
@@ -27,7 +31,9 @@ module WikiHouse::PartHelper
   def origin
     @origin
   end
-
+  def origin=(o)
+    @origin = o
+  end
   def draw!
     raise ScriptError, "You need to override this is method"
   end
