@@ -75,19 +75,19 @@ class WikiHouse::WallPanel
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
 
-    @top_cap.draw!
-    @top_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
-        move_by(x: (@top_cap.width -  thickness) * -1,
-                y: 0,
-                z: length - 2 * @top_cap.thickness).
-        go!
-    @bottom_cap.draw!
-    @bottom_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
-        move_by(x: (@bottom_cap.width -  thickness) * -1,
-                y: 0,
-                z: -1 * @bottom_cap.thickness).
-        go!
-
+    # @top_cap.draw!
+    # @top_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
+    #     move_by(x: (@top_cap.width -  thickness) * -1,
+    #             y: 0,
+    #             z: length - 2 * @top_cap.thickness).
+    #     go!
+    # @bottom_cap.draw!
+    # @bottom_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
+    #     move_by(x: (@bottom_cap.width -  thickness) * -1,
+    #             y: 0,
+    #             z: -1 * @bottom_cap.thickness).
+    #     go!
+    #
     @left_outer_side.draw!
     @left_outer_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
@@ -96,22 +96,22 @@ class WikiHouse::WallPanel
                 y: -1 * @left_outer_side.thickness,
                 z: 0).
         go!
-    @left_inner_side.draw!
-    @left_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        rotate(vector: [0, 1, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: @left_inner_side.thickness,
-                y: -1 * @left_inner_side.thickness,
-                z: panel_rib_width - @left_inner_side.thickness).
-        go!
-    @right_inner_side.draw!
-    @right_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        rotate(vector: [0, 1, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: @right_inner_side.thickness,
-                y: -1 * @right_inner_side.thickness,
-                z: panel_rib_width).
-        go!
+    # @left_inner_side.draw!
+    # @left_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     rotate(vector: [0, 1, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: @left_inner_side.thickness,
+    #             y: -1 * @left_inner_side.thickness,
+    #             z: panel_rib_width - @left_inner_side.thickness).
+    #     go!
+    # @right_inner_side.draw!
+    # @right_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     rotate(vector: [0, 1, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: @right_inner_side.thickness,
+    #             y: -1 * @right_inner_side.thickness,
+    #             z: panel_rib_width).
+    #     go!
     @right_outer_side.draw!
     @right_outer_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
@@ -167,37 +167,37 @@ class WikiHouse::WallPanel
             go!
       end
     end
-    @left_face_front_panel.draw!
-    @left_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: 0,
-                y: -1 * @left_face_front_panel.thickness,
-                z: - 1 * @left_face_front_panel.thickness).
-        go!
-
-    @left_face_back_panel.draw!
-    @left_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: 0,
-                y: -1 * @left_face_back_panel.thickness,
-                z: -1 * depth).
-        go!
-
-    @right_face_front_panel.draw!
-    @right_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: @right_face_front_panel.width,
-                y: -1 * @right_face_front_panel.thickness,
-                z: - 1 * @left_face_front_panel.thickness).
-        go!
-
-    @right_face_back_panel.draw!
-    @right_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: @right_face_front_panel.width,
-                y: -1 * @right_face_front_panel.thickness,
-                z: -1 * depth ).
-        go!
+    # @left_face_front_panel.draw!
+    # @left_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: 0,
+    #             y: -1 * @left_face_front_panel.thickness,
+    #             z: - 1 * @left_face_front_panel.thickness).
+    #     go!
+    #
+    # @left_face_back_panel.draw!
+    # @left_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: 0,
+    #             y: -1 * @left_face_back_panel.thickness,
+    #             z: -1 * depth).
+    #     go!
+    #
+    # @right_face_front_panel.draw!
+    # @right_face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: @right_face_front_panel.width,
+    #             y: -1 * @right_face_front_panel.thickness,
+    #             z: - 1 * @left_face_front_panel.thickness).
+    #     go!
+    #
+    # @right_face_back_panel.draw!
+    # @right_face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: @right_face_front_panel.width,
+    #             y: -1 * @right_face_front_panel.thickness,
+    #             z: -1 * depth ).
+    #     go!
 
     groups = @left_ribs.collect { |r| r.group }.concat(@right_ribs.collect { |r| r.group })
     groups.concat([@top_cap.group, @bottom_cap.group])
