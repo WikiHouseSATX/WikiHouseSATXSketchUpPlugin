@@ -42,13 +42,14 @@ class WikiHouse::ZPeg
 
     c5 = [bounding_c1.x + 12 * t , bounding_c1.y + 12 * t, bounding_c1.z]
     c4_5 =  [bounding_c1.x + 12 * t - 1 * t , bounding_c1.y + 12 * t , bounding_c1.z]
-    c5_6 = [bounding_c1.x + 12 * t, bounding_c1.y + 8 * t, bounding_c1.z]
+    c5_6 = [bounding_c1.x + 12 * t, bounding_c1.y + 10 * t, bounding_c1.z]
     c6 = [bounding_c1.x + 12 * t, bounding_c1.y + 4 * t, bounding_c1.z]
     c6_5 = [c6.x, c6.y + 1 * t, c6.z]
-    c6_7 = [c6.x - 1 * t, c6.y, c6.z]
+    c6_7 = [c6.x - 2 * t, c6.y, c6.z]
     c7 = [bounding_c1.x + 4 * t, bounding_c1.y + 4 * t, bounding_c1.z]
     c8 = [bounding_c1.x + 4 * t, bounding_c1.y, bounding_c1.z]
    points = [c1, c2, c3, c4, c4_5, c5_6, c6_5, c6_7, c7, c8]
+    points = [c1, c2, c3, c4,c4_5, c5_6, c6_5, c6_7,c7, c8]
 
      if WikiHouse.machine.fillet?
        WikiHouse::Fillet.by_points(points,1,2,3)
