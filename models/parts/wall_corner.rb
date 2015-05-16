@@ -135,7 +135,7 @@ class WikiHouse::WallCorner < WikiHouse::Wall
             #             x: 0,
             #             y: 100).
             #     go!
-            right_column.origin = [(Sk.round(left_front_bottom.x) + 20,
+            right_column.origin = [Sk.round(left_front_bottom.x) + 20,
                                    left_front_bottom.y + 60,
                                    left_front_bottom.z]
             puts "Setting the origin to #{Sk.point_to_s(right_column.origin)}"
@@ -311,15 +311,21 @@ class WikiHouse::WallCorner < WikiHouse::Wall
                                     sheet: sheet,
                                     wall_panels_on: [],
                                     parent_part: self)
-    @column2 = WikiHouse::Column.new(label: "Second", origin: [49,120,0],
+    @column2 = WikiHouse::Column.new(label: "Second", origin: origin,
                                     sheet: sheet,
                                     wall_panels_on: [],
                                     parent_part: self)
+
+    @wall_panel1 = WikiHouse::WallPanel.new(label: "First", origin: origin,
+                                           sheet: sheet, parent_part: self)
+    @wall_panel2 = WikiHouse::WallPanel.new(label: "Second", origin: origin,
+                                           sheet: sheet, parent_part: self)
    #DJE - the problem is that the origins of the sub parts dont' get updated.
     #need to confirm that when you update the origin after creation that the part gets drawn at the right place.
 
-    @column1.draw!
-    @column2.draw!
+    @wall_panel1.draw!
+    @wall_panel2.origin = [27, 80, 0]
+    @wall_panel2.draw!
     # @root_column = ColumnWithPanels.new(column_label: "Middle",
     #                                     parent_part: self)
     #

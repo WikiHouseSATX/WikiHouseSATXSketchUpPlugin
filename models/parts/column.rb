@@ -26,6 +26,14 @@ class WikiHouse::Column
                                         origin: [@origin.x, @origin.y + width, @origin.z + length - 2 * thickness])
   end
 
+  def origin=(new_origin)
+    @origin = new_origin
+    @bottom_rib.origin = [@origin.x, @origin.y + width, @origin.z - thickness]
+    @top_rib.origin = [@origin.x, @origin.y + width, @origin.z + length - 2 * thickness]
+    @mid_ribs.each {|rib| rib.origin = @origin}
+    @column_boards.each {|cb| cb.origin = @origin}
+  end
+
   def mark_no_wall_panel_on!(index)
     @column_boards[index] = WikiHouse::ColumnBoard.new(label: "#{label} Column ##{index + 1}", parent_part: self, origin: @origin, sheet: sheet)
   end

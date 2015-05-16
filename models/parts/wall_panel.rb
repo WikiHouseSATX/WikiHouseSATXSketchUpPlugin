@@ -34,6 +34,21 @@ class WikiHouse::WallPanel
 
   end
 
+  def origin=(new_origin)
+    @origin = new_origin
+    @right_ribs.each { |rib| rib.origin = @origin}
+    @left_ribs.each { |rib| rib.origin = @origin}
+    @top_cap.origin = @origin
+    @bottom_cap.origin = @origin
+    @left_outer_side.origin = @origin
+    @left_inner_side.origin = @origin
+    @right_outer_side.origin = @origin
+    @right_inner_side.origin = @origin
+    @left_face_front_panel.origin = @origin
+    @left_face_back_panel.origin = @origin
+    @right_face_front_panel.origin = @origin
+    @right_face_back_panel.origin = @origin
+  end
   def length
     if sheet.length == 24
       22.5
