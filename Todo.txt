@@ -1,7 +1,7 @@
 Pending Work
 =====================
 
-Fix the zpeg 45 degree side
+
 Finish the wall refactor
 
 Make a triangle corner
