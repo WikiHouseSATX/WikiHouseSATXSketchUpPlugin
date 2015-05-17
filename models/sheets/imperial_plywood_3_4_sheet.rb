@@ -1,4 +1,4 @@
-class WikiHouse::ImperialPlywoodSheet < WikiHouse::Sheet
+class WikiHouse::ImperialPlywood34Sheet < WikiHouse::Sheet
   def units
     :inches
   end
@@ -20,7 +20,7 @@ class WikiHouse::ImperialPlywoodSheet < WikiHouse::Sheet
   end
 
   def thickness
-    0.718
+    0.75
   end
 
   def margin

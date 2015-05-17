@@ -330,6 +330,18 @@ module WikiHouse::BoardPartHelper
     return([c5, c6])
   end
 
+  def build_shelfie_hook(connector: nil, start_pt: nil, end_pt: nil)
+    total_length = top?(connector) || bottom?(connector) ? width : length
+    tabs_too_big?(total_length,
+                  connector.count * connector.length,
+                  connector: connector)
+    return(connector.points(bounding_start: bounding_c1,
+                            bounding_end: bounding_c2,
+                            start_pt: start_pt,
+                            end_pt: end_pt,
+                            orientation: side_name(connector)))
+  end
+
 
   def side_name(connector)
     return :top if top?(connector)
@@ -357,6 +369,10 @@ module WikiHouse::BoardPartHelper
       @top_side_points = build_rip(connector: @top_connector,
                                    start_pt: top_first,
                                    end_pt: top_last)
+    elsif @top_connector.shelfie_hook?
+      @top_side_points = build_shelfie_hook(connector: @top_connector,
+                                            start_pt: top_first,
+                                            end_pt: top_last)
     elsif @top_connector.tab?
       @top_side_points = build_tabs(connector: @top_connector,
                                     start_pt: top_first,
@@ -377,6 +393,12 @@ module WikiHouse::BoardPartHelper
       @right_side_points = build_rip(connector: @right_connector,
                                      start_pt: @top_side_points.last,
                                      end_pt: @bottom_side_points.first)
+      @top_side_points[@top_side_points.length - 1] = @right_side_points.first
+      @bottom_side_points[0] = @right_side_points.last
+    elsif @right_connector.shelfie_hook?
+      @right_side_points = build_shelfie_hook(connector: @right_connector,
+                                              start_pt: @top_side_points.last,
+                                              end_pt: @bottom_side_points.first)
       @top_side_points[@top_side_points.length - 1] = @right_side_points.first
       @bottom_side_points[0] = @right_side_points.last
     elsif @right_connector.tab?
@@ -402,6 +424,10 @@ module WikiHouse::BoardPartHelper
       @bottom_side_points = build_rip(connector: @bottom_connector,
                                       start_pt: bottom_first,
                                       end_pt: bottom_last)
+    elsif @bottom_connector.shelfie_hook?
+      @bottom_side_points = build_shelfie_hook(connector: @bottom_connector,
+                                               start_pt: bottom_first,
+                                               end_pt: bottom_last)
     elsif @bottom_connector.tab?
       @bottom_side_points = build_tabs(connector: @bottom_connector,
                                        start_pt: bottom_first,
@@ -420,6 +446,12 @@ module WikiHouse::BoardPartHelper
       @left_side_points = build_rip(connector: @left_connector,
                                     start_pt: @bottom_side_points.last,
                                     end_pt: @top_side_points.first)
+      @bottom_side_points[@bottom_side_points.length - 1] = @left_side_points.first
+      @top_side_points[0] = @left_side_points.last
+    elsif @left_connector.shelfie_hook?
+      @left_side_points = build_shelfie_hook(connector: @left_connector,
+                                             start_pt: @bottom_side_points.last,
+                                             end_pt: @top_side_points.first)
       @bottom_side_points[@bottom_side_points.length - 1] = @left_side_points.first
       @top_side_points[0] = @left_side_points.last
 

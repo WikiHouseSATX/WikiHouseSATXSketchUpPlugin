@@ -1,10 +1,10 @@
-class WikiHouse::ZPeg
-  WikiHouse::Tools.register(:z_peg, self)
+class WikiHouse::Shelfie
+  WikiHouse::Tools.register(:shelfie, self)
 
   def draw_it(x, y, view)
 
 
-    wall = WikiHouse::DoubleZPeg.new()
+    wall = WikiHouse::Shelfie.new()
     wall.draw!
 
   end
@@ -21,17 +21,17 @@ class WikiHouse::ZPeg
   end
 
   def self.setup_toolbar
-    tool = WikiHouse::ZPeg.new
-    cmd = UI::Command.new("WikiHouse ZPeg") {
+    tool = WikiHouse::Shelfie.new
+    cmd = UI::Command.new("WikiHouse Shelfie") {
 
       Sketchup.active_model.select_tool(tool)
 
     }
     cmd.small_icon = WikiHouse.plugin_file("WikiHouse_logo_12.png", "images")
     cmd.large_icon = WikiHouse.plugin_file("WikiHouse_logo_24.png", "images")
-    cmd.tooltip = "WikiHouse ZPeg"
-    cmd.status_bar_text = "Auto Draws the Zpeg"
-    cmd.menu_text = "WikiHouse ZPeg"
+    cmd.tooltip = "WikiHouse Shelfie"
+    cmd.status_bar_text = "Auto Draws the shelfie"
+    cmd.menu_text = "WikiHouse Shelfie"
     WikiHouse::Tools.add_to_toolbar(cmd)
     tool
   end

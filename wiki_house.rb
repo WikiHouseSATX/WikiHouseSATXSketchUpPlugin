@@ -55,6 +55,7 @@ module WikiHouse
     base_classes = [["connector.rb", "connectors"],
                     ["machine.rb", "machines"],
                     ["sheet.rb", "sheets"],
+                    ["imperial_plywood_3_4_sheet.rb", "sheets"],
                     ["tools.rb", "tools"]]
     base_classes.each do  |item|
       load plugin_file(item[0], ["models", item[1]]) #Other files depend on this

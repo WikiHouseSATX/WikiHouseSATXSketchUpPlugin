@@ -3,7 +3,7 @@ Pending Work
 
 
 Finish the wall refactor
-
+Move the build_slots/build_tabs/build_rip to the connectors
 Make a triangle corner
 Refactor Wall/Corner Wall to share more code
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
