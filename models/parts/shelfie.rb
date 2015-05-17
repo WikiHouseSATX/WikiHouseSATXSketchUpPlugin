@@ -16,25 +16,32 @@ class WikiHouse::Shelfie
                top_connector: WikiHouse::ShelfieHookConnector.new( thickness: thickness),
                bottom_connector: WikiHouse::NoneConnector.new,
                left_connector: WikiHouse::NoneConnector.new,
-               face_connector: WikiHouse::ShelfiePocketConnector.new(thickness: thickness))
+               face_connector: [WikiHouse::ShelfiePocketConnector.new(thickness: thickness, width_in_t: (width/2.0)/thickness),
+                WikiHouse::GrooveConnector.new(thickness: thickness,
+                                               depth_in_t: Sk.round(1.0/3.0))
+               ])
 
   end
 
   def length
+     value = 18
 
     if sheet.width == 12
-      3.75
+      return(value/4)
     else
-      15
+      value
     end
+
   end
 
   def width
+    value = 16
 
     if sheet.width == 12
-      4
+      return(value/4)
     else
-      12
+      value
     end
+
   end
 end

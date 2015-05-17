@@ -23,11 +23,13 @@ class WikiHouse::Wall
 
 
   def wall_height
+    value = 94
     if sheet.length == 24
-      22.5
+      value/4.0
     else
-      94
+      value
     end
+
   end
 
   def wall_panel_zpegs

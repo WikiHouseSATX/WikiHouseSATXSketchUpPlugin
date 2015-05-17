@@ -1,8 +1,8 @@
 class WikiHouse::ShelfiePocketConnector< WikiHouse::PocketConnector
 
 
-  def initialize(thickness: nil)
-    super(length_in_t: 1, width_in_t: 8, thickness: thickness, rows: 1, count: 1)
+  def initialize(thickness: nil, width_in_t: 8)
+    super(length_in_t: 1, width_in_t: width_in_t, thickness: thickness, rows: 1, count: 1)
 
   end
 

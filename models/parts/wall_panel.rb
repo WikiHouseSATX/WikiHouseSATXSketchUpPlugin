@@ -50,18 +50,21 @@ class WikiHouse::WallPanel
     @right_face_back_panel.origin = @origin
   end
   def length
+    value = 94
+
     if sheet.length == 24
-      22.5
+      value/4.0
     else
-      94
+      value
     end
   end
 
   def width
+    value = 92
     if sheet.length == 24
-      22.5
+      value/4.0
     else
-      92
+      value
     end
   end
 
@@ -70,10 +73,11 @@ class WikiHouse::WallPanel
   end
 
   def depth
+    value = 10
     if sheet.width == 12
-      2.5
+      value/4.0
     else
-      10
+      value
     end
 
   end
