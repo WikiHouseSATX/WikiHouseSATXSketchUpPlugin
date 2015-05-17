@@ -314,9 +314,9 @@ class WikiHouse::WallCorner < WikiHouse::Wall
     @root_column = ColumnWithPanels.new(column_label: "Middle",
                                         parent_part: self)
 
-    panel = @root_column.add_panel(face: NORTH_FACE)
+    panel = @root_column.add_panel(face: EAST_FACE)
     column = panel.add_right_column(column_label: "End",
-                                    face: SOUTH_FACE
+                                    face: WEST_FACE
     )
 
     # panel = @root_column.add_panel(face: 1)
