@@ -38,7 +38,7 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
     extend Forwardable
     def_delegators :@wall_panel, :parent_part, :sheet,
-                   :origin, :origin=, :thickness, :drawn?
+                   :origin, :origin=, :thickness, :drawn?, :bounds
     def_delegators :parent_part, :face_label
 
     def initialize(label: nil, origin: nil, sheet: nil, parent_part: nil)
@@ -103,7 +103,14 @@ class WikiHouse::WallCorner < WikiHouse::Wall
         elsif left_column_face == WEST_FACE
           raise ScriptError, "no code"
         elsif left_column_face == SOUTH_FACE
-          raise ScriptError, "no code"
+          lcol_bounding_box = left_column.bounds
+
+          @wall_panel.rotate(vector: [0, 0, 1], rotation: 90.degrees).
+              move_to(point: origin).
+              move_by(z:  -1 * thickness,
+                      x: ( @wall_panel.length ) * -1,
+                      y: left_column.width * -1).
+              go!
 
         elsif left_column_face == EAST_FACE
           raise ScriptError, "no code"
@@ -115,39 +122,48 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
       end
       #draw the right column
-      wp_bounding_box = @wall_panel.bounds
-      left_front_bottom = wp_bounding_box.corner(0)
-      right_front_bottom = wp_bounding_box.corner(1)
-      left_back_bottom = wp_bounding_box.corner(2)
-      @wall_panel.origin = left_back_bottom
-
-      if right_column
-        unless right_column.drawn?
-          #fix the origin
-
-          if right_column_face == NORTH_FACE
-            raise ScriptError, "no code"
-
-          elsif right_column_face == WEST_FACE
-            raise ScriptError, "no code"
-          elsif right_column_face == SOUTH_FACE
-            right_column.origin = [Sk.round(@wall_panel.origin.x),
-                                   @wall_panel.origin.y - 0 * @wall_panel.thickness,
-                                   @wall_panel.origin.z + 1 * @wall_panel.thickness]
-
-          elsif right_column_face == EAST_FACE
-            raise ScriptError, "no code"
-          else
-            raise ArgumentError, "Face can only be 0,1,2,3 not #{right_column_face}"
-          end
-
-
-          right_column.draw!
-
-        end
-
-        @groups.concat(right_column.groups)
-      end
+      # wp_bounding_box = @wall_panel.bounds
+      # left_front_bottom = wp_bounding_box.corner(0)
+      # right_front_bottom = wp_bounding_box.corner(1)
+      #
+      #
+      # if right_column
+      #   unless right_column.drawn?
+      #     #fix the origin
+      #
+      #     if right_column_face == NORTH_FACE
+      #       left_front_bottom = wp_bounding_box.corner(0)
+      #       @wall_panel.origin = [left_front_bottom.x + right_column.width,
+      #                             left_front_bottom.y ,
+      #                             left_front_bottom.z]
+      #       right_column.origin = [Sk.round(@wall_panel.origin.x),
+      #                              @wall_panel.origin.y - 0 * @wall_panel.thickness,
+      #                              @wall_panel.origin.z + 1 * @wall_panel.thickness]
+      #
+      #
+      #     elsif right_column_face == WEST_FACE
+      #       raise ScriptError, "no code"
+      #     elsif right_column_face == SOUTH_FACE
+      #       left_back_bottom = wp_bounding_box.corner(2)
+      #       @wall_panel.origin = left_back_bottom
+      #
+      #       right_column.origin = [Sk.round(@wall_panel.origin.x),
+      #                              @wall_panel.origin.y - 0 * @wall_panel.thickness,
+      #                              @wall_panel.origin.z + 1 * @wall_panel.thickness]
+      #
+      #     elsif right_column_face == EAST_FACE
+      #       raise ScriptError, "no code"
+      #     else
+      #       raise ArgumentError, "Face can only be 0,1,2,3 not #{right_column_face}"
+      #     end
+      #
+      #
+      #     right_column.draw!
+      #
+      #   end
+      #
+      #   @groups.concat(right_column.groups)
+      # end
       @groups
     end
   end
@@ -155,7 +171,7 @@ class WikiHouse::WallCorner < WikiHouse::Wall
     attr_accessor :column, :zpegs, :panels, :groups
     extend Forwardable
     def_delegators :@column, :parent_part, :sheet, :origin,
-                   :thickness, :drawn?, :width, :length
+                   :thickness, :drawn?, :width, :length, :bounds
 
     def_delegators :parent_part, :face_label
 
@@ -219,7 +235,20 @@ class WikiHouse::WallCorner < WikiHouse::Wall
       end
       @groups
     end
+    def build_zpegs(face: nil, peg_label: nil)
+      @zpegs ||= {}
+      [0, 1, 2, 3, 4].each { |f| @zpegs[f] ||= [] }
+      parent_part.wall_panel_zpegs.times do |index|
 
+        p_label = "#{peg_label} #{face_label(face)}-#{index + 1}"
+        #puts "#{p_label}"
+        @zpegs[face] << WikiHouse::DoubleZPeg.new(label: p_label,
+                                                  origin: column.origin,
+                                                  sheet: column.sheet)
+
+      end
+      @zpegs
+    end
     private
     def draw_zpegs!
       zpegs.each do |key, value|
@@ -294,30 +323,18 @@ class WikiHouse::WallCorner < WikiHouse::Wall
       end
     end
 
-    def build_zpegs(face: nil, peg_label: nil)
-      @zpegs ||= {}
-      [0, 1, 2, 3, 4].each { |f| @zpegs[f] ||= [] }
-      parent_part.wall_panel_zpegs.times do |index|
 
-        p_label = "#{peg_label} #{face_label(face)}-#{index + 1}"
-        #puts "#{p_label}"
-        @zpegs[face] << WikiHouse::DoubleZPeg.new(label: p_label,
-                                                  origin: column.origin, sheet: column.sheet)
-
-      end
-      @zpegs
-    end
   end
 
   def initialize(origin: nil, sheet: nil, label: nil)
 
-    @root_column = ColumnWithPanels.new(column_label: "Middle",
+    @root_column = ColumnWithPanels.new(column_label: "Start",
                                         parent_part: self)
 
-    panel = @root_column.add_panel(face: EAST_FACE)
-    column = panel.add_right_column(column_label: "End",
-                                    face: WEST_FACE
-    )
+     panel = @root_column.add_panel(face: SOUTH_FACE)
+     column = panel.add_right_column(column_label: "End",
+                                     face: NORTH_FACE
+     )
 
     # panel = @root_column.add_panel(face: 1)
     # column = panel.add_right_column(column_label: "End",

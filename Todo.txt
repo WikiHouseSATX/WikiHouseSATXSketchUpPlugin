@@ -1,10 +1,11 @@
 Pending Work
 =====================
 
-Add a 1/4" deep groove the entire length of the shelfi
-Be able to flatanize the groove
+
 Finish the wall refactor
 Move the build_slots/build_tabs/build_rip to the connectors
+Add a 1/4" deep groove the entire length of the shelfi
+Be able to flatanize the groove
 Make a triangle corner
 Refactor Wall/Corner Wall to share more code
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)

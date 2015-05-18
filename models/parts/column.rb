@@ -136,4 +136,5 @@ class WikiHouse::Column
     set_group(groups)
 
   end
+
 end
