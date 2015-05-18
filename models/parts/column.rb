@@ -125,7 +125,7 @@ class WikiHouse::Column
           move_to(point: origin).
           move_by(x: 0,
                   y: rib.width * -1,
-                  z: -1 * location.y + Sk.abs(origin.y) - thickness).
+                  z: -1 * location.y + origin.y - thickness).
           go!
 
     end

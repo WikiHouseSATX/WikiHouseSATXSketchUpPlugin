@@ -11,6 +11,7 @@ class WikiHouse::WallPanel
 
 
     @left_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Left Outer", origin: @origin, sheet: sheet, parent_part: self)
+    @left_outer_side.activate_part!
     @left_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Left Inner", origin: @origin, sheet: sheet, parent_part: self)
     @right_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Right Outer", origin: @origin, sheet: sheet, parent_part: self)
     @right_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Right Inner", origin: @origin, sheet: sheet, parent_part: self)
@@ -106,7 +107,7 @@ class WikiHouse::WallPanel
     #             y: 0,
     #             z: -1 * @bottom_cap.thickness).
     #     go!
-    #
+
     @left_outer_side.draw!
     @left_outer_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
@@ -115,22 +116,22 @@ class WikiHouse::WallPanel
                 y: -1 * @left_outer_side.thickness,
                 z: 0).
         go!
-    # @left_inner_side.draw!
-    # @left_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     rotate(vector: [0, 1, 0], rotation: 90.degrees).
-    #     move_to(point: origin).
-    #     move_by(x: @left_inner_side.thickness,
-    #             y: -1 * @left_inner_side.thickness,
-    #             z: panel_rib_width - @left_inner_side.thickness).
-    #     go!
-    # @right_inner_side.draw!
-    # @right_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     rotate(vector: [0, 1, 0], rotation: 90.degrees).
-    #     move_to(point: origin).
-    #     move_by(x: @right_inner_side.thickness,
-    #             y: -1 * @right_inner_side.thickness,
-    #             z: panel_rib_width).
-    #     go!
+    @left_inner_side.draw!
+    @left_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        rotate(vector: [0, 1, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: @left_inner_side.thickness,
+                y: -1 * @left_inner_side.thickness,
+                z: panel_rib_width - @left_inner_side.thickness).
+        go!
+    @right_inner_side.draw!
+    @right_inner_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        rotate(vector: [0, 1, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: @right_inner_side.thickness,
+                y: -1 * @right_inner_side.thickness,
+                z: panel_rib_width).
+        go!
     @right_outer_side.draw!
     @right_outer_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).

@@ -34,6 +34,16 @@ class WikiHouse::Sheet
   def self.material_filename
     WikiHouse.plugin_file("plywood.jpg", "images")
   end
+  def self.active_material_name
+    "Active_Face_Material"
+  end
+  def self.active_material_filename
+    WikiHouse.plugin_file("grass.jpg", "images")
+  end
+  def active_material
+    #this is used to make a given face different for debugging
+    Sk.add_material(self.class.active_material_name, filename: self.class.active_material_filename )
+  end
   def material
     Sk.add_material(self.class.material_name, filename: self.class.material_filename )
   end

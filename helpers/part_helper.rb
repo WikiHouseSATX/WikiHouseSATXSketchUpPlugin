@@ -14,9 +14,16 @@ module WikiHouse::PartHelper
     @origin = origin ? origin : [0, 0, 0]
    # puts "#{self.class.name} origin #{Sk.point_to_s(@origin)}"
     @label = label
+    @active_part = false
 
   end
 
+  def active_part?
+    @active_part ?  true  : false
+  end
+  def activate_part!
+    @active_part = true
+  end
   def drawn?
     @group ? true : false
   end
@@ -114,10 +121,11 @@ module WikiHouse::PartHelper
 
   def set_material(face, face_material: nil)
     if face_material.nil?
-      face_material = sheet.material
+       face_material = active_part? ? sheet.active_material : sheet.material
     end
     face.material = face_material
   end
+
 
   def sub_group(entities, label: nil)
     sub_group = Sk.add_group entities
