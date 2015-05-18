@@ -338,12 +338,12 @@ class WikiHouse::WallCorner < WikiHouse::Wall
     @root_column = ColumnWithPanels.new(column_label: "Start",
                                         parent_part: self)
 
-     panel = @root_column.add_panel(face: NORTH_FACE)
+     panel = @root_column.add_panel(face: SOUTH_FACE)
      column2 = panel.add_right_column(column_label: "End",
-                                     face: SOUTH_FACE
+                                     face: NORTH_FACE
      )
-      panel2 = column2.add_panel(face:NORTH_FACE)
-     column3 = panel2.add_right_column(column_label: "End2", face: SOUTH_FACE)
+      panel2 = column2.add_panel(face:SOUTH_FACE)
+     column3 = panel2.add_right_column(column_label: "End2", face: NORTH_FACE)
 
 
   end

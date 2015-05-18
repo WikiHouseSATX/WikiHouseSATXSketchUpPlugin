@@ -159,7 +159,7 @@ class WikiHouse::WallPanel
             move_to(point: origin).
             move_by(x: 0,
                     y: panel_rib_width * -1 ,
-                    z: -1 * location.y + Sk.abs(origin.y) - rib.thickness).
+                    z: -1 * location.y + origin.y - rib.thickness).
             go!
 
       end
@@ -183,7 +183,7 @@ class WikiHouse::WallPanel
             move_to(point: origin).
             move_by(x: 0,
                     y: panel_rib_width ,
-                    z: -1 * (-1 * location.y + Sk.abs(origin.y)) ).
+                    z: -1 * (-1 * location.y + origin.y) ).
             go!
       end
     end
