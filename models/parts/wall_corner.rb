@@ -103,9 +103,14 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
 
         elsif left_column_face == WEST_FACE
-          raise ScriptError, "no code"
+          @wall_panel.rotate(vector: [0, 0, 1], rotation: 180.degrees).
+              move_to(point: origin).
+              move_by(z:  -1 * thickness,
+                      x: ( @wall_panel.length ) * 0,
+                      y: left_column.width * -1).
+              go!
         elsif left_column_face == SOUTH_FACE
-          lcol_bounding_box = left_column.bounds
+
 
           @wall_panel.rotate(vector: [0, 0, 1], rotation: 270.degrees).
               move_to(point: origin).
@@ -115,7 +120,7 @@ class WikiHouse::WallCorner < WikiHouse::Wall
               go!
 
         elsif left_column_face == EAST_FACE
-          raise ScriptError, "no code"
+          #this is the default orientation
 
         else
           raise ArgumentError, "Face can only be 0,1,2,3 not #{left_column_face}"
@@ -145,18 +150,30 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
 
           elsif right_column_face == WEST_FACE
-            raise ScriptError, "no code"
+            right_back_bottom = wp_bounding_box.corner(3)
+
+            @wall_panel.origin = right_front_bottom
+           # Sk.draw_line( @wall_panel.origin, [100,100,100])
+            right_column.origin = [Sk.round(@wall_panel.origin.x),
+                                   @wall_panel.origin.y - 2 * @wall_panel.thickness,
+                                   @wall_panel.origin.z + 1 * @wall_panel.thickness]
           elsif right_column_face == SOUTH_FACE
             left_back_bottom = wp_bounding_box.corner(2)
          #   Sk.draw_line( @wall_panel.origin, [100,100,100])
             @wall_panel.origin = left_back_bottom
 
             right_column.origin = [Sk.round(@wall_panel.origin.x),
-                                   @wall_panel.origin.y - 0 * @wall_panel.thickness,
+                                   @wall_panel.origin.y ,
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
 
           elsif right_column_face == EAST_FACE
-            raise ScriptError, "no code"
+            left_front_bottom = wp_bounding_box.corner(0)
+
+            @wall_panel.origin = left_front_bottom
+            # Sk.draw_line( @wall_panel.origin, [100,100,100])
+            right_column.origin = [Sk.round(@wall_panel.origin.x) - right_column.width,
+                                   @wall_panel.origin.y + 0 * @wall_panel.thickness,
+                                   @wall_panel.origin.z + 1 * @wall_panel.thickness]
           else
             raise ArgumentError, "Face can only be 0,1,2,3 not #{right_column_face}"
           end
@@ -335,15 +352,16 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
   def initialize(origin: nil, sheet: nil, label: nil)
 
+    #EAST-WEST-EAST Doesn't work
     @root_column = ColumnWithPanels.new(column_label: "Start",
                                         parent_part: self)
 
-     panel = @root_column.add_panel(face: SOUTH_FACE)
+     panel = @root_column.add_panel(face: EAST_FACE)
      column2 = panel.add_right_column(column_label: "End",
-                                     face: NORTH_FACE
+                                     face: WEST_FACE
      )
-      panel2 = column2.add_panel(face:SOUTH_FACE)
-     column3 = panel2.add_right_column(column_label: "End2", face: NORTH_FACE)
+     panel2 = column2.add_panel(face:EAST_FACE)
+     column3 = panel2.add_right_column(column_label: "End2", face: WEST_FACE)
 
 
   end
