@@ -57,19 +57,25 @@ class WikiHouse::WallCorner < WikiHouse::Wall
       @wall_panel.sheet
     end
 
-    def add_right_column(column_label: nil, face: nil)
-      rcolumn = ColumnWithPanels.new(column_label: column_label,
-                                     parent_part: parent_part)
-      rcolumn.origin = origin
+    def add_right_column(column_label: nil, face: nil, rcolumn: nil)
+      unless rcolumn
+        rcolumn = ColumnWithPanels.new(column_label: column_label,
+                                       parent_part: parent_part)
+        rcolumn.origin = origin
+      end
+
+
       rcolumn.set_panel(face: face, panel: self)
       @right_column = rcolumn
       @right_column_face = face
       @right_column
     end
 
-    def add_left_column(column_label: nil, face: nil)
-      lcolumn = ColumnWithPanels.new(column_label: column_label,
-                                     parent_part: parent_part)
+    def add_left_column(column_label: nil, face: nil, lcolumn: nil)
+      unless lcolumn
+        lcolumn = ColumnWithPanels.new(column_label: column_label,
+                                       parent_part: parent_part)
+      end
       lcolumn.origin = origin
       lcolumn.set_panel(face: face, panel: self)
       @left_column = lcolumn
@@ -105,8 +111,8 @@ class WikiHouse::WallCorner < WikiHouse::Wall
         elsif left_column_face == WEST_FACE
           @wall_panel.rotate(vector: [0, 0, 1], rotation: 180.degrees).
               move_to(point: origin).
-              move_by(z:  -1 * thickness,
-                      x: ( @wall_panel.length ) * 0,
+              move_by(z: -1 * thickness,
+                      x: (@wall_panel.length) * 0,
                       y: left_column.width * -1).
               go!
         elsif left_column_face == SOUTH_FACE
@@ -114,8 +120,8 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
           @wall_panel.rotate(vector: [0, 0, 1], rotation: 270.degrees).
               move_to(point: origin).
-              move_by(z:  -1 * thickness,
-                      x: ( @wall_panel.length ) * 0,
+              move_by(z: -1 * thickness,
+                      x: (@wall_panel.length) * 0,
                       y: left_column.width * 0).
               go!
 
@@ -132,8 +138,6 @@ class WikiHouse::WallCorner < WikiHouse::Wall
       wp_bounding_box = @wall_panel.bounds
 
 
-
-
       if right_column
         unless right_column.drawn?
 
@@ -141,9 +145,9 @@ class WikiHouse::WallCorner < WikiHouse::Wall
           if right_column_face == NORTH_FACE
             left_front_bottom = wp_bounding_box.corner(0)
             @wall_panel.origin = [left_front_bottom.x + right_column.width,
-                                  left_front_bottom.y ,
+                                  left_front_bottom.y,
                                   left_front_bottom.z]
-          #  Sk.draw_line( @wall_panel.origin, [100,100,100])
+            #  Sk.draw_line( @wall_panel.origin, [100,100,100])
             right_column.origin = [Sk.round(@wall_panel.origin.x) - right_column.width,
                                    @wall_panel.origin.y - 0 * @wall_panel.thickness - right_column.width,
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
@@ -153,17 +157,17 @@ class WikiHouse::WallCorner < WikiHouse::Wall
             right_front_bottom = wp_bounding_box.corner(1)
 
             @wall_panel.origin = right_front_bottom
-         #   Sk.draw_line( @wall_panel.origin, [100,100,100])
+            #   Sk.draw_line( @wall_panel.origin, [100,100,100])
             right_column.origin = [Sk.round(@wall_panel.origin.x) - right_column.width,
                                    @wall_panel.origin.y - 2 * @wall_panel.thickness,
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
           elsif right_column_face == SOUTH_FACE
             left_back_bottom = wp_bounding_box.corner(2)
-         #   Sk.draw_line( @wall_panel.origin, [100,100,100])
+            #   Sk.draw_line( @wall_panel.origin, [100,100,100])
             @wall_panel.origin = left_back_bottom
 
             right_column.origin = [Sk.round(@wall_panel.origin.x),
-                                   @wall_panel.origin.y ,
+                                   @wall_panel.origin.y,
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
 
           elsif right_column_face == EAST_FACE
@@ -259,6 +263,7 @@ class WikiHouse::WallCorner < WikiHouse::Wall
       end
       @groups
     end
+
     def build_zpegs(face: nil, peg_label: nil)
       @zpegs ||= {}
       [0, 1, 2, 3, 4].each { |f| @zpegs[f] ||= [] }
@@ -273,6 +278,7 @@ class WikiHouse::WallCorner < WikiHouse::Wall
       end
       @zpegs
     end
+
     private
     def draw_zpegs!
       zpegs.each do |key, value|
@@ -352,19 +358,27 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
   def initialize(origin: nil, sheet: nil, label: nil)
 
-    #EAST-WEST-EAST Doesn't work
-    @root_column = ColumnWithPanels.new(column_label: "Start",
+  #Can't complete loop
+    #loooks like one side of the panels is off
+    @root_column = ColumnWithPanels.new(column_label: "C1",
                                         parent_part: self)
 
-     panel = @root_column.add_panel(face: EAST_FACE)
-     column2 = panel.add_right_column(column_label: "End",
+    panel = @root_column.add_panel(face: EAST_FACE)
+    column2 = panel.add_right_column(column_label: "C1-C2",
                                      face: WEST_FACE
-     )
-     panel2 = column2.add_panel(face:EAST_FACE)
-     column3 = panel2.add_right_column(column_label: "End2", face: WEST_FACE)
-
-
+    )
+    panel2 = column2.add_panel(face: EAST_FACE)
+    column3 = panel2.add_right_column(column_label: "C2", face: WEST_FACE)
+    panel3 = column3.add_panel(face: SOUTH_FACE)
+     column4 = panel3.add_right_column(column_label: "C3", face: NORTH_FACE)
+     panel4 = column4.add_panel(face: WEST_FACE)
+     column5 = panel4.add_right_column(column_label: "C3-C4", face: EAST_FACE)
+     panel5 = column5.add_panel(face: WEST_FACE)
+    # column6 = panel5.add_right_column(column_label: "C4", face: EAST_FACE)
+    # panel6 = column6.add_panel(face: NORTH_FACE)
+    # #panel6.add_right_column(rcolumn:@root_column, face: SOUTH_FACE)
   end
+
   def face_label(face_value)
     return "North" if face_value == NORTH_FACE
     return "East" if face_value == EAST_FACE
@@ -377,7 +391,10 @@ class WikiHouse::WallCorner < WikiHouse::Wall
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
 
+    #Sk.start_operation("Draw a wall", disable_ui: true)
+
     @root_column.draw!
+   # Sk.commit_operation
     set_group(@root_column.groups.compact.uniq)
   end
 end

@@ -13,7 +13,7 @@ Build a 90 degree wall
 Build way to configure machine and choose default sheet
 Build a button to center/top the view
 Move the spacing method out of connector into a helper
-
+Remove Typename clals - http://forums.sketchucation.com/viewtopic.php?f=180&t=25305
 Refactor the fillet to only need a single index instead of three
 Refactor the draw! method so the bookkeeping of of drawn! is handled automatically
 To Replace Aspire
