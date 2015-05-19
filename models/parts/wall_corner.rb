@@ -150,11 +150,11 @@ class WikiHouse::WallCorner < WikiHouse::Wall
 
 
           elsif right_column_face == WEST_FACE
-            right_back_bottom = wp_bounding_box.corner(3)
+            right_front_bottom = wp_bounding_box.corner(1)
 
             @wall_panel.origin = right_front_bottom
-           # Sk.draw_line( @wall_panel.origin, [100,100,100])
-            right_column.origin = [Sk.round(@wall_panel.origin.x),
+         #   Sk.draw_line( @wall_panel.origin, [100,100,100])
+            right_column.origin = [Sk.round(@wall_panel.origin.x) - right_column.width,
                                    @wall_panel.origin.y - 2 * @wall_panel.thickness,
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
           elsif right_column_face == SOUTH_FACE
