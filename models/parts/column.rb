@@ -56,19 +56,22 @@ class WikiHouse::Column
 
 
   def width
-    if sheet.width == 12
-      2.5
-    else
-      10
-    end
+    value = 10
 
+    if sheet.length == 24
+      value/4.0
+    else
+      value
+    end
   end
 
   def length
+    value = 94
+
     if sheet.length == 24
-      22.5
+      value/4.0
     else
-      94
+      value
     end
   end
 

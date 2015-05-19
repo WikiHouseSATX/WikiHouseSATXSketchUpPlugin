@@ -1,18 +1,18 @@
 Pending Work
 =====================
 
-
-Finish the wall refactor
+Zpegs for West/North Face don't work when you scale the sheet
+Collapse the WallCorner into the Wall Object
 Move the build_slots/build_tabs/build_rip to the connectors
 Add a 1/4" deep groove the entire length of the shelfi
 Be able to flatanize the groove
 Make a triangle corner
-Refactor Wall/Corner Wall to share more code
+
 Refactor the board part helper to an edge connector so that object is responsible for drawing the actual connector(like pockets)
-Build a 90 degree wall
+
 Build way to configure machine and choose default sheet
 Build a button to center/top the view
-Move the spacing method out of connector into a helper
+
 Remove Typename clals - http://forums.sketchucation.com/viewtopic.php?f=180&t=25305
 Refactor the fillet to only need a single index instead of three
 Refactor the draw! method so the bookkeeping of of drawn! is handled automatically

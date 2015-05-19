@@ -11,7 +11,7 @@ class WikiHouse::WallPanel
 
 
     @left_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Left Outer", origin: @origin, sheet: sheet, parent_part: self)
-    @left_outer_side.activate_part!
+   # @left_outer_side.activate_part!
     @left_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Left Inner", origin: @origin, sheet: sheet, parent_part: self)
     @right_outer_side = WikiHouse::WallPanelOuterSide.new(label: "Right Outer", origin: @origin, sheet: sheet, parent_part: self)
     @right_inner_side = WikiHouse::WallPanelInnerSide.new(label: "Right Inner", origin: @origin, sheet: sheet, parent_part: self)
