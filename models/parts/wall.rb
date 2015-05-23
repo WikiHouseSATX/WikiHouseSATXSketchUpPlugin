@@ -1,26 +1,392 @@
-class WikiHouse::Wall
+require 'forwardable'
+class WikiHouse::Wall < WikiHouse::Wall
+  NORTH_FACE = 2
+  EAST_FACE = 1
+  SOUTH_FACE = 0
+  WEST_FACE = 3
+#  0
+# 1  3
+#  2
 
-  include WikiHouse::PartHelper
-  LEFT_COLUMN_BOARD_PEG_FACE = 3
-  RIGHT_COLUMN_BOARD_PEG_FACE = 1
+# X--WP--X
+#   X--WP--X--WP
+#   X--WP--X
+#          |
+#          WP
+#          |
+#          X
+#
+#           X
+#           |
+#           WP
+#           |
+#      X-WP-X-WP-X
+#           |
+#           WP
+#           |
+#           X
+# X--WP--X
+# |      |
+# WP     WP
+# |      |
+# X--WP--X
 
-  def initialize(origin: nil, sheet: nil, label: nil)
-    origin = [27, 56, 0]
-    part_init(sheet: sheet, origin: origin)
+  class ColumnWallPanel
 
-    @left_column = WikiHouse::Column.new(label: "Left", origin: @origin, sheet: @sheet, wall_panels_on: [LEFT_COLUMN_BOARD_PEG_FACE], parent_part: self)
-    @wall_panel = WikiHouse::WallPanel.new(label: "Wall Panel", origin: [@origin.x + @left_column.width, @origin.y, @origin.z], sheet: @sheet, parent_part: self)
-    @right_column = WikiHouse::Column.new(label: "Right", origin: [@origin.x + @left_column.width + @wall_panel.width, @origin.y, @origin.z], wall_panels_on: [RIGHT_COLUMN_BOARD_PEG_FACE], sheet: @sheet, parent_part: self)
-    @left_column_zpegs = []
-    @right_column_zpegs = []
-    wall_panel_zpegs.times do |index|
-      @left_column_zpegs << WikiHouse::DoubleZPeg.new(label: "LeftColumn #{index + 1}", origin: @left_column.origin, sheet: @sheet)
-      @right_column_zpegs << WikiHouse::DoubleZPeg.new(label: "RightColumn #{index + 1}", origin: @right_column.origin, sheet: @sheet)
+    attr_accessor :left_column, :right_column, :parent_part,
+                  :groups, :left_column_face, :right_column_face
+
+    extend Forwardable
+    def_delegators :@wall_panel, :parent_part, :sheet,
+                   :origin, :origin=, :thickness, :drawn?, :bounds, :label
+    def_delegators :parent_part, :face_label
+
+    def initialize(label: nil, origin: nil, sheet: nil, parent_part: nil)
+      @wall_panel = WikiHouse::WallPanel.new(label: label, origin: origin,
+                                             sheet: sheet, parent_part: parent_part)
+      @left_column = @right_column = @left_column_face = @right_column_face = nil
+      @parent_part = parent_part
+      @groups = []
     end
+
+    def origin
+      @wall_panel.origin
+    end
+
+    def sheet
+      @wall_panel.sheet
+    end
+
+    def add_right_column(column_label: nil, face: nil, rcolumn: nil)
+      unless rcolumn
+        rcolumn = ColumnWithPanels.new(column_label: column_label,
+                                       parent_part: parent_part)
+        rcolumn.origin = origin
+      end
+
+
+      rcolumn.set_panel(face: face, panel: self)
+      @right_column = rcolumn
+      @right_column_face = face
+      @right_column
+    end
+
+    def add_left_column(column_label: nil, face: nil, lcolumn: nil)
+      unless lcolumn
+        lcolumn = ColumnWithPanels.new(column_label: column_label,
+                                       parent_part: parent_part)
+      end
+      lcolumn.origin = origin
+      lcolumn.set_panel(face: face, panel: self)
+      @left_column = lcolumn
+      @left_column_face = face
+      @left_column
+    end
+
+    def draw!
+
+      #Draw left column
+      @groups = []
+      if left_column
+        left_column.draw! unless left_column.drawn?
+        @groups.concat(left_column.groups)
+        @wall_panel.origin = left_column.origin
+      end
+
+      #draw the panel
+      @wall_panel.draw!
+      @groups.concat([@wall_panel.group])
+      if left_column
+        #Rotate the wall panel to line up
+        if left_column_face == SOUTH_FACE
+
+          @wall_panel.rotate(vector: [0, 0, 1], rotation: 90.degrees).
+              move_to(point: origin).
+              move_by(z: -1 * thickness,
+                      x: left_column.width,
+                      y: left_column.width * -1).
+              go!
+
+
+        elsif left_column_face == EAST_FACE
+          @wall_panel.rotate(vector: [0, 0, 1], rotation: 180.degrees).
+              move_to(point: origin).
+              move_by(z: -1 * thickness,
+                      x: (@wall_panel.length) * 0,
+                      y: left_column.width * -1).
+              go!
+        elsif left_column_face == NORTH_FACE
+
+
+          @wall_panel.rotate(vector: [0, 0, 1], rotation: 270.degrees).
+              move_to(point: origin).
+              move_by(z: -1 * thickness,
+                      x: (@wall_panel.length) * 0,
+                      y: left_column.width * 0).
+              go!
+
+        elsif left_column_face == WEST_FACE
+          @wall_panel.
+              move_to(point: origin).
+              move_by(z: -1 * thickness,
+                      x: left_column.width,
+                      y: left_column.width * 0).
+              go!
+
+        else
+          raise ArgumentError, "Face can only be 0,1,2,3 not #{left_column_face}"
+        end
+
+
+      end
+      #draw the right column
+      wp_bounding_box = @wall_panel.bounds
+
+
+      if right_column
+        unless right_column.drawn?
+
+
+          if right_column_face == SOUTH_FACE
+            left_front_bottom = wp_bounding_box.corner(0)
+            @wall_panel.origin = [left_front_bottom.x + right_column.width,
+                                  left_front_bottom.y,
+                                  left_front_bottom.z]
+            #  Sk.draw_line( @wall_panel.origin, [100,100,100])
+            right_column.origin = [Sk.round(@wall_panel.origin.x) - right_column.width,
+                                   @wall_panel.origin.y - 0 * @wall_panel.thickness - right_column.width,
+                                   @wall_panel.origin.z + 1 * @wall_panel.thickness]
+
+
+          elsif right_column_face == EAST_FACE
+            right_front_bottom = wp_bounding_box.corner(1)
+
+            @wall_panel.origin = right_front_bottom
+            #  Sk.draw_line( @wall_panel.origin, [100,100,100])
+            right_column.origin = [Sk.round(@wall_panel.origin.x),
+                                   @wall_panel.origin.y - 0 * @wall_panel.thickness,
+                                   @wall_panel.origin.z + 1 * @wall_panel.thickness]
+          elsif right_column_face == NORTH_FACE
+            left_back_bottom = wp_bounding_box.corner(2)
+            #  Sk.draw_line( @wall_panel.origin, [100,100,100])
+            @wall_panel.origin = left_back_bottom
+
+            right_column.origin = [Sk.round(@wall_panel.origin.x),
+                                   @wall_panel.origin.y,
+                                   @wall_panel.origin.z + 1 * @wall_panel.thickness]
+
+          elsif right_column_face == WEST_FACE
+            left_front_bottom = wp_bounding_box.corner(0)
+
+            @wall_panel.origin = left_front_bottom
+            # Sk.draw_line( @wall_panel.origin, [100,100,100])
+            right_column.origin = [Sk.round(@wall_panel.origin.x) - right_column.width,
+                                   @wall_panel.origin.y + 0 * @wall_panel.thickness,
+                                   @wall_panel.origin.z + 1 * @wall_panel.thickness]
+          else
+            raise ArgumentError, "Face can only be 0,1,2,3 not #{right_column_face}"
+          end
+
+
+          right_column.draw!
+
+        end
+
+        @groups.concat(right_column.groups)
+      end
+      @groups
+    end
+  end
+  class ColumnWithPanels
+    attr_accessor :column, :zpegs, :panels, :groups
+    extend Forwardable
+    def_delegators :@column, :parent_part, :sheet, :origin,
+                   :thickness, :drawn?, :width, :length, :bounds, :label, :mark_wall_panel_on!
+
+    def_delegators :parent_part, :face_label
+
+    def initialize(column_label: nil, parent_part: nil)
+      @column = WikiHouse::Column.new(label: column_label, origin: parent_part.origin,
+                                      sheet: parent_part.sheet,
+                                      wall_panels_on: [],
+                                      parent_part: parent_part)
+
+      @drawing = false
+      @parent_part = parent_part
+      @panels = {}
+      @zpegs = {}
+      @groups = []
+    end
+
+    def origin=(new_origin)
+      @column.origin = new_origin
+
+      zpegs.each do |key, value|
+        next if value == []
+        value.each { |zp| zp.origin = new_origin }
+      end
+    end
+
+    def set_panel(face: nil, panel: nil)
+      raise ArgumentError, "Sorry #{face} is already in use" unless @panels[face].nil?
+      @panels[face] = panel
+      @column.mark_wall_panel_on!(face)
+      build_zpegs(face: face, peg_label: @column.label)
+
+    end
+
+    def add_panel(face: nil, panel: nil)
+      if panel.nil?
+        panel = ColumnWallPanel.new(label: "Panel on #{face_label(face)}",
+                                    origin: origin,
+                                    sheet: sheet,
+                                    parent_part: parent_part)
+      end
+      set_panel(face: face, panel: panel)
+      panel.left_column = self
+      panel.left_column_face = face
+      panel
+    end
+
+    def draw!
+      return if @drawing
+      @drawing = true
+      @groups = []
+      unless @column.drawn?
+
+        @column.draw!
+        @groups.concat([@column.group])
+        draw_zpegs!
+        zpegs.keys.each do |k|
+          @groups.concat(zpegs[k].collect { |v| v.group })
+        end
+      end
+      @panels.each do |key, panel|
+        unless panel.drawn?
+
+          panel.draw!
+        end
+
+        @groups.concat(panel.groups)
+      end
+      @groups
+    end
+
+    def build_zpegs(face: nil, peg_label: nil)
+      @zpegs ||= {}
+      [0, 1, 2, 3, 4].each { |f| @zpegs[f] ||= [] }
+      parent_part.wall_panel_zpegs.times do |index|
+
+        p_label = "#{peg_label} #{face_label(face)}-#{index + 1}"
+
+        @zpegs[face] << WikiHouse::DoubleZPeg.new(label: p_label,
+                                                  origin: column.origin,
+                                                  sheet: column.sheet)
+
+      end
+      @zpegs
+    end
+
+    private
+    def draw_zpegs!
+      zpegs.each do |key, value|
+        next if value == []
+        column_board = column.column_board(key)
+        connector = column_board.face_connector
+        connector.class.drawing_points(bounding_origin: column.origin,
+                                       count: parent_part.wall_panel_zpegs,
+                                       rows: 1,
+                                       part_length: column_board.length,
+                                       part_width: column_board.width,
+                                       item_length: connector.top_slot_length,
+                                       item_width: connector.top_slot_width) do |row, col, location|
+
+          if key == SOUTH_FACE
+            zpeg = zpegs[SOUTH_FACE][col]
+            zpeg.draw!
+
+
+            zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+                rotate(vector: [0, 1, 0], rotation: 90.degrees).
+                move_to(point: zpeg.origin).
+                move_by(z: -1 * zpeg.thickness + column_board.width/2.0,
+                        x: zpeg.thickness * 15,
+                        y: -1 * location.y + origin.y - zpeg.thickness * 9).
+                go!
+
+          elsif key == EAST_FACE
+            zpeg = zpegs[EAST_FACE][parent_part.wall_panel_zpegs - col - 1]
+            zpeg.draw!
+
+
+            zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+                #  rotate(vector: [0, 0, 1], rotation: 180.degrees).
+                rotate(vector: [0, 1, 0], rotation: 180.degrees).
+                move_to(point: zpeg.origin).
+                move_by(z: -1 * zpeg.thickness + column_board.width/2.0,
+                        x: zpeg.thickness * -5, #Left right
+                        y: -1 * location.y + column_board.origin.y - zpeg.thickness * 9).
+                go!
+          elsif key == NORTH_FACE
+            zpeg = zpegs[NORTH_FACE][parent_part.wall_panel_zpegs - col - 1]
+            zpeg.draw!
+
+
+            zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+                rotate(vector: [0, 1, 0], rotation: -90.degrees).
+                move_to(point: zpeg.origin).
+                move_by(z: -1 * zpeg.thickness - column_board.width/2.0,
+                        x: zpeg.thickness * -5, #In/Out
+                        y: -1 * location.y + column_board.origin.y - zpeg.thickness * 9).
+                go!
+
+          elsif key == WEST_FACE
+            zpeg = zpegs[WEST_FACE][col]
+            zpeg.draw!
+
+
+            zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+                rotate(vector: [0, 0, 1], rotation: 0.degrees).
+                move_to(point: zpeg.origin).
+                move_by(z: -1 * zpeg.thickness - column_board.width/2.0,
+                        x: zpeg.thickness * 8,
+                        y: -1 * location.y + origin.y - zpeg.thickness * 9).
+                go!
+          else
+            raise ScriptError, "Unsupported face"
+          end
+
+        end
+
+      end
+    end
+
 
   end
 
+  def initialize(origin: nil, sheet: nil, label: nil)
 
+    #Can't complete loop
+    #loooks like one side of the panels is off
+    @root_column = ColumnWithPanels.new(column_label: "C1",
+                                        parent_part: self)
+
+
+    panel = @root_column.add_panel(face: EAST_FACE)
+    column2 = panel.add_right_column(column_label: "C1-C2",
+                                     face: WEST_FACE
+    )
+    # panel2 = column2.add_panel(face: EAST_FACE)
+    # column3 = panel2.add_right_column(column_label: "C2", face: WEST_FACE)
+    # panel3 = column3.add_panel(face: SOUTH_FACE)
+    #  column4 = panel3.add_right_column(column_label: "C3", face: NORTH_FACE)
+    #  panel4 = column4.add_panel(face: WEST_FACE)
+    #  column5 = panel4.add_right_column(column_label: "C3-C4", face: EAST_FACE)
+    #  panel5 = column5.add_panel(face: WEST_FACE)
+    # column6 = panel5.add_right_column(column_label: "C4", face: EAST_FACE)
+    # panel6 = column6.add_panel(face: NORTH_FACE)
+    # panel6.add_right_column(rcolumn:@root_column, face: SOUTH_FACE)
+  end
 
   def wall_height
     value = 94
@@ -37,60 +403,23 @@ class WikiHouse::Wall
   end
 
 
+  def face_label(face_value)
+    return "North" if face_value == NORTH_FACE
+    return "East" if face_value == EAST_FACE
+    return "South" if face_value == SOUTH_FACE
+    return "West" if face_value == WEST_FACE
+    "Unknown"
+  end
 
   def draw!
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
-    @left_column.draw!
-    @wall_panel.draw!
-    @right_column.draw!
-    column_board = @left_column.column_board(LEFT_COLUMN_BOARD_PEG_FACE)
-    connector = column_board.face_connector
-    connector.class.drawing_points(bounding_origin: origin,
-                                   count: wall_panel_zpegs,
-                                   rows: 1,
-                                   part_length: column_board.length,
-                                   part_width: column_board.width,
-                                   item_length: connector.top_slot_length,
-                                   item_width: connector.top_slot_width) do |row, col, location|
-      zpeg = @left_column_zpegs[col]
-      zpeg.draw!
 
+    #Sk.start_operation("Draw a wall", disable_ui: true)
 
-      zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          rotate(vector: [0, 0, 1], rotation: 0.degrees).
-          move_to(point: origin).
-          move_by(z: -1 * zpeg.thickness - column_board.width/2.0,
-                  x: zpeg.width * 0.75,
-                  y: -1 * location.y + Sk.abs(origin.y) - zpeg.length * 0.75).
-          go!
-    end
-
-    column_board = @right_column.column_board(RIGHT_COLUMN_BOARD_PEG_FACE)
-    connector = column_board.face_connector
-    connector.class.drawing_points(bounding_origin: @right_column.origin,
-                                   count: wall_panel_zpegs,
-                                   rows: 1,
-                                   part_length: column_board.length,
-                                   part_width: column_board.width,
-                                   item_length: connector.top_slot_length,
-                                   item_width: connector.top_slot_width) do |row, col, location|
-      zpeg = @right_column_zpegs[wall_panel_zpegs - col - 1]
-      zpeg.draw!
-
-
-      zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          rotate(vector: [0, 0, 1], rotation: 180.degrees).
-          rotate(vector: [0, 1, 0], rotation: 180.degrees).
-          move_to(point: zpeg.origin).
-          move_by(z: -1 * zpeg.thickness + column_board.width/2.0,
-                  x: zpeg.width * -0.5 - thickness, #Left right
-                  y: -1 * location.y + Sk.abs(column_board.origin.y) - thickness * 2 - column_board.length).
-          go!
-    end
-
-    groups = @left_column_zpegs.collect { |p| p.group }.concat(@right_column_zpegs.collect { |p| p.group }).concat([@left_column.group, @wall_panel.group, @right_column.group]).compact
-    set_group(groups)
+    @root_column.draw!
+    # Sk.commit_operation
+    set_group(@root_column.groups.compact.uniq)
   end
 
 

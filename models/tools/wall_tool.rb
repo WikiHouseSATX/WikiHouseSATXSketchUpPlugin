@@ -11,7 +11,7 @@ class WikiHouse::WallTool
   def draw_it(x, y, view)
 
 
-      wall = WikiHouse::WallCorner.new()
+      wall = WikiHouse::Wall.new()
       wall.draw!
 
   end
