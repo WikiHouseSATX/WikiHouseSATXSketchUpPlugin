@@ -13,18 +13,16 @@ class WikiHouse::Shelfie
     @width_method = :width
 
     init_board(right_connector: WikiHouse::NoneConnector.new,
-               top_connector: WikiHouse::ShelfieHookConnector.new( thickness: thickness),
+               top_connector: WikiHouse::ShelfieHookConnector.new(thickness: thickness),
                bottom_connector: WikiHouse::NoneConnector.new,
                left_connector: WikiHouse::NoneConnector.new,
                face_connector: [WikiHouse::ShelfiePocketConnector.new(thickness: thickness, width_in_t: (width/2.0)/thickness),
-                WikiHouse::GrooveConnector.new(thickness: thickness,
-                                               depth_in_t: Sk.round(1.0/3.0))
-               ])
+                                WikiHouse::ShelfieGrooveConnector.new(thickness: thickness, width_in_t: (width/thickness))])
 
   end
 
   def length
-     value = 18
+    value = 18
 
     if sheet.width == 12
       return(value/4)

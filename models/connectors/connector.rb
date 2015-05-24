@@ -80,7 +80,12 @@ class WikiHouse::Connector
   def shelfie_pocket?
     false
   end
-
+  def shelfie_groove?
+    false
+  end
+  def groove?
+    false
+  end
   def name
     :connector
   end

@@ -214,9 +214,14 @@ module WikiHouse::BoardPartHelper
     face = Sk.add_face(lines)
     if @face_connector.is_a?(Array)
 
-      @face_connector.each { |c| c.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width) }
+      @face_connector.each do |c|
+        c.draw!(bounding_origin: bounding_c1,
+                part_length: length,
+                part_width: width) unless c.groove?
+      end
+
     else
-      @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width)
+      @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width) unless @face_connector.groove?
 
     end
 
@@ -224,7 +229,21 @@ module WikiHouse::BoardPartHelper
 
 
     make_part_right_thickness(face)
+
     face2 = Sk.add_face(lines)
+    if @face_connector.is_a?(Array)
+
+      @face_connector.each do |c|
+        c.draw!(bounding_origin: bounding_c1,
+                part_length: length,
+                part_width: width) if c.groove?
+      end
+
+    else
+      @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width) if @face_connector.groove?
+
+    end
+
 
     set_group(face.all_connected)
     mark_primary_face!(face)
@@ -233,4 +252,5 @@ module WikiHouse::BoardPartHelper
   def set_default_properties
     mark_cutable!
   end
+
 end

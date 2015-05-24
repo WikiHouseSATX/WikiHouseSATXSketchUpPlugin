@@ -2,8 +2,13 @@ Pending Work
 =====================
 
 Move the orientation to an object
-Add a 1/4" deep groove the entire length of the shelfi
-Be able to flatanize the groove
+Groove work -
+    It doesn't handle groove fillets right
+    It doesn't set the material after drawing in
+    It doens't know if they are the entier length or not
+    It doesn't flatanize properly
+    It isn't set as an inside edge.
+
 Make a triangle corner
 
 Build way to configure machine and choose default sheet
