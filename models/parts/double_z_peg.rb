@@ -8,7 +8,11 @@ class WikiHouse::DoubleZPeg
     @right_zpeg = WikiHouse::ZPeg.new(sheet: @sheet, origin: [@origin.x, @origin.y, @origin.z + thickness], label: "#{label} right", parent_part: self)
   end
 
-
+  def origin=(new_origin)
+    @origin = new_origin
+    @left_zpeg.origin = new_origin
+    @right_zpeg.origin = [new_origin.x, new_origin.y, new_origin.z + thickness]
+  end
   def length
     thickness * 12
   end

@@ -8,7 +8,9 @@ class WikiHouse::ZPeg
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
   end
-
+  def origin=(new_origin)
+    @origin = new_origin
+  end
   def length
     thickness * 12
   end

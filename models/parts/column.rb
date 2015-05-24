@@ -1,4 +1,8 @@
 class WikiHouse::Column
+  NORTH_FACE = 2
+  EAST_FACE = 1
+  SOUTH_FACE = 0
+  WEST_FACE = 3
   include WikiHouse::PartHelper
 
 
@@ -81,25 +85,24 @@ class WikiHouse::Column
     @column_boards.each_with_index do |board, index|
       board.draw!
 
-
-      if index == 0
+      if index == SOUTH_FACE
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             move_to(point: origin)
         alteration.move_by(x: 0, y: thickness * -1, z: width * -1)
-      elsif index == 1
+      elsif index == EAST_FACE
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 90.degrees).
             move_to(point: origin).
             move_by(x: 0, y: thickness * -1, z: 0)
-      elsif index == 2
+      elsif index == NORTH_FACE
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 180.degrees).
             move_to(point: origin).
             move_by(x: board.width * -1, y: thickness * -1, z: 0)
-      elsif index == 3
+      elsif index == WEST_FACE
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 270.degrees).
