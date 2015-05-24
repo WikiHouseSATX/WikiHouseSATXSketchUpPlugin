@@ -4,8 +4,8 @@ class WikiHouse::Config
     WikiHouse::Cnc
   end
   def self.sheet
-    WikiHouse::ImperialPlywood2332Sheet
-   # WikiHouse::ImperialPlywood34Sheet
+  #  WikiHouse::ImperialPlywood2332Sheet
+    WikiHouse::ImperialPlywood34Sheet
 #  WikiHouse::ImperialFiberboardSheet
   end
 end
