@@ -1,7 +1,7 @@
 Pending Work
 =====================
 
-Move the build_slots/build_tabs/build_rip to the connectors
+Move the orientation to an object
 Add a 1/4" deep groove the entire length of the shelfi
 Be able to flatanize the groove
 Make a triangle corner

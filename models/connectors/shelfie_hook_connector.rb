@@ -25,7 +25,9 @@ class WikiHouse::ShelfieHookConnector < WikiHouse::Connector
              bounding_end: nil,
              start_pt: nil,
              end_pt: nil,
-             orientation: nil)
+             orientation: nil,
+             starting_thickness: nil,
+             total_length: nil)
    if orientation == :top
 
 

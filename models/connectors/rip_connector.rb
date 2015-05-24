@@ -22,7 +22,9 @@ class WikiHouse::RipConnector < WikiHouse::Connector
              bounding_end: nil,
              start_pt: nil,
              end_pt: nil,
-             orientation: nil)
+             orientation: nil,
+             starting_thickness: nil,
+             total_length: nil)
     c5 = start_pt
     c6 = end_pt
     if orientation == :right
