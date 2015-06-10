@@ -4,7 +4,8 @@ class WikiHouse::ZPeg
   def draw_it(x, y, view)
 
 
-    wall = WikiHouse::DoubleZPeg.new()
+ #   wall = WikiHouse::DoubleZPeg.new()
+    wall = WikiHouse::DoubleUPeg.new()
     wall.draw!
 
   end

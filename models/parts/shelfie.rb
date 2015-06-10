@@ -1,3 +1,6 @@
+#TODO - Groove Support
+#TODO - Dowel Holes
+
 class WikiHouse::Shelfie
 
   include WikiHouse::PartHelper
@@ -16,8 +19,9 @@ class WikiHouse::Shelfie
                top_connector: WikiHouse::ShelfieHookConnector.new(thickness: thickness),
                bottom_connector: WikiHouse::NoneConnector.new,
                left_connector: WikiHouse::NoneConnector.new,
-               face_connector: [WikiHouse::ShelfiePocketConnector.new(thickness: thickness, width_in_t: (width/2.0)/thickness),
-                                WikiHouse::ShelfieGrooveConnector.new(sheet: @sheet, width_in_t: (width/thickness/2.0))])
+               face_connector: [WikiHouse::ShelfiePocketConnector.new(thickness: thickness, width_in_t: (width/2.0)/thickness)]
+    )
+                           #     WikiHouse::ShelfieGrooveConnector.new(sheet: @sheet, width_in_t: (width/thickness/2.0))])
 
   end
 
