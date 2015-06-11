@@ -8,15 +8,17 @@ class WikiHouse::UPeg
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
   end
+
   def origin=(new_origin)
     @origin = new_origin
   end
+
   def length
-    thickness * 12
+    thickness * 9
   end
 
   def width
-    thickness * 12
+    thickness * 10
   end
 
   def bounding_c1
@@ -37,38 +39,33 @@ class WikiHouse::UPeg
 
   def make_peg
     t = thickness
-    c1 = [bounding_c1.x, bounding_c1.y + t, bounding_c1.z]
-    c2 = [bounding_c1.x, bounding_c1.y + 8 * t, bounding_c1.z]
-    c3 = [bounding_c1.x + 8 * t, bounding_c1.y + 8 * t, bounding_c1.z]
-    c4 = [bounding_c1.x + 8 * t, bounding_c1.y + 12 * t, bounding_c1.z]
+    c1 = [bounding_c1.x, bounding_c1.y, bounding_c1.z]
+    c2 = [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
+    c3 = [bounding_c1.x + 3 * t, bounding_c1.y - t, bounding_c1.z]
+    c4 = [bounding_c1.x + 4 * t, bounding_c1.y - t, bounding_c1.z]
+    c5 = [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+    c6 = [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+    c7 = [bounding_c1.x + 6 * t, bounding_c1.y - 1 * t, bounding_c1.z]
+    c8 = [bounding_c1.x + 7 * t, bounding_c1.y - 1 * t, bounding_c1.z]
+    c9 = [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
+    c10 = [bounding_c1.x + 10 * t, bounding_c1.y, bounding_c1.z]
+    c11 = [bounding_c1.x + 10 * t, bounding_c1.y - 8 * t, bounding_c1.z]
+    c12 = [bounding_c1.x, bounding_c1.y - 9 * t, bounding_c1.z]
+    [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12]
 
-    c5 = [bounding_c1.x + 12 * t , bounding_c1.y + 12 * t, bounding_c1.z]
-    c4_5 =  [bounding_c1.x + 12 * t - 1 * t , bounding_c1.y + 12 * t , bounding_c1.z]
-    c5_6 = [bounding_c1.x + 12 * t, bounding_c1.y + 10 * t, bounding_c1.z]
-    c6 = [bounding_c1.x + 12 * t, bounding_c1.y + 4 * t, bounding_c1.z]
-    c6_5 = [c6.x, c6.y + 1 * t, c6.z]
-    c6_7 = [c6.x - 2 * t, c6.y, c6.z]
-    c7 = [bounding_c1.x + 4 * t, bounding_c1.y + 4 * t, bounding_c1.z]
-    c8 = [bounding_c1.x + 4 * t, bounding_c1.y, bounding_c1.z]
-    points = [c1, c2, c3, c4, c4_5, c5_6, c6_5, c6_7, c7, c8]
-    points = [c1, c2, c3, c4,c4_5, c5_6, c6_5, c6_7,c7, c8]
 
-    if WikiHouse.machine.fillet?
-      WikiHouse::Fillet.by_points(points,1,2,3)
-      WikiHouse::Fillet.by_points(points, 9,10,11)
-    end
-    points
   end
 
   def make_dowels!
-    return if WikiHouse.machine.bit_radius == 0
+
+    return [] if WikiHouse.machine.bit_radius == 0
     t = thickness
 
-    d1 = [bounding_c1.x + 2 * t, bounding_c1.y + 2 * t, bounding_c1.z]
-    d2 = [bounding_c1.x + 2 * t, bounding_c1.y + 6 * t, bounding_c1.z]
-    d3 = [bounding_c1.x + 6 * t, bounding_c1.y + 6 * t, bounding_c1.z]
-    d4 = [bounding_c1.x + 10 * t, bounding_c1.y + 6 * t, bounding_c1.z]
-    d5 = [bounding_c1.x + 10 * t, bounding_c1.y + 10 * t, bounding_c1.z]
+    d1 = [bounding_c1.x + 1.5 * t, bounding_c1.y - 2.5 * t, bounding_c1.z]
+    d2 = [bounding_c1.x + 8.5 * t, bounding_c1.y - 2.5 * t, bounding_c1.z]
+    d3 = [bounding_c1.x + 8.5 * t, bounding_c1.y - 6.5 * t, bounding_c1.z]
+    d4 = [bounding_c1.x + 5 * t,   bounding_c1.y - 6.5 * t, bounding_c1.z]
+    d5 = [bounding_c1.x + 1.5 * t, bounding_c1.y - 6.5 * t, bounding_c1.z]
     dowels = []
     [d1, d2, d3, d4, d5].each { |d| dowels << Sk.draw_circle(center_point: d, radius: WikiHouse.machine.bit_radius) }
     dowels.each { |d| d.each { |e| mark_inside_edge!(e) } }

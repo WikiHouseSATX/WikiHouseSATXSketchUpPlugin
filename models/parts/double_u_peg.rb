@@ -7,9 +7,10 @@ class WikiHouse::DoubleUPeg
 
     @left_upeg = WikiHouse::UPeg.new(sheet: @sheet, origin: @origin, label: "#{label} Left", parent_part: self)
     @right_upeg = WikiHouse::UPeg.new(sheet: @sheet, origin: [@origin.x, @origin.y, @origin.z + thickness], label: "#{label} right", parent_part: self)
-    @left_wedge = WikiHouse::Wedge.new(sheet: @sheet, origin: @origin, label: "#{label} Left", parent_part: self)
-    @right_wedge = WikiHouse::Wedge.new(sheet: @sheet, origin: [@origin.x, @origin.y, @origin.z + thickness],
-                                        label: "#{label} right", parent_part: self)
+    @left_wedge = WikiHouse::Wedge.new(sheet: @sheet, origin:  [@origin.x , @origin.y - 9 * self.sheet.thickness, @origin.z], label: "#{label} Left", parent_part: self,
+                                        width_in_t: 10, right_length_in_t: 2, left_length_in_t: 1)
+    @right_wedge = WikiHouse::Wedge.new(sheet: @sheet, origin: [@origin.x , @origin.y - 9 * self.sheet.thickness, @origin.z + thickness],
+                                        label: "#{label} right", parent_part: self,   width_in_t: 10, right_length_in_t: 2, left_length_in_t: 1)
 
 
   end
@@ -33,12 +34,12 @@ class WikiHouse::DoubleUPeg
 
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
-  #  @left_upeg.draw!
-  #  @right_upeg.draw!
+    @left_upeg.draw!
+   @right_upeg.draw!
     @left_wedge.draw!
     @right_wedge.draw!
 
-    groups = [@left_upeg.group, @right_upeg.group].compact
+    groups = [@left_upeg.group, @right_upeg.group, @left_wedge.group, @right_wedge.group].compact
     set_group(groups)
 
   end
