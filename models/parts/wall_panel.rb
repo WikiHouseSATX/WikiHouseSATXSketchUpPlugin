@@ -133,22 +133,22 @@ class WikiHouse::WallPanel
 
       end
     end
-    # @face_front_panel.draw!
-    # @face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     move_to(point: origin).
-    #     move_by(x: 0,
-    #             y: -1 * @face_front_panel.thickness,
-    #             z: - 1 * @face_front_panel.thickness).
-    #     go!
-    #
-    # @face_back_panel.draw!
-    # @face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-    #     move_to(point: origin).
-    #     move_by(x: 0,
-    #             y: -1 * @face_back_panel.thickness,
-    #             z: -1 * depth).
-    #     go!
-    #
+    @face_front_panel.draw!
+    @face_front_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: 0,
+                y: -1 * @face_front_panel.thickness,
+                z: - 1 * @face_front_panel.thickness).
+        go!
+
+    @face_back_panel.draw!
+    @face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: 0,
+                y: -1 * @face_back_panel.thickness,
+                z: -1 * depth).
+        go!
+
     groups = @ribs.collect { |r| r.group }
     groups.concat([@top_cap.group, @bottom_cap.group])
     groups.concat([@left_side.group, @right_side.group, @face_front_panel.group, @face_back_panel.group])

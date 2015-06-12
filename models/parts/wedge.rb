@@ -68,7 +68,7 @@ class WikiHouse::Wedge
      return [] if WikiHouse.machine.bit_radius == 0
      t = thickness
 
-     d1 = [bounding_c1.x + (@width_in_t/2.0) * t, (bounding_c1.y + bounding_c4.y)/2.05, bounding_c1.z]
+     d1 = [bounding_c1.x + (@width_in_t/2.0) * t, (bounding_c1.y + bounding_c4.y)/2.05 , bounding_c1.z]
      d2 = [bounding_c2.x - width * 0.15,(bounding_c1.y + bounding_c4.y)/2.1 , bounding_c1.z]
 
      dowels = []

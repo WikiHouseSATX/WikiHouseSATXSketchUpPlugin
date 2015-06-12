@@ -2,7 +2,7 @@ class WikiHouse::UPegEndPassThruConnector < WikiHouse::PocketConnector
 
 
   def initialize(thickness: nil)
-    super(length_in_t: 10, width_in_t: 2, thickness: thickness, rows: 1, count: 1)
+    super(length_in_t: 9, width_in_t: 2, thickness: thickness, rows: 1, count: 1)
 
   end
 

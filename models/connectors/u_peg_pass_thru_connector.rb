@@ -2,7 +2,7 @@ class WikiHouse::UPegPassThruConnector < WikiHouse::PocketConnector
 
 
   def initialize(thickness: nil, count: 1)
-    super(length_in_t: 10, width_in_t: 2, thickness: thickness, rows: 1, count: count)
+    super(length_in_t: 9, width_in_t: 2, thickness: thickness, rows: 1, count: count)
 
   end
 
@@ -16,7 +16,7 @@ class WikiHouse::UPegPassThruConnector < WikiHouse::PocketConnector
                               item_length: thickness,
                               item_width: width) { |row, col, location|
       pockets_list << draw_pocket!(location: [location.x ,
-                                              location.y - (3 * thickness),
+                                              location.y - (4 * thickness),
                                               location.z])
     }
     pockets_list
