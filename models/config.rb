@@ -8,4 +8,7 @@ class WikiHouse::Config
     WikiHouse::ImperialPlywood34Sheet
  # WikiHouse::ImperialFiberboardSheet
   end
+  def self.current_part
+
+  end
 end

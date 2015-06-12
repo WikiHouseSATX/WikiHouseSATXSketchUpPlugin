@@ -1,4 +1,4 @@
-class WikiHouse::Shelfie
+class WikiHouse::ShelfieTool
   WikiHouse::Tools.register(:shelfie, self)
 
   def draw_it(x, y, view)
@@ -21,7 +21,7 @@ class WikiHouse::Shelfie
   end
 
   def self.setup_toolbar
-    tool = WikiHouse::Shelfie.new
+    tool = WikiHouse::ShelfieTool.new
     cmd = UI::Command.new("WikiHouse Shelfie") {
 
       Sketchup.active_model.select_tool(tool)

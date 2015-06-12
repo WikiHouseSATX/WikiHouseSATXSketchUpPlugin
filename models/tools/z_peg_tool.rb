@@ -1,4 +1,4 @@
-class WikiHouse::ZPeg
+class WikiHouse::ZPegTool
   WikiHouse::Tools.register(:z_peg, self)
 
   def draw_it(x, y, view)
@@ -22,7 +22,7 @@ class WikiHouse::ZPeg
   end
 
   def self.setup_toolbar
-    tool = WikiHouse::ZPeg.new
+    tool = WikiHouse::ZPegTool.new
     cmd = UI::Command.new("WikiHouse ZPeg") {
 
       Sketchup.active_model.select_tool(tool)
