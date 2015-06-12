@@ -9,12 +9,16 @@ class WikiHouse::WallPanelOuterSide
 
     @length_method = :length
     @width_method = :depth
-    init_board(right_connector: WikiHouse::RipConnector.new( thickness: @sheet.thickness),
+    init_board(right_connector: WikiHouse::TabConnector.new(count: 2, thickness: @sheet.thickness),
                top_connector: WikiHouse::SlotConnector.new(count: 1, thickness: @sheet.thickness),
                bottom_connector: WikiHouse::SlotConnector.new(count: 1, thickness: @sheet.thickness),
-               left_connector: WikiHouse::RipConnector.new( thickness: @sheet.thickness),
-               face_connector: WikiHouse::TPocketConnector.new(count: 3))
+               left_connector: WikiHouse::TabConnector.new(count: 2, thickness: @sheet.thickness),
+               face_connector: [
+                   WikiHouse::UPegPassThruConnector.new(thickness: @sheet.thickness, count: 3),
+                   WikiHouse::UPegEndPassThruConnector.new(thickness: @sheet.thickness),
+                   WikiHouse::PocketConnector.new(count: 3)]
+    )
 
   end
 
- end
+end

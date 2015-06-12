@@ -1,8 +1,8 @@
-class WikiHouse::UPegLockPocketConnector < WikiHouse::PocketConnector
+class WikiHouse::UPegEndPassThruConnector < WikiHouse::PocketConnector
 
 
   def initialize(thickness: nil)
-    super(length_in_t: 3, width_in_t: 2, thickness: thickness, rows: 1, count: 1)
+    super(length_in_t: 10, width_in_t: 2, thickness: thickness, rows: 1, count: 1)
 
   end
 
@@ -11,7 +11,7 @@ class WikiHouse::UPegLockPocketConnector < WikiHouse::PocketConnector
     half_width_part = part_width/2.0
     half_width_connector = width/2.0
 
-    offset = 2 * thickness
+    offset = 4 * thickness
 
     lines = draw_pocket!(location: [bounding_origin.x + half_width_part - half_width_connector ,
                                     bounding_origin.y - offset,
@@ -34,11 +34,11 @@ class WikiHouse::UPegLockPocketConnector < WikiHouse::PocketConnector
     true
   end
 
-  def upeg_lock?
+  def upeg_end_pass_thru?
     true
   end
 
   def name
-    :upeg_lock
+    :upeg_end_pass_thru
   end
 end
