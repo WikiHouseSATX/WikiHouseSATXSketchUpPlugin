@@ -15,7 +15,7 @@ class WikiHouse::Config
     parent_part.width = 92/2.0
     parent_part.depth = 10
     parent_part.panel_rib_width = parent_part.width
-    WikiHouse::WallPanelOuterSide.new(label: "Top", origin: [0,0,0],  parent_part: parent_part)
-
+   # WikiHouse::WallPanelOuterSide.new(label: "Top", origin: [0,0,0],  parent_part: parent_part)
+    WikiHouse::WallPanel.new()
   end
 end

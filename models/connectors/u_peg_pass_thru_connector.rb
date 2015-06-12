@@ -7,7 +7,6 @@ class WikiHouse::UPegPassThruConnector < WikiHouse::PocketConnector
   end
 
   def draw!(bounding_origin: nil, part_length: nil, part_width: nil)
-    puts "Count is #{count}"
     pockets_list = []
     self.class.drawing_points(bounding_origin: bounding_origin,
                               count: count,
