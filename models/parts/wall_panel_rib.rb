@@ -11,7 +11,7 @@ class WikiHouse::WallPanelRib
                top_connector:  WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
                bottom_connector:  WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
                left_connector:  WikiHouse::TabConnector.new(count: 2, thickness: @sheet.thickness),
-              face_connector: WikiHouse::ZPegTopConnector.new(thickness: @sheet.thickness))
+              face_connector: WikiHouse::UPegLockPocketConnector.new(thickness: @sheet.thickness))
 
   end
 
