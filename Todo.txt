@@ -1,6 +1,15 @@
 Pending Work
 =====================
 
+Design a half height panel
+Fix column for Upeg
+Get rendering to work
+
+Door section - 94 tall
+Door opening is 34 wide by 82 inches tall
+Support double ribs in place
+Make sure the faces are all the way around tabs.
+
 Move the orientation to an object
 Groove work -
     It doesn't handle groove fillets right

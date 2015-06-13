@@ -46,12 +46,13 @@ class WikiHouse::WallPanel
   end
 
   def width
-    value = 46
-    if sheet.length == 24
-      value/4.0
-    else
-      value
-    end
+    length/2.0
+    # value = 94/2.0
+    # if sheet.length == 24
+    #   value/4.0
+    # else
+    #   value
+    # end
   end
 
   def panel_rib_width
