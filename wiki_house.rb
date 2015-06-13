@@ -53,6 +53,8 @@ module WikiHouse
     end
     base_files = []
     base_classes = [["connector.rb", "connectors"],
+                    ["pocket_connector.rb", "connectors"],
+                    ["tab_connector.rb", "connectors"],
                     ["machine.rb", "machines"],
                     ["sheet.rb", "sheets"],
                     ["imperial_plywood_3_4_sheet.rb", "sheets"],

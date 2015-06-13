@@ -11,31 +11,36 @@ class WikiHouse::UPegLockPocketConnector < WikiHouse::PocketConnector
 
   def draw!(bounding_origin: nil, part_length: nil, part_width: nil)
 
-    half_width_part = part_width/2.0
-    half_width_connector = width/2.0
-
+  
     offset = 2 * thickness
     lines = []
     if orientations.include?(Sk::EAST_FACE) || orientations.include?(Sk::WEST_FACE)
+
+
       original_length_in_t = @length_in_t
       original_width_in_t = @width_in_t
       @length_in_t = original_width_in_t
       @width_in_t = original_length_in_t
+      half_length_part = part_length/2.0
+      half_length_connector = length/2.0
       if orientations.include?(Sk::EAST_FACE)
 
         lines.concat(draw_pocket!(location: [bounding_origin.x + offset,
-                                             bounding_origin.y - half_width_part + half_width_connector,
+                                             bounding_origin.y - half_length_part + half_length_connector,
                                              bounding_origin.z]))
 
       end
       if orientations.include?(Sk::WEST_FACE)
-        lines.concat(draw_pocket!(location: [bounding_origin.x + part_length - offset - (@width_in_t * thickness),
-                                             bounding_origin.y - half_width_part + half_width_connector,
+        lines.concat(draw_pocket!(location: [bounding_origin.x + part_width - offset - (@width_in_t * thickness),
+                                             bounding_origin.y - half_length_part + half_length_connector,
                                              bounding_origin.z]))
       end
       @length_in_t = original_length_in_t
       @width_in_t = original_width_in_t
     end
+    half_width_part = part_width/2.0
+    half_width_connector = width/2.0
+
     if orientations.include?(Sk::SOUTH_FACE)
       lines.concat(draw_pocket!(location: [bounding_origin.x + half_width_part - half_width_connector,
                                            bounding_origin.y - offset,

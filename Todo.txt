@@ -1,8 +1,17 @@
 Pending Work
 =====================
 
+Door Panel Outer Side
+
+    Spectal Extra Tab at the top
+
 
 Get rendering to work - for the wall builder
+Confirm depth of the pre hund door panel
+
+handle getting wall paenl -> half panel to use the correct fittings
+handle getting wall_panel -> door panel to sue the ocrrect fittnings
+
 
 Door section - 94 tall
 Door opening is 34 wide by 82 inches tall
