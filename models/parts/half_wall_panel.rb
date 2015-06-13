@@ -1,11 +1,11 @@
-class WikiHouse::WallPanel
+class WikiHouse::HalfWallPanel < WikiHouse::WallPanel
 
   include WikiHouse::PartHelper
 
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil)
     part_init(sheet: sheet, origin: origin, parent_part: parent_part)
 
-    #has 2 caps, 2 faces, 3 ribs, 2 sides
+    #has 2 caps, 2 faces, 1 ribs, 2 sides
     @top_cap = WikiHouse::WallPanelCap.new(label: "Top", origin: @origin, sheet: sheet, parent_part: self)
     @bottom_cap = WikiHouse::WallPanelCap.new(label: "Bottom", origin: @origin, sheet: sheet, parent_part: self)
 
@@ -36,7 +36,7 @@ class WikiHouse::WallPanel
   end
 
   def length
-    value = 94
+    value = 94/2.0
 
     if sheet.length == 24
       value/4.0
@@ -55,22 +55,9 @@ class WikiHouse::WallPanel
     # end
   end
 
-  def panel_rib_width
-    width
-  end
-
-  def depth
-    value = 10
-    if sheet.width == 12
-      value/4.0
-    else
-      value
-    end
-
-  end
 
   def number_of_internal_supports
-    3
+   1
   end
 
   def number_of_face_tabs
@@ -98,7 +85,7 @@ class WikiHouse::WallPanel
     @left_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: -1 * @left_side.thickness,
+        move_by(x: @left_side.thickness,
                 y: -1 * @left_side.thickness,
                 z: 0).
         go!
@@ -106,7 +93,7 @@ class WikiHouse::WallPanel
     @right_side.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: -1 * @right_side.thickness,
+        move_by(x: @right_side.thickness,
                 y: -1 * @right_side.thickness,
                 z: panel_rib_width  - @right_side.thickness).
         go!
@@ -127,7 +114,7 @@ class WikiHouse::WallPanel
 
         rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
             move_to(point: origin).
-            move_by(x: -1 * thickness,
+            move_by(x: 0,
                     y: panel_rib_width * -1,
                     z: -1 * location.y + origin.y - rib.thickness).
             go!
@@ -139,15 +126,15 @@ class WikiHouse::WallPanel
         move_to(point: origin).
         move_by(x: 0,
                 y: -1 * @face_front_panel.thickness,
-                z: 0 * @face_front_panel.thickness).
+                z: - 1 * @face_front_panel.thickness).
         go!
 
     @face_back_panel.draw!
     @face_back_panel.rotate(vector: [1, 0, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: 0 * @face_back_panel.thickness,
+        move_by(x: 0,
                 y: -1 * @face_back_panel.thickness,
-                z: -1 * depth + @face_back_panel.thickness).
+                z: -1 * depth).
         go!
 
     groups = @ribs.collect { |r| r.group }
