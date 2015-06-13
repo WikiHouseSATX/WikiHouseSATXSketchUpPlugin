@@ -1,10 +1,7 @@
 require 'forwardable'
 class WikiHouse::Wall
   include WikiHouse::PartHelper
-  NORTH_FACE = WikiHouse::Column::NORTH_FACE
-  EAST_FACE = WikiHouse::Column::EAST_FACE
-  SOUTH_FACE = WikiHouse::Column::SOUTH_FACE
-  WEST_FACE = WikiHouse::Column::WEST_FACE
+
 #  0
 # 1  3
 #  2
@@ -99,7 +96,7 @@ class WikiHouse::Wall
       @groups.concat([@wall_panel.group])
       if left_column
         #Rotate the wall panel to line up
-        if left_column_face == SOUTH_FACE
+        if left_column_face == Sk::SOUTH_FACE
 
           @wall_panel.rotate(vector: [0, 0, 1], rotation: 90.degrees).
               move_to(point: origin).
@@ -109,14 +106,14 @@ class WikiHouse::Wall
               go!
 
 
-        elsif left_column_face == EAST_FACE
+        elsif left_column_face == Sk::EAST_FACE
           @wall_panel.rotate(vector: [0, 0, 1], rotation: 180.degrees).
               move_to(point: origin).
               move_by(z: -1 * thickness,
                       x: (@wall_panel.length) * 0,
                       y: left_column.width * -1).
               go!
-        elsif left_column_face == NORTH_FACE
+        elsif left_column_face == Sk::NORTH_FACE
 
 
           @wall_panel.rotate(vector: [0, 0, 1], rotation: 270.degrees).
@@ -126,7 +123,7 @@ class WikiHouse::Wall
                       y: left_column.width * 0).
               go!
 
-        elsif left_column_face == WEST_FACE
+        elsif left_column_face == Sk::WEST_FACE
           @wall_panel.
               move_to(point: origin).
               move_by(z: -1 * thickness,
@@ -148,7 +145,7 @@ class WikiHouse::Wall
         unless right_column.drawn?
 
 
-          if right_column_face == SOUTH_FACE
+          if right_column_face == Sk::SOUTH_FACE
             left_front_bottom = wp_bounding_box.corner(0)
             @wall_panel.origin = [left_front_bottom.x + right_column.width,
                                   left_front_bottom.y,
@@ -158,14 +155,14 @@ class WikiHouse::Wall
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
 
 
-          elsif right_column_face == EAST_FACE
+          elsif right_column_face == Sk::EAST_FACE
             right_front_bottom = wp_bounding_box.corner(1)
 
             @wall_panel.origin = right_front_bottom
             right_column.origin = [Sk.round(@wall_panel.origin.x),
                                    @wall_panel.origin.y - 0 * @wall_panel.thickness,
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
-          elsif right_column_face == NORTH_FACE
+          elsif right_column_face == Sk::NORTH_FACE
             left_back_bottom = wp_bounding_box.corner(2)
             @wall_panel.origin = left_back_bottom
 
@@ -173,7 +170,7 @@ class WikiHouse::Wall
                                    @wall_panel.origin.y,
                                    @wall_panel.origin.z + 1 * @wall_panel.thickness]
 
-          elsif right_column_face == WEST_FACE
+          elsif right_column_face == Sk::WEST_FACE
             left_front_bottom = wp_bounding_box.corner(0)
 
             @wall_panel.origin = left_front_bottom
@@ -303,8 +300,8 @@ class WikiHouse::Wall
                                        item_length: connector.top_slot_length,
                                        item_width: connector.top_slot_width) do |row, col, location|
 
-          if key == SOUTH_FACE
-            zpeg = zpegs[SOUTH_FACE][col]
+          if key == Sk::SOUTH_FACE
+            zpeg = zpegs[Sk::SOUTH_FACE][col]
             zpeg.draw!
 
 
@@ -316,8 +313,8 @@ class WikiHouse::Wall
                         y: -1 * location.y + origin.y - zpeg.thickness * 9).
                 go!
 
-          elsif key == EAST_FACE
-            zpeg = zpegs[EAST_FACE][parent_part.wall_panel_zpegs - col - 1]
+          elsif key == Sk::EAST_FACE
+            zpeg = zpegs[Sk::EAST_FACE][parent_part.wall_panel_zpegs - col - 1]
             zpeg.draw!
 
 
@@ -329,8 +326,8 @@ class WikiHouse::Wall
                         x: zpeg.thickness * -5, #Left right
                         y: -1 * location.y + column_board.origin.y - zpeg.thickness * 9).
                 go!
-          elsif key == NORTH_FACE
-            zpeg = zpegs[NORTH_FACE][parent_part.wall_panel_zpegs - col - 1]
+          elsif key == Sk::NORTH_FACE
+            zpeg = zpegs[Sk::NORTH_FACE][parent_part.wall_panel_zpegs - col - 1]
             zpeg.draw!
 
 
@@ -342,9 +339,9 @@ class WikiHouse::Wall
                         y: -1 * location.y + column_board.origin.y - zpeg.thickness * 9).
                 go!
 
-          elsif key == WEST_FACE
+          elsif key == Sk::WEST_FACE
 
-            zpeg = zpegs[WEST_FACE][parent_part.wall_panel_zpegs - col - 1]
+            zpeg = zpegs[Sk::WEST_FACE][parent_part.wall_panel_zpegs - col - 1]
             zpeg.draw!
 
             zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).
@@ -375,20 +372,20 @@ class WikiHouse::Wall
                                         parent_part: self)
 
 
-    panel = @root_column.add_panel(face: NORTH_FACE)
+    panel = @root_column.add_panel(face: Sk::NORTH_FACE)
     column2 = panel.add_right_column(column_label: "C1-C2",
-                                     face: SOUTH_FACE
+                                     face: Sk::SOUTH_FACE
     )
-    # panel2 = column2.add_panel(face: EAST_FACE)
-    # column3 = panel2.add_right_column(column_label: "C2", face: WEST_FACE)
-    # panel3 = column3.add_panel(face: SOUTH_FACE)
-    #  column4 = panel3.add_right_column(column_label: "C3", face: NORTH_FACE)
-    #  panel4 = column4.add_panel(face: WEST_FACE)
-    #  column5 = panel4.add_right_column(column_label: "C3-C4", face: EAST_FACE)
-    #  panel5 = column5.add_panel(face: WEST_FACE)
-    # column6 = panel5.add_right_column(column_label: "C4", face: EAST_FACE)
-    # panel6 = column6.add_panel(face: NORTH_FACE)
-    # panel6.add_right_column(rcolumn:@root_column, face: SOUTH_FACE)
+    # panel2 = column2.add_panel(face: Sk::EAST_FACE)
+    # column3 = panel2.add_right_column(column_label: "C2", face: Sk::WEST_FACE)
+    # panel3 = column3.add_panel(face: Sk::SOUTH_FACE)
+    #  column4 = panel3.add_right_column(column_label: "C3", face: Sk::NORTH_FACE)
+    #  panel4 = column4.add_panel(face: Sk::WEST_FACE)
+    #  column5 = panel4.add_right_column(column_label: "C3-C4", face: Sk::EAST_FACE)
+    #  panel5 = column5.add_panel(face: Sk::WEST_FACE)
+    # column6 = panel5.add_right_column(column_label: "C4", face: Sk::EAST_FACE)
+    # panel6 = column6.add_panel(face: Sk::NORTH_FACE)
+    # panel6.add_right_column(rcolumn:@root_column, face: Sk::SOUTH_FACE)
   end
 
   def wall_height
@@ -401,16 +398,16 @@ class WikiHouse::Wall
 
   end
 
-  def wall_panel_zpegs
+  def wall_panel_upegs
     3
   end
 
 
   def face_label(face_value)
-    return "North" if face_value == NORTH_FACE
-    return "East" if face_value == EAST_FACE
-    return "South" if face_value == SOUTH_FACE
-    return "West" if face_value == WEST_FACE
+    return "North" if face_value == Sk::NORTH_FACE
+    return "East" if face_value == Sk::EAST_FACE
+    return "South" if face_value == Sk::SOUTH_FACE
+    return "West" if face_value == Sk::WEST_FACE
     "Unknown"
   end
 

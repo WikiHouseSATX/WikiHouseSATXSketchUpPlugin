@@ -2,7 +2,6 @@ Pending Work
 =====================
 
 
-Fix column for Upeg
 Get rendering to work - for the wall builder
 
 Door section - 94 tall

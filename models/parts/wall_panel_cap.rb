@@ -8,11 +8,11 @@ class WikiHouse::WallPanelCap
 
     @length_method = :width
     @width_method = :depth
-    init_board(right_connector: WikiHouse::TabConnector.new(count:1, thickness: @sheet.thickness),
-               top_connector: WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
-               bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
-               left_connector: WikiHouse::TabConnector.new(count: 1, thickness: @sheet.thickness),
-               face_connector: WikiHouse::UPegLockPocketConnector.new( thickness: thickness))
+    init_board(right_connector: WikiHouse::TabConnector.new(count:1, thickness: thickness),
+               top_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
+               bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness:thickness),
+               left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
+               face_connector: WikiHouse::UPegLockPocketConnector.new( thickness: thickness, orientation: [Sk::EAST_FACE, Sk::WEST_FACE]))
 
   end
 

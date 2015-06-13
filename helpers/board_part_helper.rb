@@ -28,6 +28,32 @@ module WikiHouse::BoardPartHelper
 
   end
 
+  def get_connector_by_side_and_name(side: :top, name: :pocket)
+    case side
+      when  :top
+        connector = @top_connector
+      when :right
+        connector = @right_connector
+      when :bottom
+        connector = @bottom_connector
+      when :left
+        connector = @left
+      when :face
+        connector = @face_connector
+       else
+         raise ArgumentError, "Sorry #{side} is not a valid side"
+
+    end
+    if connector.respond_to?(:each)
+      connector.each do |c|
+        return c if c.name == name
+      end
+      return nil
+    else
+       return connector.name == name ?  connector  : nil
+    end
+  end
+
   def points
     [@top_side_points[0...-1], @right_side_points[0...-1], @bottom_side_points[0...-1], @left_side_points[0...-1]].flatten(1)
   end
