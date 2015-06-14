@@ -21,6 +21,11 @@ class WikiHouse::Config
     parent_part.side_column_length = 10
     parent_part.side_column_width = 13
     parent_part.top_column_length = 11.25
+    parent_part.side_column_inner_length = 82 + 0.75
+    parent_part.side_column_depth = 10
+    parent_part.number_of_side_column_supports = 3
+    parent_part.top_column_length = 60
+    parent_part.number_of_top_column_supports = 3
   #  WikiHouse::WallPanelFace.new(label: "Top", origin: [0,0,0],  parent_part: parent_part)
    # WikiHouse::HalfWallPanel.new()
      # WikiHouse::WallColumnBoard.new(label: "Column Board",
@@ -32,7 +37,11 @@ class WikiHouse::Config
    #                                       wall_panels_on: [Sk::WEST_FACE,Sk::SOUTH_FACE])
     #WikiHouse::DoorPanelRib.new(label: " Column", parent_part:parent_part)
     #WikiHouse::DoorPanelTopRib.new(label: " Column", parent_part:parent_part)
-    WikiHouse::DoorPanelOuterSide.new(label: " Column", parent_part:parent_part)
+   # WikiHouse::DoorPanelOuterSide.new(label: " Column", parent_part:parent_part)
+   # WikiHouse::DoorPanelBottomHeader.new(label: "inner", parent_part: parent_part)
+   #WikiHouse::DoorPanelTopHeader.new(label: "inner", parent_part: parent_part)
+  #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
+   WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
 
   end
 end

@@ -1,11 +1,9 @@
 Pending Work
 =====================
 
-Door Panel Outer Side
+Door Panel Bottom Header
+  Need to move the side tabs to each end for the columns below (may need fusing)
 
-    Spectal Extra Tab at the top
-
-need to be able to fuse parts
 
 Get rendering to work - for the wall builder
 Confirm depth of the pre hund door panel
