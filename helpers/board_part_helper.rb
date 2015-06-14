@@ -15,7 +15,9 @@ module WikiHouse::BoardPartHelper
     end
   end
 
-  attr_reader :top_connector, :right_connector, :bottom_connector, :left_connector, :face_connector
+  attr_reader :top_connector, :right_connector,
+              :bottom_connector, :left_connector, :face_connector
+
 
   def init_board(top_connector: nil, bottom_connector: nil, left_connector: nil, right_connector: nil, face_connector: nil)
     @top_side_points = @right_side_points = @bottom_side_points = @left_side_points = []
@@ -30,7 +32,7 @@ module WikiHouse::BoardPartHelper
 
   def get_connector_by_side_and_name(side: :top, name: :pocket)
     case side
-      when  :top
+      when :top
         connector = @top_connector
       when :right
         connector = @right_connector
@@ -40,8 +42,8 @@ module WikiHouse::BoardPartHelper
         connector = @left
       when :face
         connector = @face_connector
-       else
-         raise ArgumentError, "Sorry #{side} is not a valid side"
+      else
+        raise ArgumentError, "Sorry #{side} is not a valid side"
 
     end
     if connector.respond_to?(:each)
@@ -50,7 +52,7 @@ module WikiHouse::BoardPartHelper
       end
       return nil
     else
-       return connector.name == name ?  connector  : nil
+      return connector.name == name ? connector : nil
     end
   end
 
@@ -227,17 +229,16 @@ module WikiHouse::BoardPartHelper
     @face_connector
   end
 
-  def draw!
-
+  def build_points
     build_top_side
     build_bottom_side
 
     build_right_side
     build_left_side
+    points
+  end
 
-    lines = Sk.draw_all_points(points)
-
-    face = Sk.add_face(lines)
+  def draw_non_groove_faces
     if @face_connector.is_a?(Array)
 
       @face_connector.each do |c|
@@ -250,13 +251,9 @@ module WikiHouse::BoardPartHelper
       @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width) unless @face_connector.groove?
 
     end
+  end
 
-    set_material(face)
-
-
-    make_part_right_thickness(face)
-
-    face2 = Sk.add_face(lines)
+  def draw_groove_faces
     if @face_connector.is_a?(Array)
 
       @face_connector.each do |c|
@@ -269,7 +266,30 @@ module WikiHouse::BoardPartHelper
       @face_connector.draw!(bounding_origin: bounding_c1, part_length: length, part_width: width) if @face_connector.groove?
 
     end
+  end
 
+  def draw_edges!
+    build_points
+    Sk.draw_all_points(points)
+  end
+
+  def draw_primary_face(lines)
+    face = Sk.add_face(lines)
+    draw_non_groove_faces
+
+    set_material(face)
+    make_part_right_thickness(face)
+    face
+  end
+
+  def draw!
+
+    lines = draw_edges!
+
+    face = draw_primary_face(lines)
+    Sk.add_face(lines)
+
+    draw_groove_faces
 
     set_group(face.all_connected)
     mark_primary_face!(face)
@@ -277,6 +297,47 @@ module WikiHouse::BoardPartHelper
 
   def set_default_properties
     mark_cutable!
+  end
+
+  def fuse(onto: nil, from: nil, other_part: nil)
+    raise ArgumentError, "#{onto}/#{from} is not a valid side for fusing" unless [:bottom].include?(onto) && [:top].include?(from)
+    if onto == :bottom
+      if from == :top
+
+        unique_points = @bottom_side_points.clone[1...-1].concat(other_part.top_side_points[1...-1]).uniq
+
+            @bottom_side_points = other_part.bottom_side_points
+
+        @right_side_points.pop
+        @right_side_points.concat(other_part.right_side_points)
+        # Sk.draw_line([100, 100, 0], @bottom_side_points.first)
+        # Sk.draw_line([100, 100, 0], @bottom_side_points.last)
+        new_left_side = other_part.left_side_points[0...-1].clone
+        @left_side_points = new_left_side.concat(@left_side_points)
+        # Sk.draw_line([100, 100, 0], @left_side_points.first)
+        # Sk.draw_line([100, 100, 0], @left_side_points.last)
+        #
+        return(unique_points)
+      end
+
+    end
+
+  end
+
+  def top_side_points
+    @top_side_points
+  end
+
+  def bottom_side_points
+    @bottom_side_points
+  end
+
+  def right_side_points
+    @right_side_points
+  end
+
+  def left_side_points
+    @left_side_points
   end
 
 end

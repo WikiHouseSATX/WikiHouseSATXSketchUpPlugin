@@ -5,6 +5,7 @@ Door Panel Outer Side
 
     Spectal Extra Tab at the top
 
+need to be able to fuse parts
 
 Get rendering to work - for the wall builder
 Confirm depth of the pre hund door panel
