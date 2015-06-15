@@ -1,13 +1,13 @@
 require 'ostruct'
 class WikiHouse::Config
   def self.machine
-   #WikiHouse::Laser
-    WikiHouse::Cnc
+   WikiHouse::Laser
+   # WikiHouse::Cnc
   end
   def self.sheet
   #  WikiHouse::ImperialPlywood2332Sheet
-   WikiHouse::ImperialPlywood34Sheet
-  #WikiHouse::ImperialFiberboardSheet
+  # WikiHouse::ImperialPlywood34Sheet
+  WikiHouse::ImperialFiberboardSheet
   end
   def self.current_part
     parent_part = OpenStruct.new
@@ -27,7 +27,7 @@ class WikiHouse::Config
     parent_part.top_column_length = 60
     parent_part.number_of_top_column_supports = 3
   #  WikiHouse::WallPanelFace.new(label: "Top", origin: [0,0,0],  parent_part: parent_part)
-   # WikiHouse::HalfWallPanel.new()
+  # WikiHouse::HalfWallPanel.new()
      # WikiHouse::WallColumnBoard.new(label: "Column Board",
     #                                  parent_part: parent_part, origin:[0,0,0])
    #  WikiHouse::Column.new(label: " Column",
@@ -42,6 +42,6 @@ class WikiHouse::Config
    #WikiHouse::DoorPanelTopHeader.new(label: "inner", parent_part: parent_part)
   #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
  #  WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
-    WikiHouse::DoorPanel.new(label: "Door Panel")
+   WikiHouse::DoorPanel.new(label: "Door Panel")
   end
 end

@@ -15,13 +15,13 @@ class WikiHouse::UPegEndPassThruConnector < WikiHouse::PocketConnector
     offset = 4 * thickness
     lines = []
     if @bottom_on
-      puts "Drawing bottom"
+
       lines.concat(draw_pocket!(location: [bounding_origin.x + half_width_part - half_width_connector,
                                            bounding_origin.y - offset,
                                            bounding_origin.z]))
     end
     if @top_on
-      puts "Drawing Top"
+
       lines.concat(draw_pocket!(location: [bounding_origin.x + half_width_part - half_width_connector,
                                            bounding_origin.y - part_length + offset + (@length_in_t * thickness),
                                            bounding_origin.z]))

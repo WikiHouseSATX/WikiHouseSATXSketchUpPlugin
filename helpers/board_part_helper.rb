@@ -304,8 +304,8 @@ module WikiHouse::BoardPartHelper
     if onto == :bottom
       if from == :top
 
-        unique_points = @bottom_side_points.clone[1...-1].concat(other_part.top_side_points[1...-1]).uniq
-
+        join_points = @bottom_side_points.clone[1...-1].concat(other_part.top_side_points[1...-1])
+        unique_points = join_points.collect {|pt| [Sk.round(pt.x), Sk.round(pt.y), Sk.round(pt.z)]}.uniq #had to round to handle too many decimals in fuse
             @bottom_side_points = other_part.bottom_side_points
 
         @right_side_points.pop

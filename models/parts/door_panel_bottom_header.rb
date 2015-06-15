@@ -18,7 +18,7 @@ class WikiHouse::DoorPanelBottomHeader
       @length_method = :top_length
       @width_method = :top_width
       init_board(right_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 top_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
+                 top_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  bottom_connector: WikiHouse::NoneConnector.new(),
                  left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  face_connector: [WikiHouse::UPegEndPassThruConnector.new(thickness: thickness, bottom_on: false)]
@@ -55,7 +55,7 @@ class WikiHouse::DoorPanelBottomHeader
       @width_method = :bottom_width
       init_board(right_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  top_connector: WikiHouse::NoneConnector.new(),
-                 bottom_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
+                 bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  face_connector: [WikiHouse::UPegEndPassThruConnector.new(thickness: thickness, bottom_on: false)]
       )
@@ -106,7 +106,7 @@ class WikiHouse::DoorPanelBottomHeader
   end
 
   def middle_length
-    parent_part.top_column_length - 2 * top_length
+    parent_part.width - 2 * top_length
   end
 
   def bottom_width
@@ -143,6 +143,7 @@ class WikiHouse::DoorPanelBottomHeader
 
     @top_part.mark_primary_face!(face)
     set_group(face.all_connected)
+
     # @bottom_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
     #     move_by(x: (@bottom_cap.width - thickness) * -1,
     #             y: 0,
@@ -150,5 +151,7 @@ class WikiHouse::DoorPanelBottomHeader
     #     go!
 
   end
-
+  def set_default_properties
+    mark_cutable!
+  end
 end

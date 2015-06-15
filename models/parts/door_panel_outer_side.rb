@@ -119,9 +119,9 @@ class WikiHouse::DoorPanelOuterSide
     #handle the pocket
 
     pocket_lines = Sk.draw_all_points(unique_points)
-    pocket_lines.each { |e| mark_inside_edge!(e) }
-    pocket_face = Sk.add_face(pocket_lines)
-    pocket_face.erase!
+     pocket_lines.each { |e| mark_inside_edge!(e) }
+     pocket_face = Sk.add_face(pocket_lines)
+     pocket_face.erase!
 
 
 
@@ -131,6 +131,7 @@ class WikiHouse::DoorPanelOuterSide
 
      @top_part.mark_primary_face!(face)
      set_group(face.all_connected)
+
     # @bottom_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
     #     move_by(x: (@bottom_cap.width - thickness) * -1,
     #             y: 0,
@@ -138,5 +139,7 @@ class WikiHouse::DoorPanelOuterSide
     #     go!
 
   end
-
+  def set_default_properties
+    mark_cutable!
+  end
 end

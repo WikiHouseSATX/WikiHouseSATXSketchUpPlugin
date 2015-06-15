@@ -1,4 +1,5 @@
 #This module is just a collection of helper methods to make it easier
+#This module is just a collection of helper methods to make it easier
 # to interact with SketchUp.
 #All the other classes call Sk. if they want to draw or do things in the
 #SketchUp model.
