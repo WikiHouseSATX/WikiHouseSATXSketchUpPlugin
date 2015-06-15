@@ -5,38 +5,105 @@ class WikiHouse::DoorPanel
 
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil)
     part_init(sheet: sheet, origin: origin, parent_part: parent_part)
-
+    #parts
 
     @left_footer_bottom = WikiHouse::DoorPanelRib.new(
         label: "Left Bottom Footer",
         origin: @origin,
-        sheet: sheet,
+        sheet: self.sheet,
         parent_part: self
     )
     @left_footer_top = WikiHouse::DoorPanelRib.new(
         label: "Left Top Footer",
         origin: @origin,
-        sheet: sheet,
+        sheet: self.sheet,
         parent_part: self
     )
+    @left_outer_side = WikiHouse::DoorPanelOuterSide.new(
+        label: "Left Outer Side",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @left_inner_side = WikiHouse::DoorPanelInnerSide.new(
+        label: "Left Inner Side",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @right_footer_bottom = WikiHouse::DoorPanelRib.new(
+        label: "Right Bottom Footer",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @right_footer_top = WikiHouse::DoorPanelRib.new(
+        label: "Right Top Footer",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @right_outer_side = WikiHouse::DoorPanelOuterSide.new(
+        label: "Right Outer Side",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @right_inner_side = WikiHouse::DoorPanelInnerSide.new(
+        label: "Right Inner Side",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @left_side_ribs = []
+    @right_side_ribs = []
+    number_of_side_column_supports.times do |i|
+      @left_side_ribs << WikiHouse::DoorPanelRib.new(label: "Left Side Rib ##{i + 1}", origin: @origin, sheet: self.sheet, parent_part: self)
+      @right_side_ribs << WikiHouse::DoorPanelRib.new(label: "Right Side Rib ##{i + 1}", origin: @origin, sheet: self.sheet, parent_part: self)
 
+    end
+    @top_ribs = []
+    number_of_top_column_supports.times do |i|
+      @right_side_ribs << WikiHouse::DoorPanelTopRib.new(label: "Top Rib ##{i + 1}", origin: @origin, sheet: self.sheet, parent_part: self)
+    end
 
-    #   #has 2 caps, 2 faces, 3 ribs, 2 sides
-    #   @top_cap = WikiHouse::WallPanelCap.new(label: "Top", origin: @origin, sheet: sheet, parent_part: self)
-    #   @bottom_cap = WikiHouse::WallPanelCap.new(label: "Bottom", origin: @origin, sheet: sheet, parent_part: self)
-    #
-    #
-    #   @left_side = WikiHouse::WallPanelOuterSide.new(label: "Left Outer", origin: @origin, sheet: sheet, parent_part: self)
-    #   # @left_side.activate_part!
-    #   @right_side = WikiHouse::WallPanelOuterSide.new(label: "Right Outer", origin: @origin, sheet: sheet, parent_part: self)
-    #   @face_front_panel = WikiHouse::WallPanelFace.new(label: "Left Front", origin: @origin, sheet: sheet, parent_part: self)
-    #   @face_back_panel = WikiHouse::WallPanelFace.new(label: "Left Back", origin: @origin, sheet: sheet, parent_part: self)
-    #
-    #   @ribs = []
-    #   @ribs << WikiHouse::WallPanelRib.new(label: "Rib #1", origin: @origin, sheet: sheet, parent_part: self)
-    #   @ribs << WikiHouse::WallPanelRib.new(label: "Rib #2", origin: @origin, sheet: sheet, parent_part: self)
-    #
-    #   @ribs << WikiHouse::WallPanelRib.new(label: "Rib #3", origin: @origin, sheet: sheet, parent_part: self)
+    @top_cap = WikiHouse::DoorPanelTopCap.new(
+
+        label: "Top Cap",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+
+    )
+    @top_header = WikiHouse::DoorPanelTopHeader.new(
+
+        label: "Header - Top",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @bottom_header = WikiHouse::DoorPanelBottomHeader.new(
+
+        label: "Header - Bottom",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @front_top_face = WikiHouse::DoorPanelTopFace.new(
+
+        label: "Front Top Face",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @back_top_face = WikiHouse::DoorPanelTopFace.new(
+
+        label: "Back Top Face",
+        origin: @origin,
+        sheet: self.sheet,
+        parent_part: self
+    )
+    @front_left_side_face = WikiHouse::DoorPanel
   end
 
   def door_frame_width

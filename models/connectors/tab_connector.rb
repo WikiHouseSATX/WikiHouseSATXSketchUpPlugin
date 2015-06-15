@@ -1,4 +1,5 @@
 class WikiHouse::TabConnector < WikiHouse::Connector
+
   def tab?
     true
   end
@@ -7,58 +8,20 @@ class WikiHouse::TabConnector < WikiHouse::Connector
     :tab
   end
 
-  def points(bounding_start: nil,
-             bounding_end: nil,
-             start_pt: nil,
-             end_pt: nil,
-             orientation: nil,
-             starting_thickness: nil,
-             total_length: nil)
+  def build_tab_points(start_pt: nil,
+                       end_pt: nil,
+                       orientation: nil,
+                       total_length: nil,
+                       tab_count: nil,
+                       tab_width: nil,
+                       starting_thickness: nil,
+                       section_gap: nil
 
-    unless [:right, :left, :top, :bottom].include?(orientation)
-      raise ArgumentError, "#{orientation} is not supported by this connector"
-    end
 
+  )
     c5 = start_pt
     c6 = end_pt
-
-
-    tab_width = width
-    tab_count = count
-
-    if orientation == :top && starting_thickness
-      c5.x += starting_thickness
-    elsif orientation == :bottom && starting_thickness
-      c5.x -= starting_thickness
-    end
-    if orientation == :right
-      if c5.x == bounding_start.x
-        c5.x -= length
-
-      end
-      c6.x = c5.x
-    elsif orientation == :left
-      if c5.x == bounding_start.x
-        c5.x += length
-
-      end
-      c6.x = c5.x
-    elsif orientation == :top
-      if c5.y == bounding_start.y
-        c5.y -= length
-
-      end
-      c6.y = c5.y
-    elsif orientation == :bottom
-      if c5.y == bounding_start.y
-        c5.y += length
-
-      end
-      c6.y = c5.y
-    end
-
     tab_points = [c5]
-    section_gap = Sk.round((total_length - (tab_count * tab_width))/(tab_count.to_f + 1.0))
 
     tab_count.times do |i|
       starting_length = ((i + 1) * section_gap) + (i * tab_width) - starting_thickness
@@ -136,5 +99,118 @@ class WikiHouse::TabConnector < WikiHouse::Connector
     tab_points
   end
 
+  def points(bounding_start: nil,
+             bounding_end: nil,
+             start_pt: nil,
+             end_pt: nil,
+             orientation: nil,
+             starting_thickness: nil,
+             total_length: nil)
 
+    unless [:right, :left, :top, :bottom].include?(orientation)
+      raise ArgumentError, "#{orientation} is not supported by this connector"
+    end
+
+    if !sections.nil? && !sections.empty?
+
+      c5 = start_pt
+      c6 = end_pt
+
+
+      tab_width = width
+      tab_count = count
+
+      if orientation == :top && starting_thickness
+        c5.x += starting_thickness
+      elsif orientation == :bottom && starting_thickness
+        c5.x -= starting_thickness
+      end
+      if orientation == :right
+        if c5.x == bounding_start.x
+          c5.x -= length
+
+        end
+        c6.x = c5.x
+      elsif orientation == :left
+        if c5.x == bounding_start.x
+          c5.x += length
+
+        end
+        c6.x = c5.x
+      elsif orientation == :top
+        if c5.y == bounding_start.y
+          c5.y -= length
+
+        end
+        c6.y = c5.y
+      elsif orientation == :bottom
+        if c5.y == bounding_start.y
+          c5.y += length
+
+        end
+        c6.y = c5.y
+      end
+      section_gap = Sk.round((total_length - (tab_count * tab_width))/(tab_count.to_f + 1.0))
+      build_tab_points(start_pt: c5,
+                       end_pt: c6,
+                       orientation: orientation,
+                       total_length: total_length,
+                       tab_count: tab_count,
+                       tab_width: tab_width,
+                       starting_thickness: starting_thickness,
+                       section_gap: section_gap)
+
+
+    else
+      c5 = start_pt
+      c6 = end_pt
+
+
+      tab_width = width
+      tab_count = count
+
+      if orientation == :top && starting_thickness
+        c5.x += starting_thickness
+      elsif orientation == :bottom && starting_thickness
+        c5.x -= starting_thickness
+      end
+      if orientation == :right
+        if c5.x == bounding_start.x
+          c5.x -= length
+
+        end
+        c6.x = c5.x
+      elsif orientation == :left
+        if c5.x == bounding_start.x
+          c5.x += length
+
+        end
+        c6.x = c5.x
+      elsif orientation == :top
+        if c5.y == bounding_start.y
+          c5.y -= length
+
+        end
+        c6.y = c5.y
+      elsif orientation == :bottom
+        if c5.y == bounding_start.y
+          c5.y += length
+
+        end
+        c6.y = c5.y
+      end
+      section_gap = Sk.round((total_length - (tab_count * tab_width))/(tab_count.to_f + 1.0))
+      build_tab_points(start_pt: c5,
+                       end_pt: c6,
+                       orientation: orientation,
+                       total_length: total_length,
+                       tab_count: tab_count,
+                       tab_width: tab_width,
+                       starting_thickness: starting_thickness,
+                       section_gap: section_gap)
+
+    end
+
+
+  end
 end

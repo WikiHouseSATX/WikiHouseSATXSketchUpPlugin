@@ -38,10 +38,10 @@ class WikiHouse::Config
     #WikiHouse::DoorPanelRib.new(label: " Column", parent_part:parent_part)
     #WikiHouse::DoorPanelTopRib.new(label: " Column", parent_part:parent_part)
    # WikiHouse::DoorPanelOuterSide.new(label: " Column", parent_part:parent_part)
-   # WikiHouse::DoorPanelBottomHeader.new(label: "inner", parent_part: parent_part)
+  # WikiHouse::DoorPanelBottomHeader.new(label: "inner", parent_part: parent_part)
    #WikiHouse::DoorPanelTopHeader.new(label: "inner", parent_part: parent_part)
   #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
-   WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
-
+ #  WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
+    WikiHouse::DoorPanel.new(label: "Door Panel")
   end
 end

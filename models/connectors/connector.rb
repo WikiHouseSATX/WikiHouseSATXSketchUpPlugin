@@ -15,14 +15,14 @@ class WikiHouse::Connector
   end
 
 
-  attr_reader :length_in_t, :count, :width_in_t, :thickness
+  attr_reader :length_in_t, :count, :width_in_t, :thickness, :sections
 
-  def initialize(length_in_t: nil, count: 1, width_in_t: nil, thickness: nil)
+  def initialize(length_in_t: nil, count: 1, width_in_t: nil, thickness: nil, sections: nil)
     @thickness = thickness ? thickness : WikiHouse.sheet.new.thickness
     @length_in_t = length_in_t ? length_in_t : self.class.standard_length_in_t
     @count = count
     @width_in_t = width_in_t ? width_in_t : self.class.standard_width_in_t
-
+    @sections = sections
   end
 
   def length
@@ -91,8 +91,9 @@ class WikiHouse::Connector
   end
 
 #This can be used to make it easier to place items
-  def self.drawing_points(bounding_origin: nil, count: 1, rows: 1, part_length: nil, part_width: nil, item_length: nil, item_width: nil)
 
+  def self.drawing_points(bounding_origin: nil, count: 1, rows: 1, part_length: nil, part_width: nil, item_length: nil, item_width: nil)
+    #this doesn't support sections :(
     length_gap = Sk.round((part_length - (count * item_length))/(count.to_f + 1.0))
 
     width_gap = Sk.round((part_width - (rows * item_width))/(rows.to_f + 1.0))

@@ -17,11 +17,10 @@ class WikiHouse::WallPanel
     @face_back_panel = WikiHouse::WallPanelFace.new(label: "Left Back", origin: @origin, sheet: sheet, parent_part: self)
 
     @ribs = []
-    @ribs << WikiHouse::WallPanelRib.new(label: "Rib #1", origin: @origin, sheet: sheet, parent_part: self)
-    @ribs << WikiHouse::WallPanelRib.new(label: "Rib #2", origin: @origin, sheet: sheet, parent_part: self)
-
-    @ribs << WikiHouse::WallPanelRib.new(label: "Rib #3", origin: @origin, sheet: sheet, parent_part: self)
-  end
+    number_of_internal_supports.times do |i|
+      @ribs << WikiHouse::WallPanelRib.new(label: "Rib ##{i + 1}", origin: @origin, sheet: sheet, parent_part: self)
+    end
+   end
 
   def origin=(new_origin)
     @origin = new_origin

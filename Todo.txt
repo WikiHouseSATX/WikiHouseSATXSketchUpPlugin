@@ -8,6 +8,8 @@ Door Panel Bottom Header
 Get rendering to work - for the wall builder
 Confirm depth of the pre hund door panel
 
+Add idea of sections instead of fusion
+
 handle getting wall paenl -> half panel to use the correct fittings
 handle getting wall_panel -> door panel to sue the ocrrect fittnings
 
