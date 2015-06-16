@@ -3,6 +3,33 @@ class WikiHouse::Fillet
     WikiHouse.machine.bit_radius
   end
 
+  def self.upper_to_left_side(corner)
+    pt2 = [corner.x, Sk.round(corner.y - 2 * bit_radius), corner.z]
+    pt3 = [Sk.round(corner.x -  bit_radius), pt2.y, corner.z]
+    pt4 = [pt3.x, corner.y, corner.z]
+    [pt2, pt3, pt4]
+  end
+  def self.upper_to_right_side(corner)
+
+    pt2 = [corner.x +  bit_radius, corner.y , corner.z]
+    pt3 = [pt2.x, Sk.round(pt2.y - 2 * bit_radius), corner.z]
+    pt4 = [corner.x, pt3.y, corner.z]
+    [pt2, pt3, pt4]
+  end
+  def self.lower_to_left_side(corner)
+
+    pt2 = [Sk.round(corner.x -  bit_radius), corner.y, corner.z]
+    pt3 = [pt2.x, Sk.round(pt2.y + 2 *  bit_radius), corner.z]
+    pt4 = [corner.x, pt3.y, corner.z]
+    [pt2, pt3, pt4]
+  end
+  def self.lower_to_right_side(corner)
+
+    pt2 = [corner.x, Sk.round(corner.y + 2 * bit_radius), corner.z]
+    pt3 = [pt2.x + bit_radius, pt2.y, corner.z]
+    pt4 = [pt3.x, corner.y, corner.z]
+    [pt2, pt3, pt4]
+  end
   def self.upper_to_right(corner)
 
     pt2 = [corner.x, Sk.round(corner.y + bit_radius), corner.z]
@@ -59,7 +86,7 @@ class WikiHouse::Fillet
 
 
   def self.t_pocket_by_points(point_list)
-    return point_list unless  WikiHouse.machine.fillet?
+    return point_list unless WikiHouse.machine.fillet?
     raise ArgumentError, "Expected only 8 corners" if point_list.length != 8
     pt1 = point_list[0]
     pt2 = point_list[1]
@@ -87,18 +114,29 @@ class WikiHouse::Fillet
   end
 
   def self.pocket_by_points(point_list)
-    return point_list unless  WikiHouse.machine.fillet?
+    return point_list unless WikiHouse.machine.fillet?
     raise ArgumentError, "Expected only 4 corners" if point_list.length != 4
     pt1 = point_list[0]
     pt2 = point_list[1]
     pt3 = point_list[2]
     pt4 = point_list[3]
 
-    point_list.clear
-    point_list.concat(upper_to_right(pt1))
-    point_list.concat(upper_to_left(pt2))
-    point_list.concat(lower_to_left(pt3))
-    point_list.concat(lower_to_right(pt4))
+
+    if (Sk.round(pt2.x.abs - pt1.x.abs) > Sk.round(pt4.y.abs - pt1.y.abs))
+      point_list.clear
+      point_list.concat(upper_to_right(pt1))
+      point_list.concat(upper_to_left(pt2))
+      point_list.concat(lower_to_left(pt3))
+      point_list.concat(lower_to_right(pt4))
+    else
+      point_list.clear
+
+      point_list.concat(upper_to_left_side(pt1))
+      point_list.concat(upper_to_right_side(pt2))
+      point_list.concat(lower_to_right_side(pt3))
+      point_list.concat(lower_to_left_side(pt4))
+
+    end
 
 
     point_list
@@ -108,7 +146,7 @@ class WikiHouse::Fillet
 
   def self.by_points(point_list, pt1_index, pt2_index, pt3_index, reverse_it: false,
       angel_in_degrees: 90)
-    return point_list unless  WikiHouse.machine.fillet?
+    return point_list unless WikiHouse.machine.fillet?
     raise ArgumentError, "Angle not supported" if angel_in_degrees != 90
     pt1 = point_list[pt1_index]
     pt2 = point_list[pt2_index]
