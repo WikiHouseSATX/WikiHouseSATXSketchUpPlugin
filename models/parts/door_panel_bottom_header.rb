@@ -20,8 +20,8 @@ class WikiHouse::DoorPanelBottomHeader
       init_board(right_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  top_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  bottom_connector: WikiHouse::SlotConnector.new(thickness: thickness, fillet_off: true),
-                 left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 face_connector: [WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [Sk::SOUTH_FACE])]
+                 left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness)
+
       )
 
     end
@@ -56,8 +56,8 @@ class WikiHouse::DoorPanelBottomHeader
       init_board(right_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  top_connector: WikiHouse::SlotConnector.new(thickness: thickness, fillet_off: true),
                  bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 face_connector: [WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [Sk::NORTH_FACE])]
+                 left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness)
+
       )
 
 

@@ -239,6 +239,7 @@ class WikiHouse::DoorPanel
 
 
   def draw!
+    face_off = false
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
 
@@ -365,22 +366,24 @@ class WikiHouse::DoorPanel
 
       end
     end
-    @front_left_face.draw!
-    @front_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: 0 * @front_left_face.thickness,
-                y: 1 * @front_left_face.thickness,
-                z:  depth - @front_left_face.thickness).
-        go!
+    unless face_off
+      @front_left_face.draw!
+      @front_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          move_to(point: origin).
+          move_by(x: 0 * @front_left_face.thickness,
+                  y: 1 * @front_left_face.thickness,
+                  z: depth - @front_left_face.thickness).
+          go!
 
-    @back_left_face.draw!
-    @back_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: 0 * @back_left_face.thickness,
-                y: 1 * @back_left_face.thickness,
-                z: 0).
-        go!
 
+      @back_left_face.draw!
+      @back_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          move_to(point: origin).
+          move_by(x: 0 * @back_left_face.thickness,
+                  y: 1 * @back_left_face.thickness,
+                  z: 0).
+          go!
+    end
     @right_footer_bottom.draw!
     @right_footer_bottom.rotate(vector: [0, 0, 1], rotation: 180.degrees).
         move_to(point: origin).
@@ -418,42 +421,43 @@ class WikiHouse::DoorPanel
 
       end
     end
-    @front_right_face.draw!
-    @front_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: width - side_column_width,
-                y: 1 * @front_right_face.thickness,
-                z: depth - @front_right_face.thickness).
-        go!
+    unless face_off
+      @front_right_face.draw!
+      @front_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          move_to(point: origin).
+          move_by(x: width - side_column_width,
+                  y: 1 * @front_right_face.thickness,
+                  z: depth - @front_right_face.thickness).
+          go!
 
-    @back_right_face.draw!
-    @back_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: width - side_column_width,
-                y: 1 * @back_right_face.thickness,
-                z: 0).
-        go!
-
-
-        @front_top_face.draw!
-    @front_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: side_column_inner_length + thickness,
-                y: -1 * width,
-                z:  depth - thickness).
-        go!
+      @back_right_face.draw!
+      @back_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          move_to(point: origin).
+          move_by(x: width - side_column_width,
+                  y: 1 * @back_right_face.thickness,
+                  z: 0).
+          go!
 
 
-    @back_top_face.draw!
-    @back_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-       rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: side_column_inner_length + thickness,
-                y: -1 * width,
-                z: 0).
-    go!
+      @front_top_face.draw!
+      @front_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          rotate(vector: [0, 0, 1], rotation: 90.degrees).
+          move_to(point: origin).
+          move_by(x: side_column_inner_length ,
+                  y: -1 * width,
+                  z: depth - thickness).
+          go!
 
+
+      @back_top_face.draw!
+      @back_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+          rotate(vector: [0, 0, 1], rotation: 90.degrees).
+          move_to(point: origin).
+          move_by(x: side_column_inner_length ,
+                  y: -1 * width,
+                  z: 0).
+          go!
+    end
     groups = []
 
     @left_side_ribs.each { |rib| groups << rib.group }
