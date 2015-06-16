@@ -28,7 +28,9 @@ module Sk
   def active_entities
     model.active_entities
   end
-
+  def erase_all!
+    self.model.entities.each { |e| e.erase!}
+  end
   def round(val)
     val.to_f.round(4)
   end

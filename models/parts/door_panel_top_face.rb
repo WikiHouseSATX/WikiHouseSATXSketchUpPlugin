@@ -8,7 +8,7 @@ class WikiHouse::DoorPanelTopFace
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
     @length_method = :width
-    @width_method = :depth
+    @width_method = :top_column_length
 
     init_board(right_connector: WikiHouse::SlotConnector.new(count: 2, thickness: thickness),
                top_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness),

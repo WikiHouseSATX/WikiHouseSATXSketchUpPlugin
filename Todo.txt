@@ -1,9 +1,10 @@
 Pending Work
 =====================
 
-Door Panel Bottom Header
-  Need to move the side tabs to each end for the columns below (may need fusing)
-
+Get the upegs to sync up across the different types of walls
+The top upeg lock pocket on the outer side of door panel is 1.5 inches too high
+Should the Top Face expand to cover the bottom header?
+Make a wall panel that fills in the space to make it 2 wall panels in width
 
 Get rendering to work - for the wall builder
 Confirm depth of the pre hund door panel

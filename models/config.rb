@@ -1,15 +1,18 @@
 require 'ostruct'
 class WikiHouse::Config
   def self.machine
-   WikiHouse::Laser
-   # WikiHouse::Cnc
+   #WikiHouse::Laser
+    WikiHouse::Cnc
   end
   def self.sheet
   #  WikiHouse::ImperialPlywood2332Sheet
-  # WikiHouse::ImperialPlywood34Sheet
-  WikiHouse::ImperialFiberboardSheet
+   WikiHouse::ImperialPlywood34Sheet
+  #WikiHouse::ImperialFiberboardSheet
   end
   def self.current_part
+
+    Sk.erase_all!
+    WikiHouse.init
     parent_part = OpenStruct.new
     parent_part.length = 92
     parent_part.width = 92/2.0

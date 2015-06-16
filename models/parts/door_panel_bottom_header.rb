@@ -19,9 +19,9 @@ class WikiHouse::DoorPanelBottomHeader
       @width_method = :top_width
       init_board(right_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  top_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 bottom_connector: WikiHouse::NoneConnector.new(),
+                 bottom_connector: WikiHouse::SlotConnector.new(thickness: thickness, fillet_off: true),
                  left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 face_connector: [WikiHouse::UPegEndPassThruConnector.new(thickness: thickness, bottom_on: false)]
+                 face_connector: [WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [Sk::SOUTH_FACE])]
       )
 
     end
@@ -54,10 +54,10 @@ class WikiHouse::DoorPanelBottomHeader
       @length_method = :bottom_length
       @width_method = :bottom_width
       init_board(right_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 top_connector: WikiHouse::NoneConnector.new(),
+                 top_connector: WikiHouse::SlotConnector.new(thickness: thickness, fillet_off: true),
                  bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                  left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 face_connector: [WikiHouse::UPegEndPassThruConnector.new(thickness: thickness, bottom_on: false)]
+                 face_connector: [WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [Sk::NORTH_FACE])]
       )
 
 
@@ -71,10 +71,10 @@ class WikiHouse::DoorPanelBottomHeader
                             origin: self.origin,
                             label: "top")
     @middle_part = MiddlePart.new(parent_part: self, sheet: self.sheet,
-                               origin: [self.origin.x,
-                                        self.origin.y - top_length,
-                                        self.origin.z],
-                               label: "middle")
+                                  origin: [self.origin.x,
+                                           self.origin.y - top_length,
+                                           self.origin.z],
+                                  label: "middle")
     @bottom_part = BottomPart.new(parent_part: self, sheet: self.sheet,
                                   origin: [self.origin.x,
                                            self.origin.y - top_length - middle_length,
@@ -128,14 +128,30 @@ class WikiHouse::DoorPanelBottomHeader
     @bottom_part.build_points
 
 
-    @top_part.fuse(onto: :bottom, from: :top, other_part: @middle_part)
-    @top_part.fuse(onto: :bottom, from: :top, other_part: @bottom_part)
+    top_pocket = @top_part.fuse(onto: :bottom, from: :top, other_part: @middle_part)
+    bottom_pocket = @top_part.fuse(onto: :bottom, from: :top, other_part: @bottom_part)
 
     lines = Sk.draw_all_points(@top_part.points)
     face = Sk.add_face(lines)
     @top_part.draw_non_groove_faces
     @middle_part.draw_non_groove_faces
     @bottom_part.draw_non_groove_faces
+
+    top_pocket = [top_pocket[2], top_pocket[1], top_pocket[0], top_pocket[3]]
+    WikiHouse::Fillet.pocket_by_points(top_pocket)
+
+    pocket_lines = Sk.draw_all_points(top_pocket)
+    pocket_lines.each { |e| mark_inside_edge!(e) }
+    pocket_face = Sk.add_face(pocket_lines)
+    pocket_face.erase!
+
+    bottom_pocket = [bottom_pocket[0], bottom_pocket[3], bottom_pocket[2], bottom_pocket[1]]
+    WikiHouse::Fillet.pocket_by_points(bottom_pocket)
+    pocket_lines = Sk.draw_all_points(bottom_pocket)
+    pocket_lines.each { |e| mark_inside_edge!(e) }
+    pocket_face = Sk.add_face(pocket_lines)
+    pocket_face.erase!
+
 
     set_material(face)
     make_part_right_thickness(face)
@@ -144,13 +160,9 @@ class WikiHouse::DoorPanelBottomHeader
     @top_part.mark_primary_face!(face)
     set_group(face.all_connected)
 
-    # @bottom_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).move_to(point: origin).
-    #     move_by(x: (@bottom_cap.width - thickness) * -1,
-    #             y: 0,
-    #             z: -1 * @bottom_cap.thickness).
-    #     go!
 
   end
+
   def set_default_properties
     mark_cutable!
   end

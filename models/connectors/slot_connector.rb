@@ -1,11 +1,28 @@
 class WikiHouse::SlotConnector < WikiHouse::Connector
 
+
+  def initialize(length_in_t: nil,
+                 count: 1, width_in_t: nil, thickness: nil, sections: nil,
+  fillet_off: false)
+    @thickness = thickness ? thickness : WikiHouse.sheet.new.thickness
+    @length_in_t = length_in_t ? length_in_t : self.class.standard_length_in_t
+    @count = count
+    @width_in_t = width_in_t ? width_in_t : self.class.standard_width_in_t
+    @sections = sections
+    @fillet_off = fillet_off
+  end
   def slot?
     true
   end
 
   def name
     :slot
+  end
+
+
+
+  def fillet_off?
+    @fillet_off ? true : false
   end
 
   def points(bounding_start: nil,
@@ -91,8 +108,10 @@ class WikiHouse::SlotConnector < WikiHouse::Connector
       else
         current_points = [pc2, pc1, pc4, pc3]
       end
-      WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
-      WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
+      unless fillet_off?
+        WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
+        WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
+      end
       slot_points.concat(current_points)
 
     end

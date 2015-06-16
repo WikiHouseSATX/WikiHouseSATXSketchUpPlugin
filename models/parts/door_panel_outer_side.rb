@@ -21,7 +21,7 @@ class WikiHouse::DoorPanelOuterSide
                  top_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
                  bottom_connector:WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
                  left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-                 face_connector: [WikiHouse::UPegEndPassThruConnector.new(thickness: thickness, bottom_on: false)]
+                 face_connector: [WikiHouse::UPegEndPassThruConnector.new(thickness: thickness, top_on: false)]
       )
 
     end
