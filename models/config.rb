@@ -1,13 +1,13 @@
 require 'ostruct'
 class WikiHouse::Config
   def self.machine
-   #WikiHouse::Laser
-    WikiHouse::Cnc
+   WikiHouse::Laser
+ #   WikiHouse::Cnc
   end
   def self.sheet
   #  WikiHouse::ImperialPlywood2332Sheet
-   WikiHouse::ImperialPlywood34Sheet
-  #WikiHouse::ImperialFiberboardSheet
+  # WikiHouse::ImperialPlywood34Sheet
+  WikiHouse::ImperialFiberboardSheet
   end
   def self.current_part
 
@@ -40,14 +40,16 @@ class WikiHouse::Config
    # WikiHouse::WallColumnRib.new(label: " Column",parent_part: parent_part,
    #                                       wall_panels_on: [Sk::WEST_FACE,Sk::SOUTH_FACE])
     #WikiHouse::DoorPanelRib.new(label: " Column", parent_part:parent_part)
+ # WikiHouse::DoorPanelInnerSide.new(label: " Column", parent_part:parent_part)
     #WikiHouse::DoorPanelTopRib.new(label: " Column", parent_part:parent_part)
-   # WikiHouse::DoorPanelOuterSide.new(label: " Column", parent_part:parent_part)
+  #  WikiHouse::DoorPanelOuterSide.new(label: " Column", parent_part:parent_part)
   # WikiHouse::DoorPanelBottomHeader.new(label: "inner", parent_part: parent_part)
    #WikiHouse::DoorPanelTopHeader.new(label: "inner", parent_part: parent_part)
   #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
   #WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
+# WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
   WikiHouse::DoorPanel.new(label: "Door Panel")
-  # WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
+ # WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
   #  WikiHouse::Column.new(label: "Column", wall_panels_on: [Sk::NORTH_FACE, Sk::SOUTH_FACE, Sk::WEST_FACE, Sk::EAST_FACE])
   end
 end

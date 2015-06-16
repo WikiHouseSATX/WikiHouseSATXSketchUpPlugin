@@ -22,15 +22,20 @@ class WikiHouse::DoorPanelTopFace
   def build_left_side
     super
 
-    puts parent_part.door_frame_width
     c1 = [@left_side_points[0].x, @left_side_points[0].y + parent_part.side_column_width, @left_side_points[0].z]
     c2 = [@left_side_points[0].x - thickness, @left_side_points[0].y + parent_part.side_column_width, @left_side_points[0].z]
     c3 = [c2.x, c1.y + parent_part.door_frame_width, @left_side_points[0].z]
     c4 = [c1.x, c1.y + parent_part.door_frame_width, @left_side_points[0].z]
 
+
+    tab_points = [@left_side_points[0],c1,c2,c3,c4, @left_side_points.last]
+    WikiHouse::Fillet.by_points(tab_points,2,1,0, reverse_it: true)
+
+    WikiHouse::Fillet.by_points(tab_points,5,6,7)
     #add on some points to handle the extra header lip
 
-    @left_side_points = [@left_side_points[0], c1, c2, c3, c4, @left_side_points[1]]
+    @left_side_points = tab_points
+
 
   end
 

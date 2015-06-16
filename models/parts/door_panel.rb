@@ -348,7 +348,7 @@ class WikiHouse::DoorPanel
       connector.class.drawing_points(bounding_origin: origin,
                                      count: @left_side_ribs.count,
                                      rows: 1,
-                                     part_length: side_column_inner_length,
+                                     part_length: length,
                                      part_width: depth,
                                      item_length: connector.length,
                                      item_width: connector.width) do |row, col, location|
@@ -404,7 +404,7 @@ class WikiHouse::DoorPanel
       connector.class.drawing_points(bounding_origin: origin,
                                      count: @right_side_ribs.count,
                                      rows: 1,
-                                     part_length: side_column_inner_length,
+                                     part_length: length,
                                      part_width: depth,
                                      item_length: connector.length,
                                      item_width: connector.width) do |row, col, location|

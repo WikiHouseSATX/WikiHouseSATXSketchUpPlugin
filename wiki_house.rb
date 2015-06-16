@@ -14,10 +14,12 @@ module WikiHouse
   def self.machine
     WikiHouse::Config.machine
   end
+
   def self.sheet
 
     WikiHouse::Config.sheet
   end
+
   def self.error(msg)
     UI.messagebox(msg)
     return false
@@ -59,8 +61,9 @@ module WikiHouse
                     ["sheet.rb", "sheets"],
                     ["imperial_plywood_3_4_sheet.rb", "sheets"],
                     ["tools.rb", "tools"],
-                    ["wall_panel.rb","parts"]]
-    base_classes.each do  |item|
+                    ["wall_panel.rb", "parts"],
+                    ["wall_panel_outer_side.rb", "parts"]]
+    base_classes.each do |item|
       load plugin_file(item[0], ["models", item[1]]) #Other files depend on this
       base_files << item[0]
     end
