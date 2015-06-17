@@ -3,10 +3,12 @@ class WikiHouse::UPeg
 
   include WikiHouse::PartHelper
 
+  attr_accessor :inner_leg_in_t
+  def initialize(sheet: nil, group: nil, origin: nil, label: label, parent_part: nil, inner_leg_in_t: 3)
 
-  def initialize(sheet: nil, group: nil, origin: nil, label: label, parent_part: nil)
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
-
+    @inner_leg_in_t = inner_leg_in_t
+    raise ArgumentError, "inner_leg_in_t  is #{inner_leg_in_t} - it must be between 0 and 4" if inner_leg_in_t < 0 || inner_leg_in_t > 4
   end
 
   def origin=(new_origin)
@@ -39,19 +41,36 @@ class WikiHouse::UPeg
 
   def make_peg
     t = thickness
-    c1 = [bounding_c1.x, bounding_c1.y, bounding_c1.z]
-    c2 = [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
-    c3 = [bounding_c1.x + 3 * t, bounding_c1.y - t, bounding_c1.z]
-    c4 = [bounding_c1.x + 4 * t, bounding_c1.y - t, bounding_c1.z]
-    c5 = [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-    c6 = [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-    c7 = [bounding_c1.x + 6 * t, bounding_c1.y - 1 * t, bounding_c1.z]
-    c8 = [bounding_c1.x + 7 * t, bounding_c1.y - 1 * t, bounding_c1.z]
-    c9 = [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
-    c10 = [bounding_c1.x + 10 * t, bounding_c1.y, bounding_c1.z]
-    c11 = [bounding_c1.x + 10 * t, bounding_c1.y - 8 * t, bounding_c1.z]
-    c12 = [bounding_c1.x, bounding_c1.y - 9 * t, bounding_c1.z]
-    [c1, c2, c3, c4, c5, c6, c7, c8, c9, c10, c11, c12]
+    peg_points = []
+   peg_points << [bounding_c1.x, bounding_c1.y, bounding_c1.z]
+    if inner_leg_in_t == 4
+      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y , bounding_c1.z]
+      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y, bounding_c1.z]
+    elsif inner_leg_in_t == 0
+      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
+      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
+    else
+      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
+      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y - (4 - inner_leg_in_t) * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - (4 - inner_leg_in_t) * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - (4 - inner_leg_in_t) * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y - (4 - inner_leg_in_t) * t, bounding_c1.z]
+      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
+
+    end
+
+
+    peg_points << [bounding_c1.x + 10 * t, bounding_c1.y, bounding_c1.z]
+    peg_points << [bounding_c1.x + 10 * t, bounding_c1.y - 8 * t, bounding_c1.z]
+    peg_points <<[bounding_c1.x, bounding_c1.y - 9 * t, bounding_c1.z]
+
+    peg_points
 
 
   end

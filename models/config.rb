@@ -1,12 +1,12 @@
 require 'ostruct'
 class WikiHouse::Config
   def self.machine
-   WikiHouse::Laser
- #   WikiHouse::Cnc
+  WikiHouse::Laser
+#    WikiHouse::Cnc
   end
   def self.sheet
   #  WikiHouse::ImperialPlywood2332Sheet
-  # WikiHouse::ImperialPlywood34Sheet
+ # WikiHouse::ImperialPlywood34Sheet
   WikiHouse::ImperialFiberboardSheet
   end
   def self.current_part
@@ -32,6 +32,28 @@ class WikiHouse::Config
     parent_part.number_of_top_column_supports = 3
   #  WikiHouse::WallPanelFace.new(label: "Top", origin: [0,0,0],  parent_part: parent_part)
   # WikiHouse::HalfWallPanel.new()
+  #   p = WikiHouse::UPeg.new(label: "UPeg - 0", inner_leg_in_t: 0 )
+  #   p.draw!
+  #    p.move_by(z:6).go!
+  #  p =  WikiHouse::UPeg.new(label: "UPeg - 1", inner_leg_in_t: 1)
+  #
+  #  p.draw!
+  #
+  #   p.move_by(z:5).go!
+  #  p =  WikiHouse::UPeg.new(label: "UPeg - 2", inner_leg_in_t:2 )
+  #  p.draw!
+  #
+  #   p.move_by(z:4).go!
+  #  p =  WikiHouse::UPeg.new(label: "UPeg - 3",inner_leg_in_t: 3)
+  #  p.draw!
+  #
+  #   p.move_by(z:3).go!
+  #  p =  WikiHouse::UPeg.new(label: "UPeg - 4", inner_leg_in_t: 4)
+  #  p.draw!
+  #
+  #   p.move_by(z:2).go!
+  #    WikiHouse::UPeg.new(label: "UPeg")
+#   WikiHouse::WallPanel.new(label: "Wall Panel")
      # WikiHouse::WallColumnBoard.new(label: "Column Board",
     #                                  parent_part: parent_part, origin:[0,0,0])
    #  WikiHouse::Column.new(label: " Column",
@@ -47,9 +69,9 @@ class WikiHouse::Config
    #WikiHouse::DoorPanelTopHeader.new(label: "inner", parent_part: parent_part)
   #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
   #WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
-# WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
-  WikiHouse::DoorPanel.new(label: "Door Panel")
- # WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
+ #WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
+#  WikiHouse::DoorPanel.new(label: "Door Panel")
+#  WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
   #  WikiHouse::Column.new(label: "Column", wall_panels_on: [Sk::NORTH_FACE, Sk::SOUTH_FACE, Sk::WEST_FACE, Sk::EAST_FACE])
   end
 end
