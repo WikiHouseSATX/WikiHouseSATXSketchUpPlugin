@@ -8,7 +8,7 @@ class WikiHouse::DoorPanelOuterSide < WikiHouse::WallPanelOuterSide
     @width_method = :depth
     init_board(right_connector: WikiHouse::TabConnector.new(count: 2, thickness: thickness),
                top_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
-               bottom_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
+               bottom_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness, length_in_t: 2),
                left_connector: WikiHouse::TabConnector.new(count: 2, thickness: thickness),
                face_connector: [
                    WikiHouse::UPegPassThruConnector.new(thickness: thickness, count: parent_part.number_of_side_column_supports),

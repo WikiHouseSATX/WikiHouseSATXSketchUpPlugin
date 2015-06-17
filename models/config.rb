@@ -32,23 +32,27 @@ class WikiHouse::Config
     parent_part.number_of_top_column_supports = 3
   #  WikiHouse::WallPanelFace.new(label: "Top", origin: [0,0,0],  parent_part: parent_part)
   # WikiHouse::HalfWallPanel.new()
-  #   p = WikiHouse::UPeg.new(label: "UPeg - 0", inner_leg_in_t: 0 )
+  #   p = WikiHouse::UPeg.new(label: "UPeg - 4", inner_leg_in_t: 4)
   #   p.draw!
   #    p.move_by(z:6).go!
-  #  p =  WikiHouse::UPeg.new(label: "UPeg - 1", inner_leg_in_t: 1)
+  #  p =  WikiHouse::UPeg.new(label: "UPeg - 3", inner_leg_in_t: 3)
   #
   #  p.draw!
   #
   #   p.move_by(z:5).go!
-  #  p =  WikiHouse::UPeg.new(label: "UPeg - 2", inner_leg_in_t:2 )
-  #  p.draw!
   #
-  #   p.move_by(z:4).go!
-  #  p =  WikiHouse::UPeg.new(label: "UPeg - 3",inner_leg_in_t: 3)
-  #  p.draw!
+  #  w = WikiHouse::Wedge.new( label: "Wedge",  width_in_t: 10, right_length_in_t:5, left_length_in_t:4)
+  #   w.draw!
+  #   w.move_by(z: 5).go!
+  # p =  WikiHouse::UPeg.new(label: "UPeg - 2", inner_leg_in_t:2 )
+  #   p.draw!
+  # #
+  #    p.move_by(z:4).go!
+  #   p =  WikiHouse::UPeg.new(label: "UPeg - 1",inner_leg_in_t: 1)
+  # #  p.draw!
   #
   #   p.move_by(z:3).go!
-  #  p =  WikiHouse::UPeg.new(label: "UPeg - 4", inner_leg_in_t: 4)
+  #  p =  WikiHouse::UPeg.new(label: "UPeg - 0", inner_leg_in_t: 0)
   #  p.draw!
   #
   #   p.move_by(z:2).go!
@@ -70,7 +74,7 @@ class WikiHouse::Config
   #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
   #WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
  #WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
-#  WikiHouse::DoorPanel.new(label: "Door Panel")
+  WikiHouse::DoorPanel.new(label: "Door Panel")
 #  WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
   #  WikiHouse::Column.new(label: "Column", wall_panels_on: [Sk::NORTH_FACE, Sk::SOUTH_FACE, Sk::WEST_FACE, Sk::EAST_FACE])
   end
