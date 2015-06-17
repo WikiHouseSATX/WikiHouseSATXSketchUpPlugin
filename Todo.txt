@@ -1,7 +1,10 @@
 Pending Work
 =====================
 
-Make sure that the filler wall isn't 2 thicknesses to long
+
+The upeg needs to be able to be lop sided
+The Door Panel Inner Side seems to be a thickness too wide. The end point isn't at the right place
+
 Get the upegs to sync up across the different types of walls
 The top upeg lock pocket on the outer side of door panel is 1.5 inches too high
 Should the Top Face expand to cover the bottom header?
