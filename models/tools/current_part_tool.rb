@@ -2,7 +2,7 @@ class WikiHouse::CurrentPartTool
   WikiHouse::Tools.register(:current_part, self)
 
   def draw_it(x, y, view)
-
+    WikiHouse.init
     part = WikiHouse::Config.current_part
     part.draw!
   end

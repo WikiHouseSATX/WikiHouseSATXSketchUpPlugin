@@ -1,28 +1,10 @@
 Pending Work
 =====================
 
-
-The upeg needs to be able to be lop sided
-The Door Panel Inner Side seems to be a thickness too wide. The end point isn't at the right place
-
-Get the upegs to sync up across the different types of walls
-The top upeg lock pocket on the outer side of door panel is 1.5 inches too high
-Should the Top Face expand to cover the bottom header?
-Make a wall panel that fills in the space to make it 2 wall panels in width
-
 Get rendering to work - for the wall builder
 Confirm depth of the pre hund door panel
 
 Add idea of sections instead of fusion
-
-handle getting wall paenl -> half panel to use the correct fittings
-handle getting wall_panel -> door panel to sue the ocrrect fittnings
-
-
-Door section - 94 tall
-Door opening is 34 wide by 82 inches tall
-Support double ribs in place
-Make sure the faces are all the way around tabs.
 
 Move the orientation to an object
 Groove work -
@@ -40,13 +22,12 @@ Build a button to center/top the view
 Remove Typename clals - http://forums.sketchucation.com/viewtopic.php?f=180&t=25305
 Refactor the fillet to only need a single index instead of three
 Refactor the draw! method so the bookkeeping of of drawn! is handled automatically
+
 To Replace Aspire
 ====================
 Need to be able to nest parts
 Generate Gcode
 Need to be able to generate tabs for the part
-
-
 
 
 http://sketchupapi.blogspot.com/2011/07/gofaster-parameter.html (Group operations to make them easier to handle)

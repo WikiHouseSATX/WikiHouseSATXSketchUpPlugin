@@ -3,12 +3,17 @@ class WikiHouse::UPeg
 
   include WikiHouse::PartHelper
 
-  attr_accessor :inner_leg_in_t
-  def initialize(sheet: nil, group: nil, origin: nil, label: label, parent_part: nil, inner_leg_in_t: 1)
+  attr_accessor :right_inner_leg_in_t, :left_inner_leg_in_t
+
+  def initialize(sheet: nil, group: nil, origin: nil, label: label, parent_part: nil,
+                 left_inner_leg_in_t: 1, right_inner_leg_in_t: 1)
 
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
-    @inner_leg_in_t = inner_leg_in_t
-    raise ArgumentError, "inner_leg_in_t  is #{inner_leg_in_t} - it must be between 0 and 4" if inner_leg_in_t < 0 || inner_leg_in_t > 4
+    @right_inner_leg_in_t = right_inner_leg_in_t
+    @left_inner_leg_in_t = left_inner_leg_in_t
+    raise ArgumentError, "right_inner_leg_in_t  is #{right_inner_leg_in_t} - it must be between 0 and 4" if right_inner_leg_in_t < 0 || right_inner_leg_in_t > 4
+    raise ArgumentError, "left_inner_leg_in_t  is #{left_inner_leg_in_t} - it must be between 0 and 4" if left_inner_leg_in_t < 0 || left_inner_leg_in_t > 4
+
   end
 
   def origin=(new_origin)
@@ -42,26 +47,39 @@ class WikiHouse::UPeg
   def make_peg
     t = thickness
     peg_points = []
-   peg_points << [bounding_c1.x, bounding_c1.y, bounding_c1.z]
-    if inner_leg_in_t == 0
-      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y , bounding_c1.z]
-      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y, bounding_c1.z]
-    elsif inner_leg_in_t == 4
-      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
-      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
-    else
-      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
-      peg_points << [bounding_c1.x + 3 * t, bounding_c1.y - ( inner_leg_in_t) * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - ( inner_leg_in_t) * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - (inner_leg_in_t) * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y - ( inner_leg_in_t) * t, bounding_c1.z]
-      peg_points << [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
+    peg_points << [bounding_c1.x, bounding_c1.y, bounding_c1.z]
+
+    case left_inner_leg_in_t
+      when 0
+        peg_points << [bounding_c1.x + 4 * t, bounding_c1.y, bounding_c1.z]
+        peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+
+      when 4
+        peg_points << [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
+        peg_points << [bounding_c1.x + 3 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+
+      else
+        peg_points << [bounding_c1.x + 3 * t, bounding_c1.y, bounding_c1.z]
+        peg_points << [bounding_c1.x + 3 * t, bounding_c1.y - (left_inner_leg_in_t) * t, bounding_c1.z]
+        peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - (left_inner_leg_in_t) * t, bounding_c1.z]
+        peg_points << [bounding_c1.x + 4 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+
+
+    end
+    case right_inner_leg_in_t
+      when 0
+        peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+        peg_points << [bounding_c1.x + 6 * t, bounding_c1.y, bounding_c1.z]
+
+      when 4
+        peg_points << [bounding_c1.x + 7 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+        peg_points << [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
+
+      else
+        peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - 4 * t, bounding_c1.z]
+        peg_points << [bounding_c1.x + 6 * t, bounding_c1.y - (right_inner_leg_in_t) * t, bounding_c1.z]
+        peg_points << [bounding_c1.x + 7 * t, bounding_c1.y - (right_inner_leg_in_t) * t, bounding_c1.z]
+        peg_points << [bounding_c1.x + 7 * t, bounding_c1.y, bounding_c1.z]
 
     end
 
@@ -83,7 +101,7 @@ class WikiHouse::UPeg
     d1 = [bounding_c1.x + 1.5 * t, bounding_c1.y - 2.5 * t, bounding_c1.z]
     d2 = [bounding_c1.x + 8.5 * t, bounding_c1.y - 2.5 * t, bounding_c1.z]
     d3 = [bounding_c1.x + 8.5 * t, bounding_c1.y - 6.5 * t, bounding_c1.z]
-    d4 = [bounding_c1.x + 5 * t,   bounding_c1.y - 6.5 * t, bounding_c1.z]
+    d4 = [bounding_c1.x + 5 * t, bounding_c1.y - 6.5 * t, bounding_c1.z]
     d5 = [bounding_c1.x + 1.5 * t, bounding_c1.y - 6.5 * t, bounding_c1.z]
     dowels = []
     [d1, d2, d3, d4, d5].each { |d| dowels << Sk.draw_circle(center_point: d, radius: WikiHouse.machine.bit_radius) }

@@ -70,7 +70,9 @@ class WikiHouse::DoorPanelInnerSide
     tab_points.shift
 
 
-    new_left_side = [@left_side_points.first]
+    new_left_side = [[@left_side_points.first.x + thickness,
+                      @left_side_points.first.y,
+                      @left_side_points.first.z]]
     new_left_side.concat(tab_points)
    # new_left_side << last_point
 
