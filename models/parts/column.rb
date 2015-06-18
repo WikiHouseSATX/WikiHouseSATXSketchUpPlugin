@@ -1,6 +1,7 @@
 class WikiHouse::Column
 
   include WikiHouse::PartHelper
+  include WikiHouse::JoinableHelper
 
   attr_accessor :wall_panels_on
 
@@ -32,7 +33,9 @@ class WikiHouse::Column
                                             origin: [@origin.x, @origin.y + width, @origin.z + length - 2 * thickness],
                                             wall_panels_on: wall_panels_on)
   end
-
+  def joinable_faces
+    [Orientation.north, Orientation.east, Orientation.south, Orientation.west]
+  end
   def origin=(new_origin)
     @origin = new_origin
     @bottom_rib.origin = [@origin.x, @origin.y + width, @origin.z - thickness]
@@ -88,24 +91,24 @@ class WikiHouse::Column
     @column_boards.each_with_index do |board, index|
       board.draw!
 
-      if index == Sk::SOUTH_FACE
+      if index == Orientation.south
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             move_to(point: origin)
         alteration.move_by(x: 0, y: thickness * -1, z: width * -1)
-      elsif index == Sk::EAST_FACE
+      elsif index == Orientation.east
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 90.degrees).
             move_to(point: origin).
             move_by(x: 0, y: thickness * -1, z: 0)
-      elsif index == Sk::NORTH_FACE
+      elsif index == Orientation.north
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 180.degrees).
             move_to(point: origin).
             move_by(x: board.width * -1, y: thickness * -1, z: 0)
-      elsif index == Sk::WEST_FACE
+      elsif index == Orientation.west
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 270.degrees).

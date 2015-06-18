@@ -5,10 +5,7 @@
 #SketchUp model.
 
 module Sk
-  NORTH_FACE ||= 2
-  EAST_FACE ||= 1
-  SOUTH_FACE ||= 0
-  WEST_FACE ||= 3
+
   extend self
   def abs(val)
     val < 0 ? -1.0 * val : val

@@ -12,7 +12,7 @@ class WikiHouse::WallPanelCap
                top_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness:thickness),
                left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-               face_connector: WikiHouse::UPegLockPocketConnector.new( thickness: thickness, orientations: [Sk::NORTH_FACE, Sk::SOUTH_FACE]))
+               face_connector: WikiHouse::UPegLockPocketConnector.new( thickness: thickness, orientations: [Orientation.north, Orientation.south]))
 
   end
 

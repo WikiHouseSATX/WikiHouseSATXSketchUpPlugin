@@ -14,7 +14,7 @@ class WikiHouse::DoorPanelTopCap
                top_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                left_connector: WikiHouse::TabConnector.new(count: 2, thickness: thickness),
-               face_connector: [WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [Sk::NORTH_FACE, Sk::SOUTH_FACE]),
+               face_connector: [WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [Orientation.north, Orientation.south]),
                                 WikiHouse::PocketConnector.new(thickness:thickness, count: parent_part.number_of_top_column_supports)]
     )
 

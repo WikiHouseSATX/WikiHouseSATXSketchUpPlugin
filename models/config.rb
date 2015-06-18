@@ -63,10 +63,10 @@ class WikiHouse::Config
     # WikiHouse::WallColumnBoard.new(label: "Column Board",
     #                                  parent_part: parent_part, origin:[0,0,0])
     #  WikiHouse::Column.new(label: " Column",
-    #                                       wall_panels_on: [Sk::NORTH_FACE,Sk::EAST_FACE])
+    #                                       wall_panels_on: [Orientation::North, Orientation::South])
 
     # WikiHouse::WallColumnRib.new(label: " Column",parent_part: parent_part,
-    #                                       wall_panels_on: [Sk::WEST_FACE,Sk::SOUTH_FACE])
+    #                                       wall_panels_on: [Orientation.west,Orientation.south])
     #WikiHouse::DoorPanelRib.new(label: " Column", parent_part:parent_part)
     # WikiHouse::DoorPanelInnerSide.new(label: " Column", parent_part:parent_part)
     #WikiHouse::DoorPanelTopRib.new(label: " Column", parent_part:parent_part)
@@ -78,6 +78,6 @@ class WikiHouse::Config
     #WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
     # WikiHouse::DoorPanel.new(label: "Door Panel")
     #  WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
-    #  WikiHouse::Column.new(label: "Column", wall_panels_on: [Sk::NORTH_FACE, Sk::SOUTH_FACE, Sk::WEST_FACE, Sk::EAST_FACE])
+    #  WikiHouse::Column.new(label: "Column", wall_panels_on: [Orientation.south, Orientation.west, Orientation.east, Orientation.north])
   end
 end
