@@ -2,11 +2,22 @@ Pending Work
 =====================
 
 Get rendering to work - for the wall builder
-Confirm depth of the pre hund door panel
+  - Add support for Door Panel, Door Wall Panel, Half Height Wall Panel, New Wall Panel Column
+Make it so that dimenstions of the parent pare are set by the intializer and have defautls
 
-Add idea of sections instead of fusion
-
+Add idea of sections instead of fusion (remove fusion from the Door Panel Bottom Header)
+Find the places were we override right/left/face to find the pattern
 Move the orientation to an object
+
+
+
+Pending Parts
+========================
+Triangle Corner
+Sliding Door Panel
+Roof
+Torsion Floor
+
 Groove work -
     It doesn't handle groove fillets right
     It doesn't set the material after drawing in
@@ -14,7 +25,6 @@ Groove work -
     It doesn't flatanize properly
     It isn't set as an inside edge.
 
-Make a triangle corner
 
 Build way to configure machine and choose default sheet
 Build a button to center/top the view
