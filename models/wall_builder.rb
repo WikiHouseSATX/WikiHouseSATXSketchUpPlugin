@@ -33,6 +33,12 @@ class WikiHouse::WallBuilder
 
   def initialize(origin: nil, sheet: nil, label: nil)
 
+    @root_part = WikiHouse::Column.new(label: "Column 1", parent_part: self)
+    wp = WikiHouse::WallPanel.new(label: "WP 1", parent_part: self)
+    @root_part.join(part: wp, on_my_face: Orientation.south, to: Orientation.west)
+
+    wp2 = WikiHouse::WallPanel.new(label: "WP 2", parent_part: self)
+    wp.join(part: wp2, on_my_face: Orientation.east, to: Orientation.west)
     #Can't complete loop
     # #loooks like one side of the panels is off
     # @root_column = ColumnWithPanels.new(column_label: "C1",

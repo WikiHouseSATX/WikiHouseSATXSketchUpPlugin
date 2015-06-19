@@ -15,4 +15,9 @@ class WikiHouse::Join
       raise ArgumentError, "You can't join on that face for #{part_2}"
     end
   end
+  def face_for(part)
+    return @part_1_face if part == @part_1
+    return @part_2_face if part == @part_2
+    return nil
+  end
 end

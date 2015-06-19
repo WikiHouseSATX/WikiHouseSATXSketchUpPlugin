@@ -9,6 +9,7 @@ module WikiHouse::JoinableHelper
       end
     end
   end
+
   attr_accessor :joins
 
   def join_on?(face_index)
@@ -16,7 +17,21 @@ module WikiHouse::JoinableHelper
     return false if joins.keys.include?(face_index)
     true
   end
+
   def joinable_faces
     []
+  end
+
+  def join_with(part: nil, on_my_face: nil, to: nil, join: nil)
+    if !join
+
+      join = WikiHouse::Join.new(part_1: self,
+                                 part_1_face: on_my_face,
+                                 part_2: part,
+                                 part_2_face: to)
+    end
+    @joins[join.face_for(self)] = join
+    join
+
   end
 end

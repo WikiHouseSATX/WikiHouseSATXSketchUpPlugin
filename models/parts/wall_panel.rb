@@ -1,6 +1,7 @@
 class WikiHouse::WallPanel
 
   include WikiHouse::PartHelper
+  include WikiHouse::JoinableHelper
 
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil)
     part_init(sheet: sheet, origin: origin, parent_part: parent_part)
@@ -20,8 +21,10 @@ class WikiHouse::WallPanel
     number_of_internal_supports.times do |i|
       @ribs << WikiHouse::WallPanelRib.new(label: "Rib ##{i + 1}", origin: @origin, sheet: sheet, parent_part: self)
     end
-   end
-
+  end
+  def joinable_faces
+    [ Orientation.east, Orientation.west]
+  end
   def origin=(new_origin)
     @origin = new_origin
 
@@ -107,7 +110,7 @@ class WikiHouse::WallPanel
         move_to(point: origin).
         move_by(x: -1 * @right_side.thickness,
                 y: -1 * @right_side.thickness,
-                z: panel_rib_width  - @right_side.thickness).
+                z: panel_rib_width - @right_side.thickness).
         go!
 
     first_rib = @ribs.first
