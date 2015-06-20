@@ -34,7 +34,7 @@ class WikiHouse::Column
                                             wall_panels_on: wall_panels_on)
   end
   def joinable_faces
-    [Orientation.north, Orientation.east, Orientation.south, Orientation.west]
+    [WikiHouse::Orientation.north, WikiHouse::Orientation.east, WikiHouse::Orientation.south, WikiHouse::Orientation.west]
   end
   def origin=(new_origin)
     @origin = new_origin
@@ -91,24 +91,24 @@ class WikiHouse::Column
     @column_boards.each_with_index do |board, index|
       board.draw!
 
-      if index == Orientation.south
+      if index == WikiHouse::Orientation.south
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             move_to(point: origin)
         alteration.move_by(x: 0, y: thickness * -1, z: width * -1)
-      elsif index == Orientation.east
+      elsif index == WikiHouse::Orientation.east
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 90.degrees).
             move_to(point: origin).
             move_by(x: 0, y: thickness * -1, z: 0)
-      elsif index == Orientation.north
+      elsif index == WikiHouse::Orientation.north
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 180.degrees).
             move_to(point: origin).
             move_by(x: board.width * -1, y: thickness * -1, z: 0)
-      elsif index == Orientation.west
+      elsif index == WikiHouse::Orientation.west
         alteration = board.rotate(vector: [1, 0, 0], rotation: 90.degrees).
             rotate(vector: [0, 0, 1], rotation: 0.degrees).
             rotate(vector: [0, 1, 0], rotation: 270.degrees).

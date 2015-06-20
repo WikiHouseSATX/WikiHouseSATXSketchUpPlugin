@@ -23,7 +23,7 @@ class WikiHouse::WallPanel
     end
   end
   def joinable_faces
-    [ Orientation.east, Orientation.west]
+    [ WikiHouse::Orientation.east, WikiHouse::Orientation.west]
   end
   def origin=(new_origin)
     @origin = new_origin

@@ -108,8 +108,8 @@ class WikiHouse::ColumnWithPanels
                                      item_length: connector.top_slot_length,
                                      item_width: connector.top_slot_width) do |row, col, location|
 
-        if key == Orientation.south
-          zpeg = zpegs[Orientation.south][col]
+        if key == WikiHouse::Orientation.south
+          zpeg = zpegs[WikiHouse::Orientation.south][col]
           zpeg.draw!
 
 
@@ -121,8 +121,8 @@ class WikiHouse::ColumnWithPanels
                       y: -1 * location.y + origin.y - zpeg.thickness * 9).
               go!
 
-        elsif key == Orientation.east
-          zpeg = zpegs[Orientation.east][parent_part.wall_panel_zpegs - col - 1]
+        elsif key == WikiHouse::Orientation.east
+          zpeg = zpegs[WikiHouse::Orientation.east][parent_part.wall_panel_zpegs - col - 1]
           zpeg.draw!
 
 
@@ -134,8 +134,8 @@ class WikiHouse::ColumnWithPanels
                       x: zpeg.thickness * -5, #Left right
                       y: -1 * location.y + column_board.origin.y - zpeg.thickness * 9).
               go!
-        elsif key == Orientation.north
-          zpeg = zpegs[Orientation.north][parent_part.wall_panel_zpegs - col - 1]
+        elsif key == WikiHouse::Orientation.north
+          zpeg = zpegs[WikiHouse::Orientation.north][parent_part.wall_panel_zpegs - col - 1]
           zpeg.draw!
 
 
@@ -147,9 +147,9 @@ class WikiHouse::ColumnWithPanels
                       y: -1 * location.y + column_board.origin.y - zpeg.thickness * 9).
               go!
 
-        elsif key == Orientation.west
+        elsif key == WikiHouse::Orientation.west
 
-          zpeg = zpegs[Orientation.west][parent_part.wall_panel_zpegs - col - 1]
+          zpeg = zpegs[WikiHouse::Orientation.west][parent_part.wall_panel_zpegs - col - 1]
           zpeg.draw!
 
           zpeg.rotate(vector: [1, 0, 0], rotation: 90.degrees).

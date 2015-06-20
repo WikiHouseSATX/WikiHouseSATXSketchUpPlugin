@@ -66,7 +66,7 @@ class WikiHouse::ColumnWallPanel
     @groups.concat([@wall_panel.group])
     if left_column
       #Rotate the wall panel to line up
-      if left_column_face == Orientation.south
+      if left_column_face == WikiHouse::Orientation.south
 
         @wall_panel.rotate(vector: [0, 0, 1], rotation: 90.degrees).
             move_to(point: origin).
@@ -76,14 +76,14 @@ class WikiHouse::ColumnWallPanel
             go!
 
 
-      elsif left_column_face == Orientation.east
+      elsif left_column_face == WikiHouse::Orientation.east
         @wall_panel.rotate(vector: [0, 0, 1], rotation: 180.degrees).
             move_to(point: origin).
             move_by(z: -1 * thickness,
                     x: (@wall_panel.length) * 0,
                     y: left_column.width * -1).
             go!
-      elsif left_column_face == Orientation.north
+      elsif left_column_face == WikiHouse::Orientation.north
 
 
         @wall_panel.rotate(vector: [0, 0, 1], rotation: 270.degrees).
@@ -93,7 +93,7 @@ class WikiHouse::ColumnWallPanel
                     y: left_column.width * 0).
             go!
 
-      elsif left_column_face == Orientation.west
+      elsif left_column_face == WikiHouse::Orientation.west
         @wall_panel.
             move_to(point: origin).
             move_by(z: -1 * thickness,
@@ -115,7 +115,7 @@ class WikiHouse::ColumnWallPanel
       unless right_column.drawn?
 
 
-        if right_column_face == Orientation.south
+        if right_column_face == WikiHouse::Orientation.south
           left_front_bottom = wp_bounding_box.corner(0)
           @wall_panel.origin = [left_front_bottom.x + right_column.width,
                                 left_front_bottom.y,
@@ -125,14 +125,14 @@ class WikiHouse::ColumnWallPanel
                                  @wall_panel.origin.z + 1 * @wall_panel.thickness]
 
 
-        elsif right_column_face == Orientation.east
+        elsif right_column_face == WikiHouse::Orientation.east
           right_front_bottom = wp_bounding_box.corner(1)
 
           @wall_panel.origin = right_front_bottom
           right_column.origin = [Sk.round(@wall_panel.origin.x),
                                  @wall_panel.origin.y - 0 * @wall_panel.thickness,
                                  @wall_panel.origin.z + 1 * @wall_panel.thickness]
-        elsif right_column_face == Orientation.north
+        elsif right_column_face == WikiHouse::Orientation.north
           left_back_bottom = wp_bounding_box.corner(2)
           @wall_panel.origin = left_back_bottom
 
@@ -140,7 +140,7 @@ class WikiHouse::ColumnWallPanel
                                  @wall_panel.origin.y,
                                  @wall_panel.origin.z + 1 * @wall_panel.thickness]
 
-        elsif right_column_face == Orientation.west
+        elsif right_column_face == WikiHouse::Orientation.west
           left_front_bottom = wp_bounding_box.corner(0)
 
           @wall_panel.origin = left_front_bottom

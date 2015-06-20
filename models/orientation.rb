@@ -4,7 +4,7 @@ class WikiHouse::Orientation
   SOUTH_FACE ||= 0
   WEST_FACE ||= 3
   attr_reader :face_index
-  def intialize(face_index: nil)
+  def initialize(face_index: nil)
     @face_index = face_index
   end
 

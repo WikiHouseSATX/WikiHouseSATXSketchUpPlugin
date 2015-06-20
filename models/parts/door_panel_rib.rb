@@ -10,7 +10,7 @@ class WikiHouse::DoorPanelRib
                top_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                bottom_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
                left_connector: WikiHouse::TabConnector.new(count: 1, thickness: thickness),
-               face_connector: WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [Orientation.east])
+               face_connector: WikiHouse::UPegLockPocketConnector.new(thickness: thickness, orientations: [WikiHouse::Orientation.east])
     )
 
   end

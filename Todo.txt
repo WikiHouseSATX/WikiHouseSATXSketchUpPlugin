@@ -1,7 +1,18 @@
 Pending Work
 =====================
 Focus on Nesting for Laser first
-Add a label
+Add a label to all parts for cutting
+
+Nesting Process
+==========================
+Make a sheet (Count # of sheets)
+grab a flat part and copy to a sheet
+1st version just put each part on its own sheet
+press button to export sheets to individual svg files
+
+
+https://github.com/simonbeard/sketchup-svg-outline-plugin/releases/tag/0.9999999 - for svg export
+
 
 Get rendering to work - for the wall builder
   - Add support for Door Panel, Door Wall Panel, Half Height Wall Panel, New Wall Panel Column
@@ -11,7 +22,7 @@ Add idea of sections instead of fusion (remove fusion from the Door Panel Bottom
 Find the places were we override right/left/face to find the pattern
 Move the orientation to an object
 
-
+Fix it so we don't have to put WikiHouse:: infront of everything.
 
 Pending Parts
 ========================
