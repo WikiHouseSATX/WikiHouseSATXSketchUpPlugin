@@ -19,8 +19,11 @@ class WikiHouse::Flattener
     "WikiHouse::Flat::InsideEdge"
   end
 
-  def flat_group_name
+  def self.flat_group_name
     "WikiHouse::Flat"
+  end
+  def flat_group_name
+    self.class.flat_group_name
   end
   def thickness
     @sheet.thickness

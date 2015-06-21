@@ -25,8 +25,8 @@ class WikiHouse::ReloadTool
     cmd = UI::Command.new("WikiHouse Reload") {
       tool.reload
     }
-    cmd.small_icon = WikiHouse.plugin_file("reload.png", "images")
-    cmd.large_icon = WikiHouse.plugin_file("reload.png", "images")
+    cmd.small_icon = WikiHouse.plugin_file("reload-bw.png", "images")
+    cmd.large_icon = WikiHouse.plugin_file("reload-bw.png", "images")
     cmd.tooltip = "WikiHouse Reload"
     cmd.status_bar_text = "Reload's Code"
     cmd.menu_text = "WikiHouse Reload"

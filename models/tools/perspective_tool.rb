@@ -40,8 +40,8 @@ class WikiHouse::PerspectiveTool
       Sketchup.active_model.select_tool(tool)
 
     }
-    cmd.small_icon = WikiHouse.plugin_file("WikiHouse_logo_12.png", "images")
-    cmd.large_icon = WikiHouse.plugin_file("WikiHouse_logo_24.png", "images")
+    cmd.small_icon = WikiHouse.plugin_file("eye.png", "images")
+    cmd.large_icon = WikiHouse.plugin_file("eye.png", "images")
     cmd.tooltip = "WikiHouse Perspective"
     cmd.status_bar_text = "Changes the perspective so you can export at 1 to 1"
     cmd.menu_text = "WikiHouse Perspective"

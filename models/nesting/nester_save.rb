@@ -1,0 +1,3 @@
+class WikiHouse::NesterSave
+
+end

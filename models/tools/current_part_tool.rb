@@ -25,8 +25,8 @@ class WikiHouse::CurrentPartTool
       Sketchup.active_model.select_tool(tool)
 
     }
-    cmd.small_icon = WikiHouse.plugin_file("Part.png", "images")
-    cmd.large_icon = WikiHouse.plugin_file("Part.png", "images")
+    cmd.small_icon = WikiHouse.plugin_file("puzzle.png", "images")
+    cmd.large_icon = WikiHouse.plugin_file("puzzle.png", "images")
     cmd.tooltip = "Current Part"
     cmd.status_bar_text = "Auto Draws the current part"
     cmd.menu_text = "Current Part"

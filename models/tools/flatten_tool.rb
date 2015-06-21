@@ -23,8 +23,8 @@ class WikiHouse::FlattenTool
       Sketchup.active_model.select_tool(tool)
 
     }
-    cmd.small_icon = WikiHouse.plugin_file("WikiHouse_logo_12.png", "images")
-    cmd.large_icon = WikiHouse.plugin_file("WikiHouse_logo_24.png", "images")
+    cmd.small_icon = WikiHouse.plugin_file("steam_engine.png", "images")
+    cmd.large_icon = WikiHouse.plugin_file("steam_engine.png", "images")
     cmd.tooltip = "WikiHouse Flattener"
     cmd.status_bar_text = "Finds all parts and makes them flat"
     cmd.menu_text = "WikiHouse Flattener"

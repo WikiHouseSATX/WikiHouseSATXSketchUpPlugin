@@ -23,6 +23,8 @@ Find the places were we override right/left/face to find the pattern
 Move the orientation to an object
 
 Fix it so we don't have to put WikiHouse:: infront of everything.
+Change out the top/bottom,left,right to north,south,east,west so orientation can handle it
+Move the crawl features out to a helper
 
 Pending Parts
 ========================

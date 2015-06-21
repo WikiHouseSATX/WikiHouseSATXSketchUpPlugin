@@ -1,13 +1,13 @@
 class WikiHouse::NesterTool
   WikiHouse::Tools.register(:nester, self)
   def activate
-    #	puts 'Your tool has been activated.'
+    puts 'Nester triggered'
     nester  = WikiHouse::Nester.new()
-    nester.nest!
+    nester.draw!
   end
 
   def deactivate(view)
-    #puts "Your tool has been deactivated in view: #{view}"
+    puts "Your tool has been deactivated in view: #{view}"
   end
 
 
@@ -23,8 +23,8 @@ class WikiHouse::NesterTool
       Sketchup.active_model.select_tool(tool)
 
     }
-    cmd.small_icon = WikiHouse.plugin_file("WikiHouse_logo_12.png", "images")
-    cmd.large_icon = WikiHouse.plugin_file("WikiHouse_logo_24.png", "images")
+    cmd.small_icon = WikiHouse.plugin_file("basket.png", "images")
+    cmd.large_icon = WikiHouse.plugin_file("basket.png", "images")
     cmd.tooltip = "WikiHouse Nester"
     cmd.status_bar_text = "Takes flat pieces and nests them into sheets"
     cmd.menu_text = "WikiHouse Nester"
