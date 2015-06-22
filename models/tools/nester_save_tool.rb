@@ -1,10 +1,8 @@
 class WikiHouse::NesterSaveTool
   WikiHouse::Tools.register(:nester_save, self)
   def activate
-    #	puts 'Your tool has been activated.'
-    ##nester  = WikiHouse::Nester.new()
-    #nester.nest!
-    puts "Nothing to See Here"
+    nester  = WikiHouse::Nester.new()
+    nester.save!
   end
 
   def deactivate(view)

@@ -3,7 +3,7 @@ class WikiHouse::NesterTool
   def activate
     puts 'Nester triggered'
     nester  = WikiHouse::Nester.new()
-    nester.draw!
+    nester.nest!
   end
 
   def deactivate(view)

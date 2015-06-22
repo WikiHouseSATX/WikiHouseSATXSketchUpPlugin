@@ -10,6 +10,8 @@ grab a flat part and copy to a sheet
 1st version just put each part on its own sheet
 press button to export sheets to individual svg files
 
+better nesting idea - https://github.com/uhop/tight-sprite/blob/master/README.md
+
 
 https://github.com/simonbeard/sketchup-svg-outline-plugin/releases/tag/0.9999999 - for svg export
 

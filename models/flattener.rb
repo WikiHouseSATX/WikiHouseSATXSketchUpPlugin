@@ -1,7 +1,7 @@
 class WikiHouse::Flattener
 
 
-  def initialize(starting_x: 100, starting_y: 100)
+  def initialize(starting_x: 0, starting_y: 100)
     @starting_x = starting_x
     @starting_y = starting_y
     @flat_group = nil
@@ -22,9 +22,11 @@ class WikiHouse::Flattener
   def self.flat_group_name
     "WikiHouse::Flat"
   end
+
   def flat_group_name
     self.class.flat_group_name
   end
+
   def thickness
     @sheet.thickness
   end
@@ -70,21 +72,20 @@ class WikiHouse::Flattener
     part = FlatPart.new(group: gcopy)
 
 
-    x = @last_x - 3
+    x = @last_x + 3
 
-    part.move_to!(point: [ x, @starting_y, 0])
+    part.move_to!(point: [x, @starting_y, 0])
 
 
-      box = [part.bounds.width, part.bounds.height, part.bounds.depth ].reject {|i| i ==  thickness}
-      if box == []
-        width = thickness
-      elsif box.first > 40
-        width = box.last
-      else
-        width = box.first
-      end
-      x -= width
-
+    box = [part.bounds.width, part.bounds.height, part.bounds.depth].reject { |i| i == thickness }
+    if box == []
+      width = thickness
+    elsif box.first > 40
+      width = box.last
+    else
+      width = box.first
+    end
+    x += width
 
 
     @last_x = x
@@ -136,8 +137,8 @@ class WikiHouse::Flattener
     end
     part.group.entities.each do |e|
       next if !e.valid? || e.deleted?
-      if  is_inside_edge?(e)
-     #  puts "Found an inside edge"
+      if is_inside_edge?(e)
+        #  puts "Found an inside edge"
         e.layer = inside_edge_layer_name
       end
     end
@@ -155,6 +156,7 @@ class WikiHouse::Flattener
   def is_cutable?(item)
     item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "cutable") == true
   end
+
   def is_inside_edge?(item)
     item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "inside_edge") == true
   end

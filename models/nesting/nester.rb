@@ -26,14 +26,14 @@ class WikiHouse::Nester
 
   attr_reader :strategy
 
-  def initialize(strategy: nil, starting_x: 300, staring_y: 300)
+  def initialize(strategy: nil, starting_x: 0, starting_y: 300)
     @starting_x = starting_x
-    @starting_y = staring_y
+    @starting_y = starting_y
     @nest_group = nil
     @sheet = WikiHouse.sheet.new
     @sheets = []
     @parts = []
-    @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(starting_x: starting_x, starting_y: starting_x, sheet: @sheet)
+    @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
     Sk.find_or_create_layer(name: nest_layer_name)
   end
 
@@ -67,18 +67,39 @@ class WikiHouse::Nester
   def nest_layer_name
     self.class.nest_layer_name
   end
-
+  def save!
+    #this needs to look at the group/layer
+    #find all the sheets and trigger a save out to svg
+  end
 
   def nest!
+    Sk.active_entities.each do |top|
+      if top.typename == "Group" && top.name == WikiHouse::Flattener.flat_group_name
+        puts "Found the flat group #{top.entities.count}"
 
-    Sk.start_operation("Nesting Items", disable_ui: true)
+        Sk.start_operation("Building Nestable Parts", disable_ui: true)
+        @nest_group = Sk.add_group
+        @nest_group.name = nest_group_name
+        top.entities.each do |e|
+          #crate the nestable part
+          @parts << build_nestable_part(e)
 
-    original_layer = Sk.current_active_layer
-    Sk.make_layer_active_name(name: nest_layer_name)
+        end
+        Sk.commit_operation
+        Sk.start_operation("Nesting Items", disable_ui: true)
 
-    strategy.nest!(parts: @parts, nest_group: @nest_group, nest_layer_name: nest_layer_name)
-    Sk.make_layer_active(original_layer)
-    Sk.commit_operation
+        original_layer = Sk.current_active_layer
+        Sk.make_layer_active_name(name: nest_layer_name)
+
+        strategy.nest!(parts: @parts, nest_group: @nest_group, nest_layer_name: nest_layer_name)
+        Sk.make_layer_active(original_layer)
+        Sk.commit_operation
+      end
+    end
+
+
+
+
   end
 
   def build_nestable_part(item)
@@ -96,27 +117,4 @@ class WikiHouse::Nester
     part
   end
 
-
-  def draw!
-    puts "Creating Nest Group"
-
-
-    Sk.active_entities.each do |top|
-      if top.typename == "Group" && top.name == WikiHouse::Flattener.flat_group_name
-        puts "Found the flat group #{top.entities.count}"
-
-        Sk.start_operation("Building Nestable Parts", disable_ui: true)
-        @nest_group = Sk.add_group
-        @nest_group.name = nest_group_name
-        top.entities.each do |e|
-          #crate the nestable part
-          @parts << build_nestable_part(e)
-
-        end
-        Sk.commit_operation
-        nest!
-      end
-    end
-
-  end
 end

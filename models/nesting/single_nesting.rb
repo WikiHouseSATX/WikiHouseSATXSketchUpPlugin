@@ -24,9 +24,9 @@ class WikiHouse::SingleNesting
       c3 = [last_x + @sheet.length, @starting_y + @sheet.width, 0]
       c4 = [last_x, @starting_y + @sheet.width, 0]
       lines = Sk.draw_all_points([c1, c2, c3, c4])
-
+      sheet_face = Sk.add_face(lines)
       #now copy the part over
-      sheet_outline = Sk.add_group lines
+      sheet_outline = Sk.add_group sheet_face.all_connected
       sheet_outline.name = "Sheet Outline"
 
       sheet_group = Sk.add_group

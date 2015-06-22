@@ -7,7 +7,7 @@ require 'sketchup.rb'
 require 'extensions.rb'
 SKETCHUP_CONSOLE.show
 
-wikihouse_extension = SketchupExtension.new('WikiHouseSATX SketckUp Plugin',
+wikihouse_extension = SketchupExtension.new('WikiHouseSATX SketchUp Plugin',
     "#{PLUGIN_DIR}/wiki_house.rb")
 wikihouse_extension.version = '1.0'
 wikihouse_extension.creator = 'WikiHouseSATX Chapter - Dirk Elmendorf'
