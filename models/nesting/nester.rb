@@ -41,6 +41,7 @@
 #Needs to draw sheets
 #needs to add margins between parts
 #should consider rotating the parts for better fit
+#shoudl look at other parts before giving up and creating a new sheet
 require 'ostruct'
 class WikiHouse::Nester
   class NestablePart
