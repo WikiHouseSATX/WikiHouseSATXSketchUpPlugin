@@ -246,6 +246,9 @@ module Sk
     end
     layer
   end
+  def remove_layer(name: name, delete_geometry: false)
+    Sketchup.active_model.layers.remove(name, delete_geometry)
+  end
 
   def make_layer_active_name(name: name)
     layer = find_layer(name)

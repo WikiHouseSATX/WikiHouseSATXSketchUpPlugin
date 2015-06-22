@@ -79,12 +79,18 @@ class WikiHouse::Nester
   end
   attr_reader :strategy
 
+  def self.nest_layer_name
+    "WikiHouse::NestedLayer"
+  end
+  def self.erase!
+    Sk.remove_layer(name: nest_layer_name, delete_geometry: true)
+  end
   def nest_group_name
     "WikiHouse::Nested"
   end
 
   def nest_layer_name
-    "WikiHouse::NestedLayer"
+    self.class.nest_layer_name
   end
 
   def initialize(strategy: nil, starting_x: 300, staring_y: 300)
