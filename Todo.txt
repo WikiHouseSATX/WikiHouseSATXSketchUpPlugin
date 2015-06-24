@@ -28,6 +28,7 @@ Fix it so we don't have to put WikiHouse:: infront of everything.
 Change out the top/bottom,left,right to north,south,east,west so orientation can handle it
 Move the crawl features out to a helper
 
+When we start building the ui - store the settings they choose into the modle the way they do in the svg plugin.
 Pending Parts
 ========================
 Triangle Corner
