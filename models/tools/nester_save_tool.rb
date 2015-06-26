@@ -1,7 +1,10 @@
 class WikiHouse::NesterSaveTool
   WikiHouse::Tools.register(:nester_save, self)
+
   def activate
-    nester  = WikiHouse::Nester.new()
+    puts "Activating Save"
+    WikiHouse.init
+    nester = WikiHouse::NesterSave.new()
     nester.save!
   end
 
