@@ -21,4 +21,18 @@ class WikiHouse::NestablePart
   def bound_area
     bound_width * bound_length
   end
+  def bound_margain
+    sheet.thickness
+  end
+  def bound_length_with_margain
+    bound_length + bound_margain
+  end
+
+  def bound_width_with_margain
+    bound_width + bound_margain
+  end
+
+  def bound_area_with_margain
+    bound_length_margain * bound_width_margain
+  end
 end

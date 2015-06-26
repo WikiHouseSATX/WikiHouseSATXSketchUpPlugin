@@ -33,7 +33,8 @@ class WikiHouse::Nester
     @sheet = WikiHouse.sheet.new
     @sheets = []
     @parts = []
-    @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+  #  @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+    @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
     Sk.find_or_create_layer(name: nest_layer_name)
   end
 

@@ -38,7 +38,7 @@ class WikiHouse::NesterSave
     puts "Dimensions = #{sheet_group_bounding_box.height * 1.0} x #{sheet_group_bounding_box.width * 1.0}"
     svg_file = File.new(file_name, "w")
     #What if there is a problem writing to that?
-#    svg_file.write WikiHouse::NesterSave.svg_header
+  svg_file.write WikiHouse::NesterSave.svg_header
     max_height = ""
     max_width = ""
 
@@ -53,6 +53,7 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
 
     #THis line handles converting the co-ordinates from Sketup into SVG
     transform_settings = %Q(transform="translate(0,#{sheet_group_bounding_box.width * 0.5}) scale(1, -1)")
+    svg_file.write %Q(<g #{transform_settings}>)
     sheet_group.entities.each do |e|
       if e.typename == "Group"
         puts "#{e.name}"
@@ -68,11 +69,13 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
         if face_count > 1
           puts "Sorry this needs to be flat"
         else
-            svg_file.write %Q(<g id="#{e.name.gsub(" ","_")}" style="fill: none; stroke: blue; stroke-width: 0.002in" #{transform_settings}>\n)
+            svg_file.write %Q(<g id="sketchup-entityId-#{e.entityID}" style="fill: none; stroke: blue; stroke-width: 0.002in" >\n)
             svg_file.write %Q(<desc>#{e.name}</desc>\n)
             face.loops.each do |loop|
              puts loop.outer? ?  "Outer Loop" : "Inner Loop"
-              points = loop.vertices.collect { |v| "#{v.position.x * 1.0} #{v.position.y * 1.0}"}
+              group_points = loop.vertices.collect { |v| v.position.transform(sheet_group.transformation) } #DJE - Handles finding actual position http://forums.sketchup.com/t/what-is-coordinates-relative-to/3102/3
+
+              points = group_points.collect { |v| "#{v.x * 1.0} #{v.y * 1.0}"}
               svg_file.write %Q(<polygon points="#{points.join(", ")}" />\n)
               #loop.vertices.each do |v|
               #  puts Sk.point_to_s(v.position)
@@ -82,7 +85,7 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
         end
       end
     end
-
+    svg_file.write %Q(</g>)
      svg_file.write %Q(</svg>)
      svg_file.close
      puts "Wrote out #{file_name}"

@@ -2,6 +2,7 @@ class WikiHouse::NesterTool
   WikiHouse::Tools.register(:nester, self)
   def activate
     puts 'Nester triggered'
+    WikiHouse::Nester.erase!
     nester  = WikiHouse::Nester.new()
     nester.nest!
   end

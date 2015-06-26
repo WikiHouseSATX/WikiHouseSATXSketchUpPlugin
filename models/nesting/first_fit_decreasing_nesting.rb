@@ -38,179 +38,120 @@
 # #http://codeincomplete.com/posts/2011/5/7/bin_packing/
 # #https://github.com/jakesgordon/bin-packing
 #
-# #Needs to draw sheets
-# #needs to add margins between parts
+
+
 # #should consider rotating the parts for better fit
 # #shoudl look at other parts before giving up and creating a new sheet
-# require 'ostruct'
-# class WikiHouse::Nester
-#
-#
-#   attr_reader :strategy
-#
-#   def self.nest_layer_name
-#     "WikiHouse::NestedLayer"
-#   end
-#   def self.erase!
-#     Sk.remove_layer(name: nest_layer_name, delete_geometry: true)
-#   end
-#   def nest_group_name
-#     "WikiHouse::Nested"
-#   end
-#
-#   def nest_layer_name
-#     self.class.nest_layer_name
-#   end
-#
-#   def initialize(strategy: nil, starting_x: 300, staring_y: 300)
-#     @starting_x = starting_x
-#     @starting_y = staring_y
-#     @nest_group = nil
-#     @sheet = WikiHouse.sheet.new
-#     @sheets = []
-#     @parts = []
-#     @strategy = strategy ? strategy : WikiHouse::SingleNesting.new
-#     Sk.find_or_create_layer(name: nest_layer_name)
-#   end
-#
-#   def find_node(root, w, h)
-#     if root.used
-#       find_node(root.right, w, h) || find_node(root.down, w, h)
-#     elsif (w <= root.w && h <= root.h)
-#       root
-#     else
-#       return nil
-#     end
-#   end
-#
-#   def split_node(node, w, h)
-#     node.used = true
-#     node.down = OpenStruct.new(x: node.x, y: node.y + h, w: node.w, h: node.h - h, sheet: node.sheet)
-#     node.right = OpenStruct.new(x: node.x + w, y: node.y, w: node.w - w, h: h, sheet: node.sheet)
-#     node
-#
-#   end
-#
-#   def nest!
-#
-#     Sk.start_operation("Nesting Items", disable_ui: true)
-#
-#     #puts "Nesting #{item.name}"
-#
-#     original_layer = Sk.current_active_layer
-#     Sk.make_layer_active_name(name: nest_layer_name)
-#
-#     root = OpenStruct.new(x: 0, y: 0, w: @sheet.length, h: @sheet.width, sheet: 1)
-#     @parts.each do |part|
-#       puts "Sheet #{root.sheet} "
-#       puts "Part - #{part.label}"
-#       node = find_node(root, part.bound_width, part.bound_length)
-#       unless node.nil?
-#         puts "Node is  #{node}"
-#         part.fit = split_node(node, part.bound_width, part.bound_length)
-#       else
-#         #start a new sheet
-#         puts "Doesn't fiT - starting new sheet"
-#         root = OpenStruct.new(x: 0, y: 0, w: @sheet.length, h: @sheet.width, sheet: root.sheet + 1)
-#         node = find_node(root, part.bound_width , part.bound_length )
-#         unless node.nil?
-#           puts "Node is  #{node}"
-#           part.fit = split_node(node, part.bound_width , part.bound_length )
-#         else
-#           raise ArgumentError, "#{part.label}No way to fit the part onto a sheet #{part.bound_width} #{part.bound_length}"
-#         end
-#       end
-#     end
-#
-#     @parts.each do |p|
-#       puts "#{p.label} #{p.fit.x} #{p.fit.y}"
-#       p.move_to!(point: [ (@starting_x + (p.fit.sheet * (@sheet.length + 5) )) + p.fit.x,
-#                           @starting_y + p.fit.y, 0])
-#
-#
-#     end
-#     #    @parts.each { |p| puts " #{p.label} #{p.max_length_width}" }
-#     #experiment with packing in mass
-#     #
-#     # #draw a sheet
-#     # c1 = [@last_x, @starting_y, 0]
-#     # c2 = [@last_x + @sheet.length, @starting_y, 0]
-#     # c3 = [@last_x + @sheet.length, @starting_y + @sheet.width, 0]
-#     # c4 = [@last_x, @starting_y + @sheet.width, 0]
-#     # lines = Sk.draw_all_points([c1, c2, c3, c4])
-#     #
-#     # #now copy the part over
-#     # sheet_outline = Sk.add_group lines
-#     # sheet_outline.name = "sheet outline"
-#     #
-#     # sheet_group = Sk.add_group
-#     # Sk.nest_group(destination_group: sheet_group, source_group: sheet_outline)
-#     # gcopy = Sk.copy_group(destination_group: sheet_group, source_group: item)
-#     # gcopy.make_unique
-#     # gcopy.entities.each { |e| e.layer = nest_layer_name}
-#     # gcopy.name = item.name
-#     # part = NestedPart.new(group: gcopy)
-#     # x = @last_x
-#     #
-#     # part.move_to(point: [x, @starting_y, 0]).go!
-#     # part.set_tag(tag_name: "group_source", value: item.name)
-#     # part.set_tag(tag_name: "source", value: item.entityID)
-#     #
-#     # sheet_group.name = "Sheet ##{@sheets.count + 1}"
-#     # @sheets << sheet_group
-#     # @last_x += @sheet.length + 10
-#     Sk.make_layer_active(original_layer)
-#     Sk.commit_operation
-#   end
-#
-#   def build_nestable_part(item)
-#     original_layer = Sk.current_active_layer
-#     Sk.make_layer_active_name(name: nest_layer_name)
-#     gcopy = Sk.copy_group(destination_group: @nest_group, source_group: item)
-#     gcopy.make_unique
-#     gcopy.entities.each { |e| e.layer = nest_layer_name }
-#     gcopy.name = item.name
-#     part = WikiHouse::NestablePart.new(group: gcopy, origin: [0, 0, 0], label: item.name)
-#     part.move_to!(point: [0, 0, 0])
-#
-#
-#     Sk.make_layer_active(original_layer)
-#     part
-#   end
-#
-#   def sort_parts!
-#     @parts.sort! do |a, b|
-#       a.max_length_width <=> b.max_length_width
-#       diff = [b.bound_width, b.bound_length].max <=> [a.bound_width, a.bound_length].max
-#       diff = [b.bound_width, b.bound_length].min <=> [a.bound_width, a.bound_length].min if diff.zero?
-#       diff = b.bound_length <=> a.bound_length if diff.zero?
-#       diff = b.bound_width <=> a.bound_width if diff.zero?
-#       diff
-#     end
-#
-#
-#   end
-#
-#   def draw!
-#     puts "Creating Flat Group"
-#     @nest_group = Sk.add_group
-#     @nest_group.name = nest_group_name
-#
-#     Sk.active_entities.each do |top|
-#       if top.typename == "Group" && top.name == WikiHouse::Flattener.flat_group_name
-#         puts "Found the flat group #{top.entities.count}"
-#         @last_x = @starting_x
-#
-#         top.entities.each do |e|
-#           #crate the nestable part
-#           @parts << build_nestable_part(e)
-#           #puts "#{e.name} #{e.typename}"
-#           #nest!(e)
-#         end
-#         sort_parts!
-#         nest!
-#       end
-#     end
-#
-#   end
-# end
+
+require "ostruct"
+class WikiHouse::FirstFitDecreasingNesting
+  include WikiHouse::NestingHelper
+
+  attr_reader :starting_x, :starting_y, :sheet
+
+  def initialize(starting_x: nil, starting_y: nil, sheet: nil)
+
+    @starting_x = starting_x
+    @starting_y = starting_y
+    @sheet = sheet
+    @nested_sheets = []
+  end
+
+
+  def nest!(parts: nil, nest_group: nil, nest_layer_name: nil)
+    #for each aprt
+    #create a sheet
+    #move the part to the sheet
+    parts = sort_parts!(parts)
+    last_x = @starting_x
+
+
+    root = OpenStruct.new(x: 0, y: 0, w: @sheet.length, h: @sheet.width, sheet: 1)
+    parts.each do |part|
+      #  puts "Sheet #{root.sheet} "
+
+      #  puts "Part - #{part.label}"
+      node = find_node(root, part.bound_width_with_margain, part.bound_length_with_margain)
+      unless node.nil?
+        #    puts "Node is  #{node}"
+        part.fit = split_node(node, part.bound_width_with_margain, part.bound_length_with_margain)
+
+      else
+        #start a new sheet
+        #   puts "Doesn't fiT - starting new sheet"
+        root = OpenStruct.new(x: 0, y: 0, w: @sheet.length, h: @sheet.width, sheet: root.sheet + 1)
+        node = find_node(root, part.bound_width_with_margain, part.bound_length_with_margain)
+        unless node.nil?
+          #    puts "Node is  #{node}"
+          part.fit = split_node(node, part.bound_width_with_margain, part.bound_length_with_margain)
+
+
+        else
+          raise ArgumentError, "#{part.label}No way to fit the part onto a sheet #{part.bound_width_with_margain} #{part.bound_length_with_margain}"
+        end
+      end
+    end
+    #
+    # sheet_group = build_a_sheet(left_top_corner: [@starting_x, @starting_y,0], right_bottom_corner: [@starting_x + @sheet.length, @starting_y + @sheet.width, 0], nest_group: nest_group)
+    # sheet_group.name = "Sheet ##{root.sheet}"
+    max_sheet_count = parts.collect { |p| p.fit.sheet }.max
+    parts.each do |p|
+      #     if @nested_sheets[p.fit]
+      sheet_number = p.fit.sheet
+      if @nested_sheets[p.fit.sheet - 1].nil?
+        sheet_start_x = @starting_x + ((sheet_number - 1) * (@sheet.length + gap_between_sheets))
+        sheet_group = build_a_sheet(left_top_corner: [sheet_start_x, @starting_y, 0],
+                                    right_bottom_corner: [sheet_start_x + @sheet.length, @starting_y + @sheet.width, 0],
+                                    nest_group: nest_group)
+        puts "Making the sheet "
+        sheet_group.name = "Sheet ##{p.fit.sheet} of #{max_sheet_count}"
+        @nested_sheets[p.fit.sheet - 1] = sheet_group
+      else
+        sheet_group = @nested_sheets[p.fit.sheet - 1]
+      end
+      original_group_name = p.group.name
+      original_entityID = p.group.entityID
+      p.group = Sk.nest_group(destination_group: sheet_group, source_group: p.group)
+      #   puts "#{p.label} #{p.fit.x} #{p.fit.y}  sheet #{p.fit.sheet}"
+      p.move_to!(point: [@starting_x + ((sheet_number - 1) * (@sheet.length + gap_between_sheets)) + p.fit.x,
+                         @starting_y + p.fit.y, 0])
+
+      p.set_tag(tag_name: "group_source", value: original_group_name)
+      p.set_tag(tag_name: "source", value: original_entityID)
+
+    end
+
+  end
+
+  def find_node(root, w, h)
+    if root.used
+      find_node(root.right, w, h) || find_node(root.down, w, h)
+    elsif (w <= root.w && h <= root.h)
+      root
+    else
+      return nil
+    end
+  end
+
+  def split_node(node, w, h)
+    node.used = true
+    node.down = OpenStruct.new(x: node.x, y: node.y + h, w: node.w, h: node.h - h, sheet: node.sheet)
+    node.right = OpenStruct.new(x: node.x + w, y: node.y, w: node.w - w, h: h, sheet: node.sheet)
+    node
+
+  end
+
+
+  def sort_parts!(parts)
+    parts.sort do |a, b|
+      a.max_length_width <=> b.max_length_width
+      diff = [b.bound_width, b.bound_length].max <=> [a.bound_width, a.bound_length].max
+      diff = [b.bound_width, b.bound_length].min <=> [a.bound_width, a.bound_length].min if diff.zero?
+      diff = b.bound_length <=> a.bound_length if diff.zero?
+      diff = b.bound_width <=> a.bound_width if diff.zero?
+      diff
+    end
+  end
+
+
+end
