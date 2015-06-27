@@ -314,7 +314,7 @@ module Sk
       puts c.bounds.corner[2]
       puts c.bounds.corner[3]
     end
-    chain.collect{|c| c.transformation}.inject(:*)
+    chain.collect { |c| c.transformation }.inject(:*)
   end
 
   def find_entity_chain(entity, list, chain)
@@ -331,11 +331,12 @@ module Sk
       end
     end
   end
+
   def getGlobalPosition(ent)
     g_pos=[] #array to store global positions of vertices
 
     #get local position of vertices
-    ent.vertices.each_with_index{|vert,i|
+    ent.vertices.each_with_index { |vert, i|
       g_pos[i]=vert.position
     }
 
@@ -349,7 +350,7 @@ module Sk
       grp_t=grp.transformation
 
       #apply the group transformation to the stored position of the vertices
-      g_pos.each{|g|
+      g_pos.each { |g|
         g=g.transform! grp_t
       }
 
@@ -357,5 +358,17 @@ module Sk
       p=p.instances[0].parent
     end
     return g_pos
+  end
+
+  def max_bounds(group)
+    max_x = max_y = max_z = nil
+    bounds = group.bounds
+    (0..7).each do |i|
+      c = bounds.corner(i)
+      max_x = c.x if max_x.nil? || c.x > max_x
+      max_y = c.y if max_y.nil? || c.y > max_y
+      max_z = c.z if max_z.nil? || c.z > max_z
+    end
+    [max_x, max_y, max_z]
   end
 end

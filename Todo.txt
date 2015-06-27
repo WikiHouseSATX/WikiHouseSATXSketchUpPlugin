@@ -3,7 +3,19 @@ Pending Work
 Focus on Nesting for Laser first
 Add a label to all parts for cutting
 
+Single Nesting
+==============
+Doesn't rotate it to try and make it fit
+
+
+First Fit Decreasing Nesting
+===============
+should consider rotating the parts for better fit
+If a part doesn't fit - it creates a new sheet. The next part should go back and see if
+its on any existing sheets before creating another sheet
+
 On nesting
+    Should evaluate how well it nested based on area remaining
      machine should set the stroke probably as well
 
 better nesting idea - https://github.com/uhop/tight-sprite/blob/master/README.md

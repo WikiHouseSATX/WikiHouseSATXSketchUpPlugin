@@ -1,48 +1,23 @@
-# #Large portions of this code use packing ideas from
-# #sprite-factory https://github.com/jakesgordon/sprite-factory/blob/master/LICENSE
-# #Copyright (c) 2011, 2012, 2013, 2014, 2015, Jake Gordon and contributors
-# # Permission is hereby granted, free of charge, to any person obtaining a copy
-# # of this software and associated documentation files (the "Software"), to deal
-# # in the Software without restriction, including without limitation the rights
-# # to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-# # copies of the Software, and to permit persons to whom the Software is
-# # furnished to do so, subject to the following conditions:
-# #
-# # The above copyright notice and this permission notice shall be included in all
-# # copies or substantial portions of the Software.
-# #
-# # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-# # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-# # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-# # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-# # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-# # SOFTWARE.
-# # Nesting Process
-# # ==========================
-# # Find all the flat parts
-# # create a sheet for each part
-# # copy the part to each sheet
-# # press button to export sheets to individual svg files
-# # Do a simple area calculation to decide if we should even try to fit it on the sheet
-# #Ignore the inside.outside edge for the first draft
+#Large portions of this code use packing ideas from
+#sprite-factory https://github.com/jakesgordon/sprite-factory/blob/master/LICENSE
+#Copyright (c) 2011, 2012, 2013, 2014, 2015, Jake Gordon and contributors
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
 #
-# #need a nestable part wrapper
-# # It needs to figure out the approx area - using the bounding box
-# # It should alo figur eout the actual area using the face.area
-# # The system should sort the parts by area from largest to smallest.
-# # The system should be able to confirm that it fits on a sheet at all - and stop if the part doesn't
-# # the system should be able to confirm that it hasn't collided with any other parts
-# # we need to be able to move the part on the sheet and be able to rotate it quickly (starting with 90 degree increments)
-# #The nest should be able to show how many sheets - and the use/waste for each sheet - as well as a total use/waste for the whole thing
-# #http://codeincomplete.com/posts/2011/5/7/bin_packing/
-# #https://github.com/jakesgordon/bin-packing
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
-
-
-# #should consider rotating the parts for better fit
-# #shoudl look at other parts before giving up and creating a new sheet
-# should go back to exisitng sheets to find a place
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 require "ostruct"
 class WikiHouse::FirstFitDecreasingNesting
   include WikiHouse::NestingHelper
