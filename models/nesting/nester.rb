@@ -16,11 +16,6 @@
 # we need to be able to move the part on the sheet and be able to rotate it quickly (starting with 90 degree increments)
 #The nest should be able to show how many sheets - and the use/waste for each sheet - as well as a total use/waste for the whole thing
 
-#Needs to draw sheets
-#needs to add margins between parts
-#should consider rotating the parts for better fit
-#shoudl look at other parts before giving up and creating a new sheet
-
 class WikiHouse::Nester
 
 
@@ -33,11 +28,14 @@ class WikiHouse::Nester
     @sheet = WikiHouse.sheet.new
     @sheets = []
     @parts = []
-  #  @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+   # @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
     @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
     Sk.find_or_create_layer(name: nest_layer_name)
   end
 
+  def self.sheet_outline_group_name
+    "Sheet Outline"
+  end
   def self.nest_layer_name
     "WikiHouse::NestedLayer"
   end

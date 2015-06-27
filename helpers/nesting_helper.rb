@@ -2,6 +2,9 @@ module WikiHouse::NestingHelper
   def gap_between_sheets
     10
   end
+  def gap_between_parts
+    WikiHouse::Config.maching.nesting_part_gap
+  end
   def build_a_sheet(left_top_corner: nil, right_bottom_corner: nil, nest_group: nil)
 
     c1 = left_top_corner
@@ -12,7 +15,7 @@ module WikiHouse::NestingHelper
     sheet_face = Sk.add_face(lines)
     #now copy the part over
     sheet_outline = Sk.add_group sheet_face.all_connected
-    sheet_outline.name = "Sheet Outline"
+    sheet_outline.name = WikiHouse::Nester.sheet_outline_group_name
     sheet_group = Sk.add_group
     sheet_group = Sk.nest_group(destination_group: nest_group, source_group: sheet_group)
 

@@ -21,18 +21,18 @@ class WikiHouse::NestablePart
   def bound_area
     bound_width * bound_length
   end
-  def bound_margain
-    sheet.thickness
+  def bound_margin
+    WikiHouse::Config.machine.nesting_part_gap
   end
-  def bound_length_with_margain
-    bound_length + bound_margain
-  end
-
-  def bound_width_with_margain
-    bound_width + bound_margain
+  def bound_length_with_margin
+    bound_length + bound_margin
   end
 
-  def bound_area_with_margain
-    bound_length_margain * bound_width_margain
+  def bound_width_with_margin
+    bound_width + bound_margin
+  end
+
+  def bound_area_with_margin
+    bound_length_margin * bound_width_margin
   end
 end

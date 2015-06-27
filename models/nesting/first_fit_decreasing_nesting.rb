@@ -42,7 +42,7 @@
 
 # #should consider rotating the parts for better fit
 # #shoudl look at other parts before giving up and creating a new sheet
-
+# should go back to exisitng sheets to find a place
 require "ostruct"
 class WikiHouse::FirstFitDecreasingNesting
   include WikiHouse::NestingHelper
@@ -66,28 +66,28 @@ class WikiHouse::FirstFitDecreasingNesting
     last_x = @starting_x
 
 
-    root = OpenStruct.new(x: 0, y: 0, w: @sheet.length, h: @sheet.width, sheet: 1)
+    root = OpenStruct.new(x: sheet.margin, y: sheet.margin, w: @sheet.length, h: @sheet.width, sheet: 1)
     parts.each do |part|
       #  puts "Sheet #{root.sheet} "
 
       #  puts "Part - #{part.label}"
-      node = find_node(root, part.bound_width_with_margain, part.bound_length_with_margain)
+      node = find_node(root, part.bound_width_with_margin, part.bound_length_with_margin)
       unless node.nil?
         #    puts "Node is  #{node}"
-        part.fit = split_node(node, part.bound_width_with_margain, part.bound_length_with_margain)
+        part.fit = split_node(node, part.bound_width_with_margin, part.bound_length_with_margin)
 
       else
         #start a new sheet
         #   puts "Doesn't fiT - starting new sheet"
-        root = OpenStruct.new(x: 0, y: 0, w: @sheet.length, h: @sheet.width, sheet: root.sheet + 1)
-        node = find_node(root, part.bound_width_with_margain, part.bound_length_with_margain)
+        root = OpenStruct.new(x: sheet.margin, y: sheet.margin, w: @sheet.length, h: @sheet.width, sheet: root.sheet + 1)
+        node = find_node(root, part.bound_width_with_margin, part.bound_length_with_margin)
         unless node.nil?
           #    puts "Node is  #{node}"
-          part.fit = split_node(node, part.bound_width_with_margain, part.bound_length_with_margain)
+          part.fit = split_node(node, part.bound_width_with_margin, part.bound_length_with_margin)
 
 
         else
-          raise ArgumentError, "#{part.label}No way to fit the part onto a sheet #{part.bound_width_with_margain} #{part.bound_length_with_margain}"
+          raise ArgumentError, "#{part.label}No way to fit the part onto a sheet #{part.bound_width_with_margin} #{part.bound_length_with_margin}"
         end
       end
     end

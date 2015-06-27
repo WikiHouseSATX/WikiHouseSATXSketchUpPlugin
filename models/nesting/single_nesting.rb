@@ -1,6 +1,7 @@
 #Single nesting is the dumbest form of nestting
 # one part per sheet
 
+#Doesn't try to rotate to make it fit?
 require 'ostruct'
 class WikiHouse::SingleNesting
   include WikiHouse::NestingHelper
@@ -14,9 +15,6 @@ class WikiHouse::SingleNesting
   end
 
   def nest!(parts: nil, nest_group: nil, nest_layer_name: nil)
-    #for each aprt
-    #create a sheet
-    #move the part to the sheet
     last_x = @starting_x
     parts.each do |part|
 
@@ -30,7 +28,7 @@ class WikiHouse::SingleNesting
       part.group = Sk.nest_group(destination_group: sheet_group, source_group: part.group)
 
 
-      part.move_to(point: [last_x, @starting_y, 0]).go!
+      part.move_to(point: [last_x + sheet.margin, @starting_y + sheet.margin, 0]).go!
       part.set_tag(tag_name: "group_source", value: original_group_name)
       part.set_tag(tag_name: "source", value: original_entityID)
 

@@ -7,27 +7,35 @@
 module Sk
 
   extend self
+
   def abs(val)
     val < 0 ? -1.0 * val : val
   end
+
   def model
     Sketchup.active_model
   end
+
   def start_operation(op_name, disable_ui: false, transparent: false, prev_trans: false)
     model.start_operation(op_name, disable_ui, transparent, prev_trans)
   end
+
   def commit_operation
-   model.commit_operation
+    model.commit_operation
   end
+
   def abort_operation
     model.abort_operation
   end
+
   def active_entities
     model.active_entities
   end
+
   def erase_all!
-    self.model.entities.each { |e| e.erase!}
+    self.model.entities.each { |e| e.erase! }
   end
+
   def round(val)
     val.to_f.round(4)
   end
@@ -45,7 +53,7 @@ module Sk
   end
 
   def point_to_s(point)
-    "X:#{point.x} Y:#{point.y} Z:#{point.z}"
+    "X:#{point.x * 1.0} Y:#{point.y * 1.0 } Z:#{point.z * 1.0}"
   end
 
   def edge_to_s(edge)
@@ -159,9 +167,10 @@ module Sk
   end
 
   def draw_circle(center_point: nil, radius: nil, numsegs: 24, normal: nil, group: nil)
-    normal ||= Geom::Vector3d.new 0,0,1
+    normal ||= Geom::Vector3d.new 0, 0, 1
     group ? group.entities.add_circle(center_point, normal, radius, numsegs) : Sketchup.active_model.active_entities.add_circle(center_point, normal, radius, numsegs)
   end
+
   def draw_all_points(pts, group: nil)
     lines = []
     pts.each_with_index do |pt, index|
@@ -222,6 +231,7 @@ module Sk
     gcopy.name = source_group.name
     gcopy
   end
+
   def nest_group(destination_group: nil, source_group: nil)
     gcopy = copy_group(destination_group: destination_group, source_group: source_group)
     source_group.erase!
@@ -246,6 +256,7 @@ module Sk
     end
     layer
   end
+
   def remove_layer(name: name, delete_geometry: false)
     Sketchup.active_model.layers.remove(name, delete_geometry)
   end
@@ -279,10 +290,11 @@ module Sk
       new_mat.texture = filename if filename
       return new_mat
     else
-      mats.each {|m| return m if m.name == material_name}
+      mats.each { |m| return m if m.name == material_name }
     end
 
   end
+
   def find_group_by_name(name, match_ok: true)
     Sketchup.active_model.entities.each do |e|
       if e.typename == "Group" && e.name == name || (match_ok && e.name.match(name))
@@ -290,5 +302,60 @@ module Sk
       end
     end
     nil
+  end
+
+  def transformation_chain(entity)
+    chain = []
+    chain = find_entity_chain(entity, model.entities, chain)
+    chain.each do |c|
+      puts c.name
+      puts c.bounds.corner[0]
+      puts c.bounds.corner[1]
+      puts c.bounds.corner[2]
+      puts c.bounds.corner[3]
+    end
+    chain.collect{|c| c.transformation}.inject(:*)
+  end
+
+  def find_entity_chain(entity, list, chain)
+    if list.include?(entity)
+      chain << entity
+      return chain
+    end
+    list.each do |sub_list|
+      if sub_list.respond_to?(:entities)
+        result_chain = find_entity_chain(entity, sub_list.entities, chain.clone.push(sub_list))
+        if result_chain.include?(entity)
+          return result_chain
+        end
+      end
+    end
+  end
+  def getGlobalPosition(ent)
+    g_pos=[] #array to store global positions of vertices
+
+    #get local position of vertices
+    ent.vertices.each_with_index{|vert,i|
+      g_pos[i]=vert.position
+    }
+
+    #get the parent
+    p=ent.parent
+
+    #while the parent is a group or component
+    while p.is_a? Sketchup::ComponentDefinition
+      #get the group/component transformation
+      grp=p.instances[0]
+      grp_t=grp.transformation
+
+      #apply the group transformation to the stored position of the vertices
+      g_pos.each{|g|
+        g=g.transform! grp_t
+      }
+
+      #get the next parent in the hierarchy
+      p=p.instances[0].parent
+    end
+    return g_pos
   end
 end
