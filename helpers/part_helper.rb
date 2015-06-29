@@ -31,6 +31,10 @@ module WikiHouse::PartHelper
     group ? group.bounds : nil
   end
 
+  def bound_length
+
+  end
+
   def full_label
     "#{self.class.name} #{@label}".strip
   end

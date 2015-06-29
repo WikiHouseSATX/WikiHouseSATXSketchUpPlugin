@@ -19,17 +19,18 @@
 class WikiHouse::Nester
 
 
-  attr_reader :strategy
+  attr_reader :strategy, :outline_sheets
 
-  def initialize(strategy: nil, starting_x: 0, starting_y: 300)
+  def initialize(strategy: nil, starting_x: 0, starting_y: 300, outline_sheets: true)
     @starting_x = starting_x
     @starting_y = starting_y
     @nest_group = nil
     @sheet = WikiHouse.sheet.new
     @sheets = []
     @parts = []
-    @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
-   # @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+    @outline_sheets
+    @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(outline_sheets: outline_sheets, starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+   # @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(outline_sheets: outline_sheets,starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
     Sk.find_or_create_layer(name: nest_layer_name)
   end
 

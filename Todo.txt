@@ -5,7 +5,7 @@ Add a label to all parts for cutting
 
 Single Nesting
 ==============
-Doesn't rotate it to try and make it fit
+
 
 
 First Fit Decreasing Nesting
@@ -17,6 +17,11 @@ its on any existing sheets before creating another sheet
 On nesting
     Should evaluate how well it nested based on area remaining
      machine should set the stroke probably as well
+Nesting Saver
+===============
+SHould handle error cases (file exists, or can't be written to)
+Should ask for a directory to store the files in .
+
 
 better nesting idea - https://github.com/uhop/tight-sprite/blob/master/README.md
 

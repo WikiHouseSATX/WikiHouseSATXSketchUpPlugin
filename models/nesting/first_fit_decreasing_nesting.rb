@@ -22,14 +22,15 @@ require "ostruct"
 class WikiHouse::FirstFitDecreasingNesting
   include WikiHouse::NestingHelper
 
-  attr_reader :starting_x, :starting_y, :sheet
+  attr_reader :starting_x, :starting_y, :sheet, :outline_sheets
 
-  def initialize(starting_x: nil, starting_y: nil, sheet: nil)
+  def initialize(starting_x: nil, starting_y: nil, sheet: nil, outline_sheets: true)
 
     @starting_x = starting_x
     @starting_y = starting_y
     @sheet = sheet
     @nested_sheets = []
+    @outline_sheets = outline_sheets
   end
 
 

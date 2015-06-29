@@ -371,4 +371,20 @@ module Sk
     end
     [max_x, max_y, max_z]
   end
+
+  def min_bounds(group)
+    min_x = min_y = min_z = nil
+    bounds = group.bounds
+    (0..7).each do |i|
+      c = bounds.corner(i)
+      min_x = c.x if min_x.nil? || c.x < min_x
+      min_y = c.y if min_y.nil? || c.y < min_y
+      min_z = c.z if min_z.nil? || c.z < min_z
+    end
+    [min_x, min_y, min_z]
+  end
+  def min_max_bounds(group)
+    { max: max_bounds(group),
+     min: min_bounds(group)}
+  end
 end
