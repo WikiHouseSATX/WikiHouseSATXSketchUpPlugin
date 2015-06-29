@@ -10,6 +10,7 @@ Single Nesting
 
 First Fit Decreasing Nesting
 ===============
+Doesn't rotate parts to fit them on to the sheet - need to learn from the single nester
 should consider rotating the parts for better fit
 If a part doesn't fit - it creates a new sheet. The next part should go back and see if
 its on any existing sheets before creating another sheet

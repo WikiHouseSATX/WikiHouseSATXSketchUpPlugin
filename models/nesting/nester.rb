@@ -29,8 +29,8 @@ class WikiHouse::Nester
     @sheets = []
     @parts = []
     @outline_sheets
-    @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(outline_sheets: outline_sheets, starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
-   # @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(outline_sheets: outline_sheets,starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+    #@strategy = strategy ? strategy : WikiHouse::SingleNesting.new(outline_sheets: outline_sheets, starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+    @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(outline_sheets: outline_sheets,starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
     Sk.find_or_create_layer(name: nest_layer_name)
   end
 
