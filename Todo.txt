@@ -3,9 +3,10 @@ Pending Work
 Focus on Nesting for Laser first
 Add a label to all parts for cutting
 
-Single Nesting
-==============
-
+BUG  - the layers aren't correct for the nesting
+Need to track inside/outside edges in the nested sheets as well
+Part labeling is being done
+Aspire needs the sheets to be stacked on individual layers at 0,0 for export
 
 
 First Fit Decreasing Nesting
@@ -22,6 +23,14 @@ Nesting Saver
 ===============
 SHould handle error cases (file exists, or can't be written to)
 Should ask for a directory to store the files in .
+
+The tool should control what happens when you save- SVG for laser - SBP for CNC
+
+
+Aspire Removal
+=========
+Generate OpenSBP
+Generate tabs for a part - generate a tab that is length and thickness - distance between tabs. Don't like corners
 
 
 better nesting idea - https://github.com/uhop/tight-sprite/blob/master/README.md
