@@ -8,7 +8,6 @@ Need to track inside/outside edges in the nested sheets as well
 Part labeling is being done
 Aspire needs the sheets to be stacked on individual layers at 0,0 for export
 
-
 First Fit Decreasing Nesting
 ===============
 Doesn't rotate parts to fit them on to the sheet - need to learn from the single nester
@@ -35,6 +34,7 @@ Generate tabs for a part - generate a tab that is length and thickness - distanc
 
 better nesting idea - https://github.com/uhop/tight-sprite/blob/master/README.md
 
+Handle DXF/ShopBot Nesting Output
 Get rendering to work - for the wall builder
   - Add support for Door Panel, Door Wall Panel, Half Height Wall Panel, New Wall Panel Column
 Make it so that dimenstions of the parent pare are set by the intializer and have defautls

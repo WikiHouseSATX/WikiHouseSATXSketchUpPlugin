@@ -80,27 +80,27 @@ class WikiHouse::ZPegBottomConnector < WikiHouse::PocketConnector
     points = []
     if WikiHouse.machine.fillet?
       if with_top_slot
-        points.concat(WikiHouse::Fillet.upper_to_right(t1))
-        points.concat(WikiHouse::Fillet.upper_to_left(t2))
+        points.concat(WikiHouse::DogBoneFillet.upper_to_right(t1))
+        points.concat(WikiHouse::DogBoneFillet.upper_to_left(t2))
         if t3 != c2
-          points.concat(WikiHouse::Fillet.lower_to_left(t3))
+          points.concat(WikiHouse::DogBoneFillet.lower_to_left(t3))
           points.concat([c2])
         else
           points.concat([c2])
         end
 
       else
-        points.concat(WikiHouse::Fillet.upper_to_right(c1))
-        points.concat(WikiHouse::Fillet.upper_to_left(c2))
+        points.concat(WikiHouse::DogBoneFillet.upper_to_right(c1))
+        points.concat(WikiHouse::DogBoneFillet.upper_to_left(c2))
       end
 
-      points.concat(WikiHouse::Fillet.stem_to_right(c3))
-      points.concat(WikiHouse::Fillet.stem_to_left(c4))
+      points.concat(WikiHouse::DogBoneFillet.stem_to_right(c3))
+      points.concat(WikiHouse::DogBoneFillet.stem_to_left(c4))
       points.concat([c5])
-      points.concat(WikiHouse::Fillet.lower_to_right(c6))
+      points.concat(WikiHouse::DogBoneFillet.lower_to_right(c6))
       if with_top_slot
         points.concat([c1])
-        points.concat(WikiHouse::Fillet.lower_to_right(t4))
+        points.concat(WikiHouse::DogBoneFillet.lower_to_right(t4))
       end
 
     else

@@ -1,6 +1,6 @@
-##This is a T-Bone Style Fillet as described
+#This is a Dog-Bone Style Fillet as described
 #http://blog.inventables.com/2014/06/learn-about-milling-inside-corner.html
-class WikiHouse::Fillet
+class WikiHouse::DogBoneFillet
   def self.bit_radius
     WikiHouse.machine.bit_radius
   end

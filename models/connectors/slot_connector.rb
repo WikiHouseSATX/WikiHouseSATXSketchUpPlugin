@@ -109,8 +109,8 @@ class WikiHouse::SlotConnector < WikiHouse::Connector
         current_points = [pc2, pc1, pc4, pc3]
       end
       unless fillet_off?
-        WikiHouse::Fillet.by_points(current_points, 0, 1, 2)
-        WikiHouse::Fillet.by_points(current_points, 5, 4, 3, reverse_it: true)
+        WikiHouse::DogBoneFillet.by_points(current_points, 0, 1, 2)
+        WikiHouse::DogBoneFillet.by_points(current_points, 5, 4, 3, reverse_it: true)
       end
       slot_points.concat(current_points)
 

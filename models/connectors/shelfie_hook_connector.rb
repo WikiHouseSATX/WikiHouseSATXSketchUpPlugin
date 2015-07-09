@@ -51,11 +51,11 @@ class WikiHouse::ShelfieHookConnector < WikiHouse::Connector
 
 
       pt_list = [c1,c2,c3,c4,c5,c6,c7,c8]
-      WikiHouse::Fillet.by_points(pt_list,
+      WikiHouse::DogBoneFillet.by_points(pt_list,
                                   6,
                                   5,
                                   4,reverse_it: true)
-      WikiHouse::Fillet.by_points(pt_list,
+      WikiHouse::DogBoneFillet.by_points(pt_list,
                                   7,
                                   8,
                                   9)

@@ -170,7 +170,21 @@ module Sk
     normal ||= Geom::Vector3d.new 0, 0, 1
     group ? group.entities.add_circle(center_point, normal, radius, numsegs) : Sketchup.active_model.active_entities.add_circle(center_point, normal, radius, numsegs)
   end
+  def draw_arc(center_point:nil,
+               zero_vector: nil,
+               normal: nil,
+               radius: nil,
+               start_angle: nil,
+               end_angle: nil,
+               num_segments: nil,
+               group: nil)
+    normal ||= Geom::Vector3d.new 0, 0, 1
+    zero_vector ||= Geom::Vector3d.new 0, 1, 0
+    puts radius,center_point, zero_vector, normal, start_angle, end_angle, num_segments,group
+    group ? group.entities.add_arc(center_point, zero_vector, normal, radius, start_angle, end_angle, num_segments) : Sketchup.active_model.active_entities.add_arc(center_point, zero_vector, normal, radius,
+                                                                                                                                                                    start_angle, end_angle, num_segments)
 
+  end
   def draw_all_points(pts, group: nil)
     lines = []
     pts.each_with_index do |pt, index|

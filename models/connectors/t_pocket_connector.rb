@@ -47,7 +47,7 @@ class WikiHouse::TPocketConnector < WikiHouse::PocketConnector
     c6 = [c7.x, c7.y - stem_length, c1.z]
 
     points = [c1,c2,c3,c4,c5,c6,c7,c8]
-    WikiHouse::Fillet.t_pocket_by_points(points)
+    WikiHouse::DogBoneFillet.t_pocket_by_points(points)
 
     pocket_lines = Sk.draw_all_points(points)
     pocket_lines.each { |e| mark_inside_edge!(e) }

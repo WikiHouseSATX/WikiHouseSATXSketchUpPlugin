@@ -83,11 +83,11 @@ class WikiHouse::TabConnector < WikiHouse::Connector
       end
 
       tab_points.concat(current_points)
-      WikiHouse::Fillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 4, tab_points.length - 5, reverse_it: true)
+      WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 4, tab_points.length - 5, reverse_it: true)
 
       if i > 0
 
-        WikiHouse::Fillet.by_points(tab_points, tab_points.length - 8, tab_points.length - 7, tab_points.length - 6)
+        WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 8, tab_points.length - 7, tab_points.length - 6)
 
       end
 
@@ -95,7 +95,7 @@ class WikiHouse::TabConnector < WikiHouse::Connector
 
     tab_points << c6
 
-    WikiHouse::Fillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 2, tab_points.length - 1)
+    WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 2, tab_points.length - 1)
     tab_points
   end
 

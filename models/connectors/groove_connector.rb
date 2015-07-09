@@ -61,8 +61,8 @@ class WikiHouse::GrooveConnector < WikiHouse::Connector
     #
      unless fillet_off
       #This needs to be redesigned for the 3d view
-     # WikiHouse::Fillet.pocket_by_points(bottom_points)
-       WikiHouse::Fillet.pocket_by_points(top_points)
+     # WikiHouse::DogBoneFillet.pocket_by_points(bottom_points)
+       WikiHouse::DogBoneFillet.pocket_by_points(top_points)
       # Sk.draw_all_points(bottom_points)
        Sk.draw_all_points(top_points)
     end

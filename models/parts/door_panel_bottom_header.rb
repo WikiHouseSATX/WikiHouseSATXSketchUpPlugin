@@ -138,7 +138,7 @@ class WikiHouse::DoorPanelBottomHeader
     @bottom_part.draw_non_groove_faces
 
     top_pocket = [top_pocket[2], top_pocket[1], top_pocket[0], top_pocket[3]]
-    WikiHouse::Fillet.pocket_by_points(top_pocket)
+    WikiHouse::DogBoneFillet.pocket_by_points(top_pocket)
 
     pocket_lines = Sk.draw_all_points(top_pocket)
     pocket_lines.each { |e| mark_inside_edge!(e) }
@@ -146,7 +146,7 @@ class WikiHouse::DoorPanelBottomHeader
     pocket_face.erase!
 
     bottom_pocket = [bottom_pocket[0], bottom_pocket[3], bottom_pocket[2], bottom_pocket[1]]
-    WikiHouse::Fillet.pocket_by_points(bottom_pocket)
+    WikiHouse::DogBoneFillet.pocket_by_points(bottom_pocket)
     pocket_lines = Sk.draw_all_points(bottom_pocket)
     pocket_lines.each { |e| mark_inside_edge!(e) }
     pocket_face = Sk.add_face(pocket_lines)

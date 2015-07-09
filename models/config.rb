@@ -9,7 +9,10 @@ class WikiHouse::Config
     #  WikiHouse::ImperialPlywood2332Sheet
   WikiHouse::ImperialPlywood34Sheet
 #     WikiHouse::ImperialFiberboardSheet
+    WikiHouse::ImperialPlywood34Sheet
+#     WikiHouse::ImperialFiberboardSheet
   end
+
 
   def self.current_part
 
@@ -60,8 +63,8 @@ class WikiHouse::Config
     #   p.move_by(z:2).go!
     #    WikiHouse::UPeg.new(label: "UPeg")
     # #   WikiHouse::WallPanel.new(label: "Wall Panel")
-    # # WikiHouse::WallColumnBoard.new(label: "Column Board",
-    #                                  parent_part: parent_part, origin:[0,0,0])
+    WikiHouse::WallColumnBoard.new(label: "Column Board",
+                                      parent_part: parent_part, origin:[0,0,0])
     #  WikiHouse::Column.new(label: " Column",
     #                                       wall_panels_on: [WikiHouse::Orientation::North, WikiHouse::Orientation::South])
 
@@ -76,7 +79,7 @@ class WikiHouse::Config
     #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
     #WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
     #WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
-     WikiHouse::DoorPanel.new(label: "Door Panel")
+   #  WikiHouse::DoorPanel.new(label: "Door Panel")
     #  WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
     #  WikiHouse::Column.new(label: "Column", wall_panels_on: [WikiHouse::Orientation.south, WikiHouse::Orientation.west, WikiHouse::Orientation.east, WikiHouse::Orientation.north])
   end

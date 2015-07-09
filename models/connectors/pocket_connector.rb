@@ -13,13 +13,23 @@ class WikiHouse::PocketConnector < WikiHouse::Connector
     c6 = [c5.x + width, c5.y, c5.z]
     c7 = [c6.x, c5.y - length, c5.z]
     c8 = [c5.x, c7.y, c5.z]
-    points = [c5, c6, c7, c8]
+    points = [ c6, c7, c8]
 
-    WikiHouse::Fillet.pocket_by_points(points)
-
+   # WikiHouse::DogBoneFillet.pocket_by_points(points)
+    a = Sk.draw_arc(center_point: c5,
+                    radius: WikiHouse.machine.bit_radius,
+    start_angle: 0.degrees, end_angle: 90.degrees,
+    )
+    puts a
+    puts Sk.point_to_s(a.first.start.position)
+    puts Sk.point_to_s(a.last.end.position)
+   points.unshift(a.first.start.position)
+    points.push(a.last.end.position)
     pocket_lines = Sk.draw_all_points(points)
+   raise ScriptError
     pocket_lines.each { |e| mark_inside_edge!(e) }
-    pocket_face = Sk.add_face(pocket_lines)
+    a.each { |e| mark_inside_edge!(e) }
+    pocket_face = Sk.add_face(pocket_lines.concat(a))
     pocket_face.erase!
     pocket_lines
 

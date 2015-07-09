@@ -54,8 +54,8 @@ class WikiHouse::ZPeg
     points = [c1, c2, c3, c4,c4_5, c5_6, c6_5, c6_7,c7, c8]
 
      if WikiHouse.machine.fillet?
-       WikiHouse::Fillet.by_points(points,1,2,3)
-       WikiHouse::Fillet.by_points(points, 9,10,11)
+       WikiHouse::DogBoneFillet.by_points(points,1,2,3)
+       WikiHouse::DogBoneFillet.by_points(points, 9,10,11)
      end
     points
   end
