@@ -1,8 +1,9 @@
 class WikiHouse::FlattenTool
   WikiHouse::Tools.register(:flatten, self)
+
   def activate
     #	puts 'Your tool has been activated.'
-    flattener  = WikiHouse::Flattener.new()
+    flattener = WikiHouse::Flattener.new()
     flattener.draw!
   end
 
@@ -23,6 +24,26 @@ class WikiHouse::FlattenTool
       Sketchup.active_model.select_tool(tool)
 
     }
+
+    # select_none.rb - adds "select none" option to context menu.
+    UI.add_context_menu_handler { |menu|
+      menu.add_item("Select None") {
+        Sketchup.active_model.selection.clear
+      }
+      menu.add_item("Mark Flattenable") {
+        WikiHouse::Flattener.mark_selection_flattenable
+      }
+      menu.add_item("Mark Primary Face") {
+        WikiHouse::Flattener.mark_selection_primary_face
+      }
+      menu.add_item("Remove Flattenable") {
+        WikiHouse::Flattener.remove_selection_flattenable
+      }
+      menu.add_item("Remove Primary Face") {
+        WikiHouse::Flattener.remove_selection_primary_face
+      }
+    }
+
     cmd.small_icon = WikiHouse.plugin_file("steam_engine.png", "images")
     cmd.large_icon = WikiHouse.plugin_file("steam_engine.png", "images")
     cmd.tooltip = "WikiHouse Flattener"

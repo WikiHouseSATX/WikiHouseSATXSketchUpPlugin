@@ -5,19 +5,29 @@ module WikiHouse::PartHelper
 
 
 
-  attr_reader :sheet, :group, :label, :parent_part
+  attr_reader :sheet, :group, :label, :parent_part, :component
 
-  def part_init(sheet: nil, group: nil, origin: nil, label: nil, parent_part: nil)
+  def part_init(sheet: nil, component: nil, group: nil, origin: nil, label: nil, parent_part: nil)
     @sheet = sheet ? sheet : WikiHouse.sheet.new
     @parent_part = parent_part
     @group = group
+    @component = component
     @origin = origin ? origin : [0, 0, 0]
    # puts "#{self.class.name} origin #{Sk.point_to_s(@origin)}"
     @label = label
     @active_part = false
 
   end
+  def entities
+    if component
+      return component.definition.entities
 
+    end
+    group ? group.entities : []
+  end
+  def component?
+    @component.nil? ? false : true
+  end
   def active_part?
     @active_part ?  true  : false
   end
@@ -28,6 +38,9 @@ module WikiHouse::PartHelper
     @group ? true : false
   end
   def bounds
+    if component
+      return component.definition.bounds
+    end
     group ? group.bounds : nil
   end
 
@@ -63,22 +76,30 @@ module WikiHouse::PartHelper
   # end
 
   def alter!(transformation, undoable: false)
-    if @group
+    if group
       if undoable
-        @group.transform! transformation
+        group.transform! transformation
       else
-        @group.move! transformation
+        group.move! transformation
 
       end
 
       @origin = transformation.origin
+    elsif component
+      if undoable
+        component.transform! transformation
+      else
+        component.move! transformation
 
+      end
+
+      @origin = transformation.origin
     end
 
   end
 
   def set_layer(layer_name)
-    @group.entities.each { |e| e.layer = layer_name }
+    entities.each { |e| e.layer = layer_name }
   end
 
   def alteration
@@ -113,8 +134,8 @@ module WikiHouse::PartHelper
     @group = new_group
   end
 
-  def set_group(entities)
-    @group = Sk.add_group entities
+  def set_group(new_entities)
+    @group = Sk.add_group new_entities
     @group.name = full_label
     set_default_properties
   end
@@ -131,8 +152,8 @@ module WikiHouse::PartHelper
   end
 
 
-  def sub_group(entities, label: nil)
-    sub_group = Sk.add_group entities
+  def sub_group(new_entities, label: nil)
+    sub_group = Sk.add_group new_entities
     sub_group.name = label if label
     sub_group
   end

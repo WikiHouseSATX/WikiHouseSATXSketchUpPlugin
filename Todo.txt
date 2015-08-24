@@ -46,6 +46,25 @@ Fix it so we don't have to put WikiHouse:: infront of everything.
 Change out the top/bottom,left,right to north,south,east,west so orientation can handle it
 
 
+Cutting
+=========
+You want to cut all grooves and pockets before outlines
+Tool pass depth is set by chip load - based on the tool chosen
+Tools
+    Name
+    Diameter
+    cutting parameters - pass depth, step over (if you are doing a side by side pass how much you move it over to
+    cut it again for a pocket)
+
+    Onsurb 60-111 1/4" Compression Spiral
+    diamter .25
+    pass depth .25
+    step over .125
+    spindle speed 13000
+    feed rate 3.0 inches per second
+    plunge rate - 1 in per second
+    tool number 11
+
 When we start building the ui - store the settings they choose into the modle the way they do in the svg plugin.
 Pending Parts
 ========================

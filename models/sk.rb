@@ -32,10 +32,19 @@ module Sk
     model.active_entities
   end
 
+  def entities
+    model.entities
+  end
+
   def erase_all!
     self.model.entities.each { |e| e.erase! }
   end
-
+  def clear_selection
+    Sketchup.active_model.selection.clear
+  end
+  def selection
+    Sketchup.active_model.selection
+  end
   def round(val)
     val.to_f.round(4)
   end
@@ -170,7 +179,8 @@ module Sk
     normal ||= Geom::Vector3d.new 0, 0, 1
     group ? group.entities.add_circle(center_point, normal, radius, numsegs) : Sketchup.active_model.active_entities.add_circle(center_point, normal, radius, numsegs)
   end
-  def draw_arc(center_point:nil,
+
+  def draw_arc(center_point: nil,
                zero_vector: nil,
                normal: nil,
                radius: nil,
@@ -180,11 +190,12 @@ module Sk
                group: nil)
     normal ||= Geom::Vector3d.new 0, 0, 1
     zero_vector ||= Geom::Vector3d.new 0, 1, 0
-    puts radius,center_point, zero_vector, normal, start_angle, end_angle, num_segments,group
+    puts radius, center_point, zero_vector, normal, start_angle, end_angle, num_segments, group
     group ? group.entities.add_arc(center_point, zero_vector, normal, radius, start_angle, end_angle, num_segments) : Sketchup.active_model.active_entities.add_arc(center_point, zero_vector, normal, radius,
                                                                                                                                                                     start_angle, end_angle, num_segments)
 
   end
+
   def draw_all_points(pts, group: nil)
     lines = []
     pts.each_with_index do |pt, index|
@@ -239,11 +250,44 @@ module Sk
   end
 
   def copy_group(destination_group: nil, source_group: nil)
-    raise ArgumentError if destination_group.nil? || source_group.nil?
+    raise ArgumentError if destination_group.nil? || source_group.nil? || is_a_component_instance?(source_group)
     #http://sketchucation.com/forums/viewtopic.php?f=180&t=37940#p439270
     gcopy = destination_group.entities.add_instance(source_group.entities.parent, source_group.transformation)
     gcopy.name = source_group.name
     gcopy
+  end
+
+  def nest_component(destination_group: nil, source_component: nil, make_unique: false)
+    raise ArgumentError if destination_group.nil? || source_component.nil? || !is_a_component_instance?(source_component)
+    #http://sketchucation.com/forums/viewtopic.php?f=180&t=37940#p439270
+    begin
+    gcopy = destination_group.entities.add_instance(source_component.definition, source_component.transformation)
+    rescue ArgumentError => e
+      puts "Problemw with #{source_component.definition.name}"
+      raise e
+    end
+
+    gcopy.name = source_component.name
+    if make_unique
+      gcopy.make_unique
+    end
+    gcopy
+  end
+  def is_an_edge?(item)
+    item.is_a?(Sketchup::Edge)
+  end
+  def is_a_face?(item)
+    item.is_a?(Sketchup::Face)
+  end
+  def is_a_component_definition?(item)
+    item.is_a?(Sketchup::ComponentDefinition)
+  end
+  def is_a_component_instance?(item)
+    item.is_a?(Sketchup::ComponentInstance)
+  end
+
+  def is_a_group?(item)
+    item.is_a?(Sketchup::Group)
   end
 
   def nest_group(destination_group: nil, source_group: nil)
@@ -289,11 +333,11 @@ module Sk
   end
 
   def edge_count(list)
-    list.find_all { |e| e.typename == "Edge" && !e.deleted? }.count
+    list.find_all { |e| is_an_edge?(e) && !e.deleted? }.count
   end
 
   def face_count(list)
-    list.find_all { |e| e.typename == "Face" && !e.deleted? }.count
+    list.find_all { |e| is_a_face?(e) && !e.deleted? }.count
   end
 
   def add_material(material_name, filename: nil)
@@ -311,11 +355,21 @@ module Sk
 
   def find_group_by_name(name, match_ok: true)
     Sketchup.active_model.entities.each do |e|
-      if e.typename == "Group" && e.name == name || (match_ok && e.name.match(name))
+      if is_a_group?(e) && e.name == name || (is_a_group?(e) && match_ok && e.name.match(name))
         return(e)
       end
     end
     nil
+  end
+
+  def find_or_create_group(name: nil)
+    g = find_group_by_name(name)
+    if !g
+      g = add_group
+      g.name = name
+    end
+    g
+
   end
 
   def transformation_chain(entity)
@@ -397,8 +451,9 @@ module Sk
     end
     [min_x, min_y, min_z]
   end
+
   def min_max_bounds(group)
-    { max: max_bounds(group),
+    {max: max_bounds(group),
      min: min_bounds(group)}
   end
 end

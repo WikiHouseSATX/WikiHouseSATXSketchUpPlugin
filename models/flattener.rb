@@ -1,5 +1,10 @@
+#Needs to create the Flat group at the top
+#need a selection tool to add cutable to a face
+#need a selection tool to add flattenable to a group/component
+
 class WikiHouse::Flattener
 
+  include WikiHouse::AttributeHelper
 
   def initialize(starting_x: 0, starting_y: 100)
     @starting_x = starting_x
@@ -8,7 +13,7 @@ class WikiHouse::Flattener
     @sheet = WikiHouse.sheet.new
     Sk.find_or_create_layer(name: outside_edge_layer_name)
     Sk.find_or_create_layer(name: inside_edge_layer_name)
-
+    @components_flattened = []
   end
 
   def outside_edge_layer_name
@@ -21,6 +26,87 @@ class WikiHouse::Flattener
 
   def self.flat_group_name
     "WikiHouse::Flat"
+  end
+
+  def self.mark_selection_flattenable
+    "Marking Flattenable"
+    unless Sk.selection.empty?
+      Sk.selection.each do |e|
+        if is_groupish?(e)
+          mark_flattenable!(e)
+        end
+      end
+    end
+  end
+
+  def self.mark_selection_primary_face
+    "Marking Primary Face"
+    unless Sk.selection.empty?
+      if Sk.selection.length != 1
+        UI.messagebox("You can only mark one face at a time.")
+        return
+      end
+      if Sk.is_a_face?(Sk.selection.first)
+        mark_primary_face!(Sk.selection.first)
+      else
+        UI.messagebox("This can only be used on a face." )
+      end
+
+    end
+
+  end
+
+  def self.remove_selection_flattenable
+    "Removing Flattenable"
+    unless Sk.selection.empty?
+      Sk.selection.each do |e|
+          remove_flattenable!(e)
+      end
+    end
+  end
+
+  def self.remove_selection_primary_face
+    "Removing Primary Face"
+    unless Sk.selection.empty?
+      Sk.selection.each do |e|
+        remove_primary_face!(e)
+      end
+    end
+  end
+
+  def self.is_cutable?(item)
+    v = item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "cutable")
+    v == true || v == "true"
+  end
+
+  def self.is_flattenable?(item)
+    v = item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "flattenable")
+    v == true || v == "true"
+  end
+
+  def self.is_inside_edge?(item)
+    item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "inside_edge") == true
+  end
+
+  def self.is_groupish?(item)
+    #item.typename == "Group" || item.typename == "ComponentInstance"
+    Sk.is_a_component_instance?(item) || Sk.is_a_group?(item)
+  end
+
+  def is_cutable?(item)
+    self.class.is_cutable?(item)
+  end
+
+  def is_flattenable?(item)
+    self.class.is_flattenable?(item)
+  end
+
+  def is_inside_edge?(item)
+    self.class.is_inside_edge?(item)
+  end
+
+  def is_groupish?(item)
+    self.class.is_groupish?(item)
   end
 
   def flat_group_name
@@ -45,12 +131,116 @@ class WikiHouse::Flattener
   class FlatPart
     include WikiHouse::PartHelper
 
-    def initialize(sheet: nil, group: nil, origin: nil, label: nil)
-      part_init(sheet: sheet, group: group, origin: origin, label: label)
+    def initialize(sheet: nil, component: nil, group: nil, origin: nil, label: nil)
+      part_init(sheet: sheet, component: component, group: group, origin: origin, label: label)
     end
   end
 
-  def flatten!(group)
+  def flatten_component!(component)
+    Sk.start_operation("Flattening Item", disable_ui: true)
+
+
+    original_layer = Sk.current_active_layer
+    Sk.make_layer_active_name(name: outside_edge_layer_name)
+    puts "Flattening #{component.name} #{component.entityID}"
+    if !@flat_group
+      @flat_group = Sk.find_or_create_group(name: flat_group_name)
+      puts "Creating Flat Group"
+      @components_flattened = []
+      @parts = []
+      @last_x = @starting_x
+    end
+
+   # return if @components_flattened.include?(component.definition.name)
+    gcopy = Sk.nest_component(destination_group: @flat_group, source_component: component, make_unique: true)
+    @components_flattened << component.definition.name
+    gcopy.name = component.name + " Copy"
+    gcopy.definition.entities.each { |e| e.layer = outside_edge_layer_name }
+    part = FlatPart.new(component: gcopy)
+
+
+    x = @last_x + 3
+
+    part.move_to!(point: [x, @starting_y, 0])
+
+
+    box = [part.bounds.width, part.bounds.height, part.bounds.depth].reject { |i| i == thickness }
+   # puts "Bounding box is  #{box}"
+
+    if box == []
+      width = thickness
+    else
+      width = box.first
+    end
+    x += width
+   # puts "next x is #{x}"
+
+    @last_x = x
+    primary_face = nil
+    part.entities.each do |entity|
+      if entity.typename == "Face" &&
+          Sk.get_attribute(entity, WikiHouse::PartHelper.tag_dictionary, "primary_face")
+        primary_face = entity
+        break
+      end
+    end
+    if primary_face
+      loop = primary_face.outer_loop
+      primary_face.material = nil
+      z_filter = primary_face.vertices.first.position.z #use this to filter out things not at the same level as the plane
+
+      off_of_z = lambda do |entity|
+
+        return false if entity.typename != "Edge"
+        return true if entity.start.position.z != z_filter || entity.end.position.z != z_filter
+        return false
+      end
+      off_of_z_count = lambda do |list|
+        list.find_all { |e| off_of_z.call(e) }.count
+      end
+
+      #need to loop until all stray edges are removed
+      while off_of_z_count.call(part.entities) != 0
+        part.entities.each do |entity|
+          next if entity == primary_face
+          erase = false
+          if entity.typename == "Face"
+            erase = true
+          end
+          if !entity.deleted? && entity.typename == "Edge"
+            erase = true if off_of_z.call(entity)
+
+          end
+          entity.erase! if erase
+        end
+      end
+      if primary_face.normal.z == -1
+        #puts "Reversing #{primary_face.normal.z}"
+        primary_face.reverse!
+      end
+      part.move_to!(point: [x, 200, -1 * z_filter])
+    else
+      puts "This part does not have a primary face :("
+    end
+    part.entities.each do |e|
+      next if !e.valid? || e.deleted?
+      if is_inside_edge?(e)
+        #  puts "Found an inside edge"
+        e.layer = inside_edge_layer_name
+      end
+    end
+    part.set_tag(tag_name: "component_source", value: component.name)
+    part.set_tag(tag_name: "flat", value: true)
+    part.set_tag(tag_name: "source", value: component.entityID)
+    @parts << part
+    Sk.make_layer_active(original_layer)
+
+    Sk.commit_operation
+
+
+  end
+
+  def flatten_group!(group)
     Sk.start_operation("Flattening Item", disable_ui: true)
 
 
@@ -90,7 +280,7 @@ class WikiHouse::Flattener
 
     @last_x = x
     primary_face = nil
-    part.group.entities.each do |entity|
+    part.entities.each do |entity|
       if entity.typename == "Face" &&
           Sk.get_attribute(entity, WikiHouse::PartHelper.tag_dictionary, "primary_face")
         primary_face = entity
@@ -113,8 +303,8 @@ class WikiHouse::Flattener
       end
 
       #need to loop until all stray edges are removed
-      while off_of_z_count.call(part.group.entities) != 0
-        part.group.entities.each do |entity|
+      while off_of_z_count.call(part.entities) != 0
+        part.entities.each do |entity|
           next if entity == primary_face
           erase = false
           if entity.typename == "Face"
@@ -135,7 +325,7 @@ class WikiHouse::Flattener
     else
       puts "This part does not have a primary face :("
     end
-    part.group.entities.each do |e|
+    part.entities.each do |e|
       next if !e.valid? || e.deleted?
       if is_inside_edge?(e)
         #  puts "Found an inside edge"
@@ -153,40 +343,92 @@ class WikiHouse::Flattener
 
   end
 
-  def is_cutable?(item)
-    item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "cutable") == true
-  end
 
-  def is_inside_edge?(item)
-    item.get_attribute(WikiHouse::PartHelper.tag_dictionary, "inside_edge") == true
-  end
-
-
-  def crawl(item)
-    return unless item.respond_to?(:entities)
+  def crawl_group(item)
     item.entities.each do |subitem|
 
-      if is_cutable?(subitem)
-        flatten!(subitem)
+      if subitem.is_a?(Sketchup::Group)
+        if is_cutable?(subitem) || is_flattenable?(subitem)
+          flatten_group!(subitem)
+        else
+          crawl_group(subitem)
+        end
+      elsif Sk.is_a_component_instance?(subitem)
+        if is_cutable?(subitem) || is_flattenable?(subitem)
+          flatten_component!(subitem)
+        else
+          crawl_component(subitem)
+        end
+      end
 
+    end
+  end
+
+  def crawl_component(item)
+    item.definition.entities.each do |subitem|
+      if subitem.is_a?(Sketchup::Group)
+        if is_cutable?(subitem) || is_flattenable?(subitem)
+          flatten_group!(subitem)
+        else
+          crawl_group(subitem)
+        end
+      elsif Sk.is_a_component_instance?(subitem)
+        if is_cutable?(subitem) || is_flattenable?(subitem)
+          flatten_component!(subitem)
+        else
+          crawl_component(subitem)
+        end
       end
-      if subitem.typename == "Group" && subitem.name.match("Wiki")
-        crawl(subitem)
-      end
+
     end
   end
 
   def draw!
+    puts "Flattening"
     @flat_group = nil
 
-    Sk.active_entities.each do |top|
-      if is_cutable?(top)
-        flatten!(top)
+    Sk.entities.each do |top|
+
+      if top.is_a?(Sketchup::Group)
+        if is_cutable?(top) || is_flattenable?(top)
+          flatten_group!(top)
+        else
+          crawl_group(top)
+        end
+      elsif Sk.is_a_component_instance?(top)
+        if is_cutable?(top) || is_flattenable?(top)
+          flatten_component!(top)
+        else
+          crawl_component(top)
+        end
       end
-      if top.typename == "Group" && top.name.match("Wiki")
-        # puts top.name
-        crawl(top)
-      end
+
     end
   end
 end
+
+
+#Find the master group - flattenable
+#find the final component - that is cutable
+# Copy over and make it orient correctly
+# Find the primary face
+
+# matching_faces=[]
+# Sketchup.active_model.selection.each{|e|
+#   if e.is_a?(Sketchup::Face)
+#     ### check for compliance with some 'property' and then
+#     matching_faces << e if match
+#   elsif e.is_a?(Sketchup::Group)
+#     e.entities.parent.entities.each{|face|
+#       next unless face.is_a?(Sketchup::Face)
+#       ### check for compliance with some 'property' and then
+#       matching_faces << face if match
+#     }
+#   elsif e.is_a?(Sketchup::ComponentInstance)
+#     e.parent.entities.each{|face|
+#       next unless face.is_a?(Sketchup::Face)
+#       ### check for compliance with some 'property' and then
+#       matching_faces << face if match
+#     }
+#   end
+# }
