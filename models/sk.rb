@@ -269,6 +269,7 @@ module Sk
 
     gcopy.name = source_component.name
     if make_unique
+      puts "Making unique!"
       gcopy.make_unique
     end
     gcopy

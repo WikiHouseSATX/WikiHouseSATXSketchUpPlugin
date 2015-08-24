@@ -1,9 +1,9 @@
 #Needs to create the Flat group at the top
-#need a selection tool to add cutable to a face
-#need a selection tool to add flattenable to a group/component
+#Add the ability to mark dowels through two components
 
 class WikiHouse::Flattener
-
+  @@dowel_x = 0
+  @@flat_group = nil
   include WikiHouse::AttributeHelper
 
   def initialize(starting_x: 0, starting_y: 100)
@@ -26,6 +26,34 @@ class WikiHouse::Flattener
 
   def self.flat_group_name
     "WikiHouse::Flat"
+  end
+  def self.apply_dowels
+
+    unless Sk.selection.empty?
+      x = @@dowel_x
+      Sk.selection.each do |sel|
+        if !@@flat_group
+          @@flat_group = Sk.find_or_create_group(name: flat_group_name)
+          puts "Creating Flat Group"
+
+        end
+        #
+        # # return if @components_flattened.include?(component.definition.name)
+        gcopy = Sk.nest_component(destination_group: @@flat_group, source_component: sel, make_unique: false)
+
+        gcopy.name = sel.name + " Copy"
+
+        part = FlatPart.new(component: gcopy)
+
+
+
+
+        part.move_to!(point: [x, 300, 0])
+        x += part.bounds.width + 10
+      end
+
+    end
+    @@dowel_x = x
   end
 
   def self.mark_selection_flattenable
@@ -137,6 +165,7 @@ class WikiHouse::Flattener
   end
 
   def flatten_component!(component)
+
     Sk.start_operation("Flattening Item", disable_ui: true)
 
 

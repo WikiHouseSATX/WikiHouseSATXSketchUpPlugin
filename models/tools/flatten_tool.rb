@@ -30,6 +30,9 @@ class WikiHouse::FlattenTool
       menu.add_item("Select None") {
         Sketchup.active_model.selection.clear
       }
+      menu.add_item("Apply Dowels") {
+        WikiHouse::Flattener.apply_dowels
+      }
       menu.add_item("Mark Flattenable") {
         WikiHouse::Flattener.mark_selection_flattenable
       }
