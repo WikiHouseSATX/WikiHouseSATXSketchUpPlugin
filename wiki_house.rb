@@ -74,7 +74,8 @@ module WikiHouse
       load file unless base_files.include? File.basename(file)
     end
 
-
+    load plugin_file("WorkPlane.rb" ,"plane_tools")
+    load plugin_file("FlattenToPlane.rb" ,"plane_tools")
     Tools.init_all
     @build_menus = false
   end

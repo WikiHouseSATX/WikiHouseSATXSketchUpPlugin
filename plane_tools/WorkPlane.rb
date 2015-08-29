@@ -2535,24 +2535,24 @@ unless file_loaded?(__FILE__)
     cmd1=UI::Command.new(text11){Sketchup.active_model.select_tool(WorkPlane.new())}
     cmd1.tooltip=text11
     cmd1.status_bar_text=text12
-    cmd1.small_icon=File.join(File.dirname(__FILE__), "WorkPlane/WorkPlane16x16.png")
-    cmd1.large_icon=File.join(File.dirname(__FILE__), "WorkPlane/WorkPlane24x24.png")
+    cmd1.small_icon=File.join(File.dirname(__FILE__), "WorkPlaneFiles/WorkPlane16x16.png")
+    cmd1.large_icon=File.join(File.dirname(__FILE__), "WorkPlaneFiles/WorkPlane24x24.png")
     ###
     text21 = "New WorkPlaneDisk"
     text22 = "WorkPlaneDisk - makes a work-plane-disk, with radial grid"+"..."
     cmd2=UI::Command.new(text21){Sketchup.active_model.select_tool(WorkPlaneDisk.new())}
     cmd2.tooltip=text21
     cmd2.status_bar_text=text22
-    cmd2.small_icon=File.join(File.dirname(__FILE__), "WorkPlane/WorkPlaneDisk16x16.png")
-    cmd2.large_icon=File.join(File.dirname(__FILE__), "WorkPlane/WorkPlaneDisk24x24.png")
+    cmd2.small_icon=File.join(File.dirname(__FILE__), "WorkPlaneFiles/WorkPlaneDisk16x16.png")
+    cmd2.large_icon=File.join(File.dirname(__FILE__), "WorkPlaneFiles/WorkPlaneDisk24x24.png")
     ###
     text31 = "New WorkPlaneProtractor"
     text32 = "WorkPlaneProtractor - makes a work-plane-protractor"+"..."
     cmd3=UI::Command.new(text31){Sketchup.active_model.select_tool(WorkPlaneProtractor.new())}
     cmd3.tooltip=text31
     cmd3.status_bar_text=text32
-    cmd3.small_icon=File.join(File.dirname(__FILE__), "WorkPlane/WorkPlaneProtractor16x16.png")
-    cmd3.large_icon=File.join(File.dirname(__FILE__), "WorkPlane/WorkPlaneProtractor24x24.png")
+    cmd3.small_icon=File.join(File.dirname(__FILE__), "WorkPlaneFiles/WorkPlaneProtractor16x16.png")
+    cmd3.large_icon=File.join(File.dirname(__FILE__), "WorkPlaneFiles/WorkPlaneProtractor24x24.png")
     ###
     $workPlaneToolbar=UI::Toolbar.new(text10)
     $workPlaneToolbar.add_item(cmd1)
