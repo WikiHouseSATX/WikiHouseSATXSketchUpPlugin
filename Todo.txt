@@ -3,7 +3,7 @@ Need to be able ot make dowel hole that diameter 1/4" and 0.625" deep
 4 inches apart on the center line -staggered
 Flatten them with all edges intact
 
-
+#look at how to do a nested context menu
 
 
 Pending Work

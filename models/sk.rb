@@ -372,7 +372,15 @@ module Sk
     g
 
   end
+  def find_or_create_global_group(name: nil)
+    g = find_group_by_name(name)
+    if !g
+      g = add_global_group
+      g.name = name
+    end
+    g
 
+  end
   def transformation_chain(entity)
     chain = []
     chain = find_entity_chain(entity, model.entities, chain)
@@ -456,5 +464,34 @@ module Sk
   def min_max_bounds(group)
     {max: max_bounds(group),
      min: min_bounds(group)}
+  end
+  #Thanks to http://stackoverflow.com/questions/17936161/sketchup-entities-mirrored-with-flip-along-axis-not-reflected-in-transform-m
+  def transformation_axes_dot_products(tr)
+    [
+        tr.xaxis.dot(X_AXIS),
+        tr.yaxis.dot(Y_AXIS),
+        tr.zaxis.dot(Z_AXIS)
+    ]
+  end
+  def dot_matrix_flipped?(dot_x, dot_y, dot_z)
+    dot_x * dot_y * dot_z < 0
+  end
+  def flipped_x?(entity)
+    transformation = entity.transformation
+    dot_x, dot_y, dot_z =  transformation_axes_dot_products(transformation)
+    dot_x < 0 && dot_matrix_flipped?(dot_x, dot_y, dot_z)
+  end
+  def flipped_y?(entity)
+    transformation = entity.transformation
+    dot_x, dot_y, dot_z =  transformation_axes_dot_products(transformation)
+    dot_y < 0 && dot_matrix_flipped?(dot_x, dot_y, dot_z)
+  end
+  def flipped_z?(entity)
+    transformation = entity.transformation
+    dot_x, dot_y, dot_z =  transformation_axes_dot_products(transformation)
+    dot_z < 0 && dot_matrix_flipped?(dot_x, dot_y, dot_z)
+  end
+  def flip_x(entity)
+
   end
 end

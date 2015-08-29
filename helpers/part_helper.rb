@@ -129,7 +129,33 @@ module WikiHouse::PartHelper
   def rotate!(point: nil, vector: nil, rotation: nil)
     alteration.rotate!(point: point, vector: vector, rotation: rotation)
   end
+  def scale(arg1, arg2 = nil, arg3 = nil, arg4 = nil)
+    alteration.scale(arg1, arg2 = nil, arg3 = nil, arg4 = nil)
+  end
+  def scale!(arg1, arg2 = nil, arg3 = nil, arg4 = nil)
+    alteration.scale!(arg1, arg2 = nil, arg3 = nil, arg4 = nil)
+  end
+  def flip_x(point: nil)
+    alteration.flip_x(point: point)
+  end
 
+  def flip_x!(point: nil)
+    alteration.flip_x!(point: point)
+  end
+  def flip_y(point: nil)
+    alteration.flip_y(point: point)
+  end
+
+  def flip_y!(point: nil)
+    alteration.flip_y!(point: point)
+  end
+  def flip_z(point: nil)
+    alteration.flip_z(point: point)
+  end
+
+  def flip_z!(point: nil)
+    alteration.flip_z!(point: point)
+  end
   def group= (new_group)
     @group = new_group
   end

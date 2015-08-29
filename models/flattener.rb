@@ -3,10 +3,12 @@
 
 class WikiHouse::Flattener
   @@dowel_x = 0
+  @@flat_x = 0
   @@flat_group = nil
+  @@plucked_group = nil
   include WikiHouse::AttributeHelper
 
-  def initialize(starting_x: 0, starting_y: 100)
+  def initialize(starting_x: 0, starting_y: 400)
     @starting_x = starting_x
     @starting_y = starting_y
     @flat_group = nil
@@ -27,25 +29,89 @@ class WikiHouse::Flattener
   def self.flat_group_name
     "WikiHouse::Flat"
   end
+
+  def self.plucked_group_name
+    "WikiHouse::Plucked"
+  end
+
   def self.apply_dowels
+    unless Sk.selection.empty?
+
+      x = @@flat_x
+      Sk.selection.each do |sel|
+
+        if !@@flat_group
+          @@flat_group = Sk.find_or_create_global_group(name: flat_group_name)
+          puts "Creating Flat Group"
+
+        end
+        begin
+        gcopy = Sk.nest_component(destination_group: @@flat_group, source_component: sel,
+                                  make_unique: true)
+        rescue TypeError
+          @@flat_group = Sk.find_or_create_global_group(name: flat_group_name)
+          gcopy = Sk.nest_component(destination_group: @@flat_group, source_component: sel,
+                                    make_unique: true)
+        end
+
+        gcopy.name = sel.name + " Copy"
+      #  gcopy.definition.entities.each { |e| e.layer = outside_edge_layer_name }
+        part = FlatPart.new(component: gcopy)
+
+        real_x = x
+
+        if Sk.flipped_x?(sel)
+          puts "#{sel.name} is flipped on the x"
+          move = part.flip_x
+
+          real_x = (x + part.bounds.width) * -1
+        end
+        if Sk.flipped_y?(sel)
+          puts "#{sel.name} is flipped on the y"
+          move = part.flip_y
+        #  y_mod = part.bounds.height
+        end
+        if Sk.flipped_z?(sel)
+          puts "#{sel.name} is flipped on the z"
+          move = part.flip_z
+        end
+        if move
+          move.move_to(point: [0,0,0]).move_by(x: real_x, y: 400, z: 0).go!
+        else
+          part.move_to!(point: [x, 400, 0])
+        end
+        part.entities.each do |entity|
+          if Sk.is_a_face?(entity)
+            puts "Found a face"
+           #   Sk.get_attribute(entity, WikiHouse::PartHelper.tag_dictionary, "primary_face")
+         #   primary_face = entity
+           # break
+          end
+        end
+        x += part.bounds.width + 10
+      end
+
+    end
+    @@flat_x = x
+  end
+
+  def self.pluck_part
 
     unless Sk.selection.empty?
       x = @@dowel_x
       Sk.selection.each do |sel|
-        if !@@flat_group
-          @@flat_group = Sk.find_or_create_group(name: flat_group_name)
+        if !@@plucked_group
+          @@plucked_group = Sk.find_or_create_global_group(name: plucked_group_name)
           puts "Creating Flat Group"
 
         end
         #
         # # return if @components_flattened.include?(component.definition.name)
-        gcopy = Sk.nest_component(destination_group: @@flat_group, source_component: sel, make_unique: false)
+        gcopy = Sk.nest_component(destination_group: @@plucked_group, source_component: sel, make_unique: false)
 
         gcopy.name = sel.name + " Copy"
 
         part = FlatPart.new(component: gcopy)
-
-
 
 
         part.move_to!(point: [x, 300, 0])
@@ -77,7 +143,7 @@ class WikiHouse::Flattener
       if Sk.is_a_face?(Sk.selection.first)
         mark_primary_face!(Sk.selection.first)
       else
-        UI.messagebox("This can only be used on a face." )
+        UI.messagebox("This can only be used on a face.")
       end
 
     end
@@ -88,7 +154,7 @@ class WikiHouse::Flattener
     "Removing Flattenable"
     unless Sk.selection.empty?
       Sk.selection.each do |e|
-          remove_flattenable!(e)
+        remove_flattenable!(e)
       end
     end
   end
@@ -117,7 +183,6 @@ class WikiHouse::Flattener
   end
 
   def self.is_groupish?(item)
-    #item.typename == "Group" || item.typename == "ComponentInstance"
     Sk.is_a_component_instance?(item) || Sk.is_a_group?(item)
   end
 
@@ -173,14 +238,14 @@ class WikiHouse::Flattener
     Sk.make_layer_active_name(name: outside_edge_layer_name)
     puts "Flattening #{component.name} #{component.entityID}"
     if !@flat_group
-      @flat_group = Sk.find_or_create_group(name: flat_group_name)
+      @flat_group = Sk.find_or_create_global_group(name: flat_group_name)
       puts "Creating Flat Group"
       @components_flattened = []
       @parts = []
       @last_x = @starting_x
     end
 
-   # return if @components_flattened.include?(component.definition.name)
+    # return if @components_flattened.include?(component.definition.name)
     gcopy = Sk.nest_component(destination_group: @flat_group, source_component: component, make_unique: true)
     @components_flattened << component.definition.name
     gcopy.name = component.name + " Copy"
@@ -194,7 +259,7 @@ class WikiHouse::Flattener
 
 
     box = [part.bounds.width, part.bounds.height, part.bounds.depth].reject { |i| i == thickness }
-   # puts "Bounding box is  #{box}"
+    # puts "Bounding box is  #{box}"
 
     if box == []
       width = thickness
@@ -202,12 +267,12 @@ class WikiHouse::Flattener
       width = box.first
     end
     x += width
-   # puts "next x is #{x}"
+    # puts "next x is #{x}"
 
     @last_x = x
     primary_face = nil
     part.entities.each do |entity|
-      if entity.typename == "Face" &&
+      if Sk.is_a_face?(entity) &&
           Sk.get_attribute(entity, WikiHouse::PartHelper.tag_dictionary, "primary_face")
         primary_face = entity
         break
@@ -220,7 +285,7 @@ class WikiHouse::Flattener
 
       off_of_z = lambda do |entity|
 
-        return false if entity.typename != "Edge"
+        return false if !Sk.is_an_edge?(entity)
         return true if entity.start.position.z != z_filter || entity.end.position.z != z_filter
         return false
       end
@@ -233,10 +298,10 @@ class WikiHouse::Flattener
         part.entities.each do |entity|
           next if entity == primary_face
           erase = false
-          if entity.typename == "Face"
+          if Sk.is_a_face?(entity)
             erase = true
           end
-          if !entity.deleted? && entity.typename == "Edge"
+          if !entity.deleted? && Sk.is_an_edge?(entity)
             erase = true if off_of_z.call(entity)
 
           end
@@ -310,7 +375,7 @@ class WikiHouse::Flattener
     @last_x = x
     primary_face = nil
     part.entities.each do |entity|
-      if entity.typename == "Face" &&
+      if Sk.is_a_face?(entity) &&
           Sk.get_attribute(entity, WikiHouse::PartHelper.tag_dictionary, "primary_face")
         primary_face = entity
         break
@@ -323,7 +388,7 @@ class WikiHouse::Flattener
 
       off_of_z = lambda do |entity|
 
-        return false if entity.typename != "Edge"
+        return false if !Sk.is_an_edge?(entity)
         return true if entity.start.position.z != z_filter || entity.end.position.z != z_filter
         return false
       end
@@ -336,10 +401,10 @@ class WikiHouse::Flattener
         part.entities.each do |entity|
           next if entity == primary_face
           erase = false
-          if entity.typename == "Face"
+          if Sk.is_a_face?(entity)
             erase = true
           end
-          if !entity.deleted? && entity.typename == "Edge"
+          if !entity.deleted? && Sk.is_an_edge?(entity)
             erase = true if off_of_z.call(entity)
 
           end
