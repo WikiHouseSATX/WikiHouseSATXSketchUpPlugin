@@ -1,3 +1,9 @@
+Pull out part
+Be able to mark the side red or green
+LIne up dowel hole on the two parts
+
+Take part - find all edges - take them down to z 0
+
 
 Need to be able ot make dowel hole that diameter 1/4" and 0.625" deep
 4 inches apart on the center line -staggered

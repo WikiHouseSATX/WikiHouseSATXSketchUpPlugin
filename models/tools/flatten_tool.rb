@@ -24,32 +24,43 @@ class WikiHouse::FlattenTool
       Sketchup.active_model.select_tool(tool)
 
     }
-
-    # select_none.rb - adds "select none" option to context menu.
     UI.add_context_menu_handler { |menu|
-      menu.add_item("Select None") {
+      sub_menu = menu.add_submenu("Flattener...")
+
+      sub_menu.add_item("Select None") {
         Sketchup.active_model.selection.clear
       }
-      menu.add_item("Pluck Part") {
+      sub_menu.add_separator()
+      sub_menu.add_item("Mark Face Red") {
+        WikiHouse::Flattener.mark_face(color: :red)
+      }
+      sub_menu.add_item("Mark Face Green") {
+        WikiHouse::Flattener.mark_face(color: :green)
+      }
+      sub_menu.add_separator()
+      sub_menu.add_item("Super Flatter") {
+        WikiHouse::Flattener.super_flatten
+      }
+      sub_menu.add_item("Pluck Part") {
         WikiHouse::Flattener.pluck_part
       }
-      menu.add_item("Apply Dowels") {
+      sub_menu.add_item("Apply Dowels") {
         WikiHouse::Flattener.apply_dowels
       }
-      menu.add_item("Mark Flattenable") {
+      sub_menu.add_item("Mark Flattenable") {
         WikiHouse::Flattener.mark_selection_flattenable
       }
-      menu.add_item("Mark Primary Face") {
+      sub_menu.add_item("Mark Primary Face") {
         WikiHouse::Flattener.mark_selection_primary_face
       }
-      menu.add_item("Remove Flattenable") {
+      sub_menu.add_item("Remove Flattenable") {
         WikiHouse::Flattener.remove_selection_flattenable
       }
-      menu.add_item("Remove Primary Face") {
+      sub_menu.add_item("Remove Primary Face") {
         WikiHouse::Flattener.remove_selection_primary_face
       }
-    }
 
+    }
     cmd.small_icon = WikiHouse.plugin_file("steam_engine.png", "images")
     cmd.large_icon = WikiHouse.plugin_file("steam_engine.png", "images")
     cmd.tooltip = "WikiHouse Flattener"

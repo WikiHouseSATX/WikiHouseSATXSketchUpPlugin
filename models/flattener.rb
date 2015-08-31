@@ -7,6 +7,47 @@ class WikiHouse::Flattener
   @@flat_group = nil
   @@plucked_group = nil
   include WikiHouse::AttributeHelper
+  #
+  # class Doweler
+  #   def initialize
+  #     @start_point  = nil
+  #     @end_point  = nil
+  #   end
+  #
+  #   def activate
+  #     puts "Activating Doweler"
+  #     Sk.set_status_message("Click for the start of the line")
+  #   end
+  #
+  #   def deactivate(view=nil)
+  #     @start_point = nil
+  #     @end_point = nil
+  #     puts "Deactivateing Doweler"
+  #   end
+  #
+  #   def onLButtonDown(flags, x, y, view)
+  #     if @start_point.nil?
+  #       ph = view.pick_helper
+  #       ph.do_pick(x, y)
+  #       @start_point = [x,y]
+  #       @start_face = ph.picked_face
+  #       @start_element = ph.picked_element
+  #       Sk.set_status_message "Click for the second point"
+  #     elsif @end_point.nil?
+  #       ph = view.pick_helper
+  #       ph.do_pick(x, y)
+  #       @end_point = [x,y]
+  #       @end_face = ph.picked_face
+  #       @end_element = ph.picked_element
+  #       Sk.set_status_message "Click for the second point"
+  #     else
+  #       puts [@start_point, @start_face, @start_element]
+  #       puts [@end_point, @end_face, @end_element]
+  #       Sketchup.send_action("selectSelectionTool:")
+  #     end
+  #
+  #   end
+  # end
 
   def initialize(starting_x: 0, starting_y: 400)
     @starting_x = starting_x
@@ -34,9 +75,128 @@ class WikiHouse::Flattener
     "WikiHouse::Plucked"
   end
 
+  def self.mark_face(color: :white)
+    Sk.selection.each do |sel|
+      if Sk.is_a_face?(sel)
+        sel.material = color
+      end
+    end
+  end
+
+  def self.attribute(item, name: nil, default: nil)
+    stored_value = item.get_attribute(tag_dictionary, name)
+    if stored_value.nil?
+      item.set_attribute(tag_dictionary, name, default)
+      stored_value = default
+    end
+    stored_value
+  end
+
   def self.apply_dowels
+
+    # Sketchup.active_model.select_tool(WikiHouse::Flattener::Doweler.new())
     unless Sk.selection.empty?
 
+      Sk.set_status_message("Doweling")
+      Sk.start_operation("Doweling Item", disable_ui: true)
+      item = Sk.selection.first
+      if Sk.is_a_face?(item)
+        tag_dictionary = "WikiHouse"
+        dowel_center_override = attribute(item, name: "dowel_center_override", default: 0)
+        dowel_gap_in_inches = attribute(item, name: "dowel_gap_in_inches", default: 6.0)
+        dowel_off_center = attribute(item, name: "dowel_off_center", default: 0.5)
+        dowel_skip_first = attribute(item, name: "dowel_skip_first", default: false)
+        dowel_skip_last = attribute(item, name: "dowel_skip_last", default: false)
+        dowel_radius = attribute(item, name: "dowel_radius", default: 0.25)
+        dowel_depth = attribute(item, name: "dowel_depth", default: 0.625)
+        bounds = item.bounds
+
+
+        puts "Dowel Gap: #{dowel_gap_in_inches}"
+        puts "Dowl Off Center: #{dowel_off_center}"
+        if bounds.width > bounds.height
+          center = bounds.center
+
+          puts "Wider than Tall"
+
+
+          min = bounds.min
+          min_x = min.x
+          min_z = min.z
+          last_dowel_count = ((bounds.width/dowel_gap_in_inches) - 1).round
+          (0...last_dowel_count).each do |x|
+            next if x == 0 && dowel_skip_first
+            next if x == last_dowel_count && dowel_skip_last
+            if bounds.min.y == bounds.max.y
+              center_z = dowel_center_override != 0 ? dowel_center_override + min.z : center.z
+              circle = Sk.draw_circle(center_point: [min.x + ((x + 1) * dowel_gap_in_inches),
+                                                     center.y,
+                                                     center_z + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center)],
+                                      radius: dowel_radius, normal: item.normal)
+
+
+            else
+              center_y = dowel_center_override != 0 ? dowel_center_override + min.y : center.y
+              circle = Sk.draw_circle(center_point: [min.x + ((x + 1) * dowel_gap_in_inches),
+                                                     center_y + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center),
+                                                     center.z],
+                                      radius: dowel_radius, normal: item.normal)
+
+            end
+
+
+          end
+        else
+          puts "Taller than Wide"
+          # center = bounds.center
+          #
+          #
+          #
+          # min = bounds.min
+          # min_x = min.x
+          # min_z = min.z
+          # last_dowel_count = ((bounds.width/dowel_gap_in_inches) - 1).round
+          # (0...last_dowel_count).each do |x|
+          #   next if x == 0 && dowel_skip_first
+          #   next if x == last_dowel_count && dowel_skip_last
+          #   if bounds.min.y == bounds.max.y
+          #     center_z = dowel_center_override != 0 ? dowel_center_override + min.z : center.z
+          #     circle = Sk.draw_circle(center_point: [
+          #                                            center.x,
+          #                                            min.y + ((x + 1) * dowel_gap_in_inches),
+          #                                            center_z + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center)],
+          #                             radius: dowel_radius, normal: item.normal)
+          #
+          #
+          #   else
+          #     center_y = dowel_center_override != 0 ? dowel_center_override + min.y : center.y
+          #     circle = Sk.draw_circle(center_point: [min.x + ((x + 1) * dowel_gap_in_inches),
+          #                                            center_y + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center),
+          #                                            center.z],
+          #                             radius: dowel_radius, normal: item.normal)
+          #
+          #   end
+          #
+          #
+          # end
+        end
+      else
+        puts "Doh", item
+        Sk.set_status_message("Sorry it only works on a single face")
+      end
+
+
+      Sk.commit_operation
+    else
+      puts "Sorry no selection?"
+    end
+
+  end
+
+  def self.super_flatten
+
+    unless Sk.selection.empty?
+      Sk.start_operation("Super Flattening Item", disable_ui: true)
       x = @@flat_x
       Sk.selection.each do |sel|
 
@@ -46,8 +206,8 @@ class WikiHouse::Flattener
 
         end
         begin
-        gcopy = Sk.nest_component(destination_group: @@flat_group, source_component: sel,
-                                  make_unique: true)
+          gcopy = Sk.nest_component(destination_group: @@flat_group, source_component: sel,
+                                    make_unique: true)
         rescue TypeError
           @@flat_group = Sk.find_or_create_global_group(name: flat_group_name)
           gcopy = Sk.nest_component(destination_group: @@flat_group, source_component: sel,
@@ -55,7 +215,7 @@ class WikiHouse::Flattener
         end
 
         gcopy.name = sel.name + " Copy"
-      #  gcopy.definition.entities.each { |e| e.layer = outside_edge_layer_name }
+        #  gcopy.definition.entities.each { |e| e.layer = outside_edge_layer_name }
         part = FlatPart.new(component: gcopy)
 
         real_x = x
@@ -66,33 +226,47 @@ class WikiHouse::Flattener
 
           real_x = (x + part.bounds.width) * -1
         end
-        if Sk.flipped_y?(sel)
-          puts "#{sel.name} is flipped on the y"
-          move = part.flip_y
-        #  y_mod = part.bounds.height
-        end
-        if Sk.flipped_z?(sel)
-          puts "#{sel.name} is flipped on the z"
-          move = part.flip_z
-        end
+
         if move
-          move.move_to(point: [0,0,0]).move_by(x: real_x, y: 400, z: 0).go!
+          move.move_to(point: [0, 0, 0]).move_by(x: real_x, y: 500, z: 0).go!
         else
-          part.move_to!(point: [x, 400, 0])
+          part.move_to!(point: [x, 500, 0])
         end
-        part.entities.each do |entity|
-          if Sk.is_a_face?(entity)
-            puts "Found a face"
-           #   Sk.get_attribute(entity, WikiHouse::PartHelper.tag_dictionary, "primary_face")
-         #   primary_face = entity
-           # break
+        all_entities = []
+        part.entities.each do |e|
+          if Sk.is_a_face?(e)
+            all_entities << e.all_connected
           end
         end
+        all_entities.flatten!
+
+        g = Sk.add_group
+        g.name = "Flat " + sel.name
+        all_entities.each do |e|
+          next if e.deleted?
+          if Sk.is_a_face?(e)
+            e.erase!
+          elsif Sk.is_an_edge?(e)
+            start_pt = e.start.position
+            end_pt = e.end.position
+
+            Sk.draw_line([start_pt.x, start_pt.y, 0], [end_pt.x, end_pt.y, 0], group: g)
+
+            e.erase!
+          end
+        end
+
+        Sk.nest_group(destination_group: @@flat_group, source_group: g)
+
         x += part.bounds.width + 10
+        gcopy.erase!
       end
 
+      @@flat_x = x
+      Sk.commit_operation
     end
-    @@flat_x = x
+
+
   end
 
   def self.pluck_part
@@ -152,7 +326,7 @@ class WikiHouse::Flattener
 
   def self.remove_selection_flattenable
     "Removing Flattenable"
-    unless Sk.selection.empty?
+    unless Sk.selection.empty? "Removing Primary Face"
       Sk.selection.each do |e|
         remove_flattenable!(e)
       end
@@ -160,7 +334,7 @@ class WikiHouse::Flattener
   end
 
   def self.remove_selection_primary_face
-    "Removing Primary Face"
+
     unless Sk.selection.empty?
       Sk.selection.each do |e|
         remove_primary_face!(e)
@@ -499,6 +673,7 @@ class WikiHouse::Flattener
 
     end
   end
+
 end
 
 

@@ -39,12 +39,15 @@ module Sk
   def erase_all!
     self.model.entities.each { |e| e.erase! }
   end
+
   def clear_selection
     Sketchup.active_model.selection.clear
   end
+
   def selection
     Sketchup.active_model.selection
   end
+
   def round(val)
     val.to_f.round(4)
   end
@@ -261,7 +264,7 @@ module Sk
     raise ArgumentError if destination_group.nil? || source_component.nil? || !is_a_component_instance?(source_component)
     #http://sketchucation.com/forums/viewtopic.php?f=180&t=37940#p439270
     begin
-    gcopy = destination_group.entities.add_instance(source_component.definition, source_component.transformation)
+      gcopy = destination_group.entities.add_instance(source_component.definition, source_component.transformation)
     rescue ArgumentError => e
       puts "Problemw with #{source_component.definition.name}"
       raise e
@@ -274,15 +277,19 @@ module Sk
     end
     gcopy
   end
+
   def is_an_edge?(item)
     item.is_a?(Sketchup::Edge)
   end
+
   def is_a_face?(item)
     item.is_a?(Sketchup::Face)
   end
+
   def is_a_component_definition?(item)
     item.is_a?(Sketchup::ComponentDefinition)
   end
+
   def is_a_component_instance?(item)
     item.is_a?(Sketchup::ComponentInstance)
   end
@@ -372,6 +379,7 @@ module Sk
     g
 
   end
+
   def find_or_create_global_group(name: nil)
     g = find_group_by_name(name)
     if !g
@@ -381,6 +389,7 @@ module Sk
     g
 
   end
+
   def transformation_chain(entity)
     chain = []
     chain = find_entity_chain(entity, model.entities, chain)
@@ -465,6 +474,7 @@ module Sk
     {max: max_bounds(group),
      min: min_bounds(group)}
   end
+
   #Thanks to http://stackoverflow.com/questions/17936161/sketchup-entities-mirrored-with-flip-along-axis-not-reflected-in-transform-m
   def transformation_axes_dot_products(tr)
     [
@@ -473,25 +483,36 @@ module Sk
         tr.zaxis.dot(Z_AXIS)
     ]
   end
+
   def dot_matrix_flipped?(dot_x, dot_y, dot_z)
     dot_x * dot_y * dot_z < 0
   end
+
   def flipped_x?(entity)
     transformation = entity.transformation
-    dot_x, dot_y, dot_z =  transformation_axes_dot_products(transformation)
+    dot_x, dot_y, dot_z = transformation_axes_dot_products(transformation)
+    puts "Dots- #{dot_x} #{dot_y} #{dot_z}"
     dot_x < 0 && dot_matrix_flipped?(dot_x, dot_y, dot_z)
   end
+
   def flipped_y?(entity)
     transformation = entity.transformation
-    dot_x, dot_y, dot_z =  transformation_axes_dot_products(transformation)
+    dot_x, dot_y, dot_z = transformation_axes_dot_products(transformation)
     dot_y < 0 && dot_matrix_flipped?(dot_x, dot_y, dot_z)
   end
+
   def flipped_z?(entity)
     transformation = entity.transformation
-    dot_x, dot_y, dot_z =  transformation_axes_dot_products(transformation)
+    dot_x, dot_y, dot_z = transformation_axes_dot_products(transformation)
     dot_z < 0 && dot_matrix_flipped?(dot_x, dot_y, dot_z)
   end
+
   def flip_x(entity)
 
   end
+
+  def set_status_message(msg)
+    Sketchup::set_status_text(msg)
+  end
+
 end

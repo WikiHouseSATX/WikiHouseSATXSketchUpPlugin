@@ -47,8 +47,8 @@ Version:
 ___________________________________________________________________________
 =end
 ###
-require 'sketchup.rb'
-require 'WorkPlane.rb'
+#require 'sketchup.rb'
+#require 'WorkPlane.rb'
 ###
 class FlattenToPlane
   def activate
