@@ -63,9 +63,10 @@ class WikiHouse::Config
     #   p.move_by(z:2).go!
     #    WikiHouse::UPeg.new(label: "UPeg")
     # #   WikiHouse::WallPanel.new(label: "Wall Panel")
-    WikiHouse::WallColumnBoard.new(label: "Column Board",
-                                      parent_part: parent_part, origin:[0,0,0])
-    #  WikiHouse::Column.new(label: " Column",
+    WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [0,0,0])
+    # WikiHouse::WallColumnBoard.new(label: "Column Board",
+    #                                   parent_part: parent_part, origin:[0,0,0])
+    # #  WikiHouse::Column.new(label: " Column",
     #                                       wall_panels_on: [WikiHouse::Orientation::North, WikiHouse::Orientation::South])
 
     # WikiHouse::WallColumnRib.new(label: " Column",parent_part: parent_part,
