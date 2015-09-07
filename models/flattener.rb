@@ -103,11 +103,12 @@ class WikiHouse::Flattener
       if Sk.is_a_face?(item)
         tag_dictionary = "WikiHouse"
         dowel_center_override = attribute(item, name: "dowel_center_override", default: 0)
+        dowel_start_override = attribute(item, name: "dowel_start_override", default: 0)
         dowel_gap_in_inches = attribute(item, name: "dowel_gap_in_inches", default: 6.0)
         dowel_off_center = attribute(item, name: "dowel_off_center", default: 0.5)
         dowel_skip_first = attribute(item, name: "dowel_skip_first", default: false)
         dowel_skip_last = attribute(item, name: "dowel_skip_last", default: false)
-        dowel_radius = attribute(item, name: "dowel_radius", default: 0.25)
+        dowel_radius = attribute(item, name: "dowel_radius", default: 0.125)
         dowel_depth = attribute(item, name: "dowel_depth", default: 0.625)
         bounds = item.bounds
 
@@ -121,27 +122,27 @@ class WikiHouse::Flattener
 
 
           min = bounds.min
-          min_x = min.x
+          min_x = min.x + dowel_start_override
           min_z = min.z
-          last_dowel_count = ((bounds.width/dowel_gap_in_inches) - 1).round
+          last_dowel_count = (((bounds.width - (2 * dowel_start_override))/dowel_gap_in_inches) - 1).round
           (0...last_dowel_count).each do |x|
             next if x == 0 && dowel_skip_first
             next if x == last_dowel_count && dowel_skip_last
             if bounds.min.y == bounds.max.y
               center_z = dowel_center_override != 0 ? dowel_center_override + min.z : center.z
-              circle = Sk.draw_circle(center_point: [min.x + ((x + 1) * dowel_gap_in_inches),
+              circle = Sk.draw_circle(center_point: [min_x + ((x + 1) * dowel_gap_in_inches) ,
                                                      center.y,
                                                      center_z + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center)],
                                       radius: dowel_radius, normal: item.normal)
-
+              puts "top"
 
             else
               center_y = dowel_center_override != 0 ? dowel_center_override + min.y : center.y
-              circle = Sk.draw_circle(center_point: [min.x + ((x + 1) * dowel_gap_in_inches),
+              circle = Sk.draw_circle(center_point: [min_x + ((x + 1) * dowel_gap_in_inches),
                                                      center_y + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center),
                                                      center.z],
                                       radius: dowel_radius, normal: item.normal)
-
+             # puts "bottom #{min_x + ((x + 1) * dowel_gap_in_inches)} #{min.x + ((x + 1) * dowel_gap_in_inches) - dowel_start_override}"
             end
 
 
