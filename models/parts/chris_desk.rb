@@ -114,12 +114,14 @@ class WikiHouse::ChrisDesk
     end
 
     def length
-      parent_part.width - 2 * parent_part.side_leg_offset
+     parent_part.width - 2 * parent_part.side_leg_offset
+
     end
 
 
     def width
-      1.75 + thickness
+      value =  1.75 + thickness
+      sheet.length == 24 ? value/4.0 : value
     end
   end
   class BackCrossBar
@@ -143,12 +145,15 @@ class WikiHouse::ChrisDesk
 
     end
 
+
     def length
-      parent_part.width - 2 * parent_part.side_leg_offset
+        parent_part.width - 2 * parent_part.side_leg_offset
+
     end
 
     def width
-      5.0
+      value = 5.0
+      sheet.length == 24 ? value/4.0 : value
     end
   end
   class Leg
@@ -169,11 +174,13 @@ class WikiHouse::ChrisDesk
     end
 
     def length
-      30 + thickness
+      value = 30 + thickness
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def width
-      26
+      value = 26
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def bounding_c1
@@ -181,27 +188,33 @@ class WikiHouse::ChrisDesk
     end
 
     def back_foot_width
-      3.0
+      value = 3.0
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def front_foot_width
-      2.5
+      value =  2.5
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def top_width
-      15.0
+      value =  15.0
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def inner_gap_width
-      6.0
+      value =  6.0
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def inner_leg_length
-      24
+      value =   24
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def front_leg_from_back_origin
-      14
+      value =   14
+      sheet.length == 24 ? value/4.0 : value
     end
 
     def top_tab_width_in_t
@@ -210,6 +223,22 @@ class WikiHouse::ChrisDesk
 
     def top_tab_offset
       top_width/3.0
+    end
+    def front_cross_bar_front_offset
+      value = 2
+      sheet.length == 24 ? value/4.0 : value
+    end
+    def front_cross_bar_top_offset
+      value = 0.125
+      sheet.length == 24 ? 0.0455 : value
+    end
+    def back_cross_bar_back_offset
+      value = 1.25
+      sheet.length == 24 ? value/4.0 : value
+    end
+    def back_cross_bar_top_offset
+      value = 0.625
+      sheet.length == 24 ? 0.31 : value
     end
 
     def make_points
@@ -249,7 +278,7 @@ class WikiHouse::ChrisDesk
       pockets = []
       #front cross bar pocket
 
-      c5 = [bounding_c1.x + back_foot_width + top_width - 2 - t, bounding_c1.y - length + t + t + 0.125, bounding_c1.z]
+      c5 = [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset - t, bounding_c1.y - length + t + t + front_cross_bar_top_offset, bounding_c1.z]
 
       c6 = [c5.x + t, c5.y, c5.z]
       c7 = [c6.x, c5.y - t, c5.z]
@@ -263,7 +292,7 @@ class WikiHouse::ChrisDesk
       pockets << pocket_lines
       #back cross bar pocket
       #
-      c5 = [bounding_c1.x + back_foot_width + 1.25, bounding_c1.y - length + t + 0.625 + 3 * t, bounding_c1.z]
+      c5 = [bounding_c1.x + back_foot_width + back_cross_bar_back_offset, bounding_c1.y - length + t + back_cross_bar_top_offset + 3 * t, bounding_c1.z]
       c6 = [c5.x + t, c5.y, c5.z]
       c7 = [c6.x, c5.y - 3 * t, c5.z]
       c8 = [c5.x, c7.y, c5.z]
@@ -403,19 +432,23 @@ class WikiHouse::ChrisDesk
   end
 
   def side_leg_offset # Gap between edge of top and the outer leg
-    1.25
+    value = 1.25
+    sheet.length == 24 ? value/4.0 : value
   end
 
   def front_leg_offset
-    6.0
+    value = 6.0
+    sheet.length == 24 ? value/4.0 : value
   end
 
   def front_cross_bar_offset #Gap between edge of top and the front cross bar
-    8.0
+    value =  8.0
+    sheet.length == 24 ? value/4.0 : value
   end
 
   def back_cross_bar_offset # Gap between edge of top and the back cross bar
-    6.25
+    value =  6.25
+    sheet.length == 24 ? value/4.0 : value
   end
 
   def draw!
