@@ -1,41 +1,78 @@
 class WikiHouse::ChrisDesk
-  class LegPocketConnector< WikiHouse::PocketConnector
+  class TopPocketConnector < WikiHouse::PocketConnector
 
+    #this is serious cheating
+    def initialize(desktop: nil, desk: nil, thickness: nil)
 
-    def initialize(thickness: nil, width_in_t: 8)
-      super(length_in_t: 1, width_in_t: width_in_t, thickness: thickness, rows: 1, count: 1)
+        super(length_in_t: 1, count: 1, width_in_t: 1, thickness: thickness)
+
+      @desktop = desktop
+      @desk = desk
 
     end
 
     def draw!(bounding_origin: nil, part_length: nil, part_width: nil)
+      pockets = []
+      #Front Cross Bar Pockets
 
-      half_width_part = part_width/2.0
-      half_width_connector = width/2.0
+      @width_in_t =  1
+      @length_in_t = 3
 
-      offset = 2 * thickness
+      self.class.drawing_points(bounding_origin: [@desktop.origin.x + @desk.front_cross_bar_offset ,
+                                         @desktop.origin.y - @desk.side_leg_offset ,
+                                     @desktop.origin.z] ,
+                                     count: @desk.front_cross_bar.number_of_tabs,
+                                     rows: 1,
+                                     part_length: @desk.front_cross_bar.length,
+                                     part_width: @desk.front_cross_bar.width,
+                                     item_length: length,
+                                     item_width:  0) do |row, col, location|
+        pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset,
+                                           location.y,
+                                           location.z])
+        end
+      #Back Cross Bar Pockets
 
-      return draw_pocket!(location: [bounding_origin.x + half_width_part - half_width_connector,
-                                     bounding_origin.y - part_length + offset,
-                                     bounding_origin.z])
+      self.class.drawing_points(bounding_origin: [@desktop.origin.x + @desktop.width - @desk.back_cross_bar_offset - thickness,
+                                                  @desktop.origin.y - @desk.side_leg_offset ,
+                                                  @desktop.origin.z] ,
+                                count: @desk.front_cross_bar.number_of_tabs,
+                                rows: 1,
+                                part_length: @desk.front_cross_bar.length,
+                                part_width: @desk.front_cross_bar.width,
+                                item_length: length,
+                                item_width:  0) do |row, col, location|
+        pockets << draw_pocket!(location: [@desktop.origin.x + @desktop.width - @desk.back_cross_bar_offset - thickness,
+                                           location.y,
+                                           location.z])
+      end
 
+
+      @width_in_t =  @desk.right_outer_leg.top_tab_width_in_t
+      @length_in_t = 2
+      # Left Leg Pockets
+      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_leg_offset + @desk.right_outer_leg.top_tab_offset ,
+                                         @desktop.origin.y - @desk.side_leg_offset,
+                                         @desktop.origin.z])
+
+
+      # Right Leg Pockets
+
+      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_leg_offset + @desk.right_outer_leg.top_tab_offset ,
+                              @desktop.origin.y - @desktop.length  + 2 * thickness + @desk.side_leg_offset,
+                              @desktop.origin.z])
+
+      # half_width_part = part_width/2.0
+      # half_width_connector = width/2.0
+      #
+      # offset = 2 * thickness
+      #
+      # return draw_pocket!(location: [bounding_origin.x + half_width_part - half_width_connector,
+      #                                bounding_origin.y - part_length + offset,
+      #                                bounding_origin.z])
+      pockets
     end
 
-    def rows
-      1
-    end
-
-    def count
-      1
-    end
-
-
-    def leg_pocket?
-      true
-    end
-
-    def name
-      :leg_pocket
-    end
 
   end
   class Desktop
@@ -52,7 +89,7 @@ class WikiHouse::ChrisDesk
                  top_connector: WikiHouse::NoneConnector.new(),
                  bottom_connector: WikiHouse::NoneConnector.new(),
                  left_connector: WikiHouse::NoneConnector.new(),
-                 face_connector: WikiHouse::NoneConnector.new())
+                 face_connector: TopPocketConnector.new(desktop: self, desk: parent_part))
     end
 
   end
@@ -62,14 +99,12 @@ class WikiHouse::ChrisDesk
     include WikiHouse::BoardPartHelper
     include WikiHouse::AttributeHelper
 
-
+    attr_reader :number_of_tabs
     def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
       part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
-
-
-
-      init_board(left_connector: WikiHouse::TabConnector.new(count: 3, thickness: thickness, width_in_t: 3),
+      @number_of_tabs = 3
+      init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3),
                  top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 2, thickness: thickness, width_in_t: 1),
                  bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 2, thickness: thickness, width_in_t: 1),
                  right_connector: WikiHouse::NoneConnector.new,
@@ -77,6 +112,7 @@ class WikiHouse::ChrisDesk
 
 
     end
+
     def length
       parent_part.width - 2 * parent_part.side_leg_offset
     end
@@ -91,23 +127,26 @@ class WikiHouse::ChrisDesk
     include WikiHouse::PartHelper
     include WikiHouse::BoardPartHelper
     include WikiHouse::AttributeHelper
-
+    attr_reader :number_of_tabs
 
     def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
       part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
 
       @length_method = :width
-      init_board(left_connector: WikiHouse::TabConnector.new(count: 3, thickness: thickness, width_in_t: 3),
+      @number_of_tabs = 3
+      init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3),
                  top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 2, thickness: thickness, width_in_t: 3),
                  bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 2, thickness: thickness, width_in_t: 3),
                  right_connector: WikiHouse::NoneConnector.new,
                  face_connector: WikiHouse::NoneConnector.new())
 
     end
+
     def length
       parent_part.width - 2 * parent_part.side_leg_offset
     end
+
     def width
       5.0
     end
@@ -165,6 +204,14 @@ class WikiHouse::ChrisDesk
       14
     end
 
+    def top_tab_width_in_t
+      top_width / 3.0 / thickness
+    end
+
+    def top_tab_offset
+      top_width/3.0
+    end
+
     def make_points
       t = thickness
       leg_points = []
@@ -172,10 +219,10 @@ class WikiHouse::ChrisDesk
       leg_points << [bounding_c1.x + back_foot_width, bounding_c1.y - length + thickness, bounding_c1.z]
 
       #Top Tab
-      leg_points << [bounding_c1.x + back_foot_width + 5, bounding_c1.y - length + thickness, bounding_c1.z]
-      leg_points << [bounding_c1.x + back_foot_width + 5, bounding_c1.y - length, bounding_c1.z]
-      leg_points << [bounding_c1.x + back_foot_width + 10, bounding_c1.y - length, bounding_c1.z]
-      leg_points << [bounding_c1.x + back_foot_width + 10, bounding_c1.y - length + thickness, bounding_c1.z]
+      leg_points << [bounding_c1.x + back_foot_width + top_tab_offset, bounding_c1.y - length + thickness, bounding_c1.z]
+      leg_points << [bounding_c1.x + back_foot_width + top_tab_offset, bounding_c1.y - length, bounding_c1.z]
+      leg_points << [bounding_c1.x + back_foot_width + top_tab_offset + top_tab_width_in_t * t, bounding_c1.y - length, bounding_c1.z]
+      leg_points << [bounding_c1.x + back_foot_width + top_tab_offset+ top_tab_width_in_t * t, bounding_c1.y - length + thickness, bounding_c1.z]
       # leg_points << [bounding_c1.x + back_foot_width + 5, bounding_c1.y - length + thickness, bounding_c1.z]
       # leg_points << [bounding_c1.x + back_foot_width + 5, bounding_c1.y - length  , bounding_c1.z]
       # leg_points << [bounding_c1.x + back_foot_width + 10, bounding_c1.y - length  , bounding_c1.z]
@@ -192,6 +239,7 @@ class WikiHouse::ChrisDesk
       leg_points << [bounding_c1.x + back_foot_width, bounding_c1.y, bounding_c1.z]
       leg_points
     end
+
     def make_pockets!
 
 
@@ -201,7 +249,7 @@ class WikiHouse::ChrisDesk
       pockets = []
       #front cross bar pocket
 
-      c5 =  [bounding_c1.x + back_foot_width + top_width - 2 - t, bounding_c1.y - length + t + t + 0.125, bounding_c1.z]
+      c5 = [bounding_c1.x + back_foot_width + top_width - 2 - t, bounding_c1.y - length + t + t + 0.125, bounding_c1.z]
 
       c6 = [c5.x + t, c5.y, c5.z]
       c7 = [c6.x, c5.y - t, c5.z]
@@ -215,7 +263,7 @@ class WikiHouse::ChrisDesk
       pockets << pocket_lines
       #back cross bar pocket
       #
-      c5 = [bounding_c1.x + back_foot_width + 1.25 , bounding_c1.y - length + t + 0.625 + 3 * t, bounding_c1.z]
+      c5 = [bounding_c1.x + back_foot_width + 1.25, bounding_c1.y - length + t + 0.625 + 3 * t, bounding_c1.z]
       c6 = [c5.x + t, c5.y, c5.z]
       c7 = [c6.x, c5.y - 3 * t, c5.z]
       c8 = [c5.x, c7.y, c5.z]
@@ -230,6 +278,7 @@ class WikiHouse::ChrisDesk
       pockets
 
     end
+
     def make_dowels!
 
       return [] if WikiHouse.machine.bit_radius == 0
@@ -257,7 +306,7 @@ class WikiHouse::ChrisDesk
       dowel_points << [bounding_c1.x + 15.8, bounding_c1.y - 28, bounding_c1.z]
 
       # Mid
-      dowel_points << [bounding_c1.x + 10, bounding_c1.y - 25.5 , bounding_c1.z]
+      dowel_points << [bounding_c1.x + 10, bounding_c1.y - 25.5, bounding_c1.z]
       dowel_points << [bounding_c1.x + 10, bounding_c1.y - 28, bounding_c1.z]
 
       dowels = []
@@ -278,9 +327,9 @@ class WikiHouse::ChrisDesk
       else
         dowels = []
       end
-      
+
       pockets = make_pockets!
-      
+
       face = Sk.add_face(lines)
       set_material(face)
 
@@ -306,6 +355,7 @@ class WikiHouse::ChrisDesk
   end
   include WikiHouse::PartHelper
 
+  attr_reader :top, :front_cross_bar, :back_cross_bar, :left_outer_leg, :left_inner_leg, :right_inner_leg, :right_outer_leg
 
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil)
     part_init(sheet: sheet, origin: origin, parent_part: parent_part)
@@ -357,7 +407,7 @@ class WikiHouse::ChrisDesk
   end
 
   def front_leg_offset
-    6
+    6.0
   end
 
   def front_cross_bar_offset #Gap between edge of top and the front cross bar
@@ -381,7 +431,7 @@ class WikiHouse::ChrisDesk
     @front_cross_bar.rotate(vector: [0, 0, 1], rotation: 180.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: -1 * length ,
+        move_by(x: -1 * length,
                 y: -1 * width + side_leg_offset,
                 z: -1 * front_cross_bar_offset - thickness).go!
     @back_cross_bar.draw!
@@ -398,17 +448,17 @@ class WikiHouse::ChrisDesk
 
     @left_outer_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
-         move_to(point: origin).
-         move_by(x: -1 * ( depth + @left_outer_leg.back_foot_width  - rear_leg_offset) ,
-                 y: length * -1 ,
-                 z: -1 * width + side_leg_offset).go!
+        move_to(point: origin).
+        move_by(x: -1 * (depth + @left_outer_leg.back_foot_width - rear_leg_offset),
+                y: length * -1,
+                z: -1 * width + side_leg_offset).go!
     @left_inner_leg.draw!
 
     @left_inner_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         move_to(point: origin).
         move_by(x: -1 * (depth + @left_inner_leg.back_foot_width - rear_leg_offset),
-                y: length * -1 ,
+                y: length * -1,
                 z: -1 * width + side_leg_offset + thickness).go!
 
     @right_outer_leg.draw!
@@ -416,16 +466,16 @@ class WikiHouse::ChrisDesk
     @right_outer_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         move_to(point: origin).
-        move_by(x: -1 * ( depth + @right_outer_leg.back_foot_width  - rear_leg_offset) ,
+        move_by(x: -1 * (depth + @right_outer_leg.back_foot_width - rear_leg_offset),
                 y: length * -1,
-                z: -1 * ( thickness + side_leg_offset)).go!
+                z: -1 * (thickness + side_leg_offset)).go!
     @right_inner_leg.draw!
 
     @right_inner_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         move_to(point: origin).
         move_by(x: -1 * (depth + @right_inner_leg.back_foot_width - rear_leg_offset),
-                y: length * -1 ,
+                y: length * -1,
                 z: -1 * (side_leg_offset + 2 * thickness)).go!
 
     groups = [@top.group, @front_cross_bar.group, @back_cross_bar.group,
