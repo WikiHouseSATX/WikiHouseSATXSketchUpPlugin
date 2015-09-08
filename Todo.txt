@@ -4,6 +4,15 @@ LIne up dowel hole on the two parts
 
 Take part - find all edges - take them down to z 0
 
+Chris Desk
+==============
+Need to
+
+Convert the slots into 3/4 & 1/2 t pockets
+Be able to scale it down to laser size
+Add slots to the top
+
+
 
 Need to be able ot make dowel hole that diameter 1/4" and 0.625" deep
 4 inches apart on the center line -staggered

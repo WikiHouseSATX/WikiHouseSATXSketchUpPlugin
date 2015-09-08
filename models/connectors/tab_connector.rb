@@ -8,6 +8,10 @@ class WikiHouse::TabConnector < WikiHouse::Connector
     :tab
   end
 
+  def skip_fillets!(list = [])
+    @fillets_to_skip = list
+  end
+
   def build_tab_points(start_pt: nil,
                        end_pt: nil,
                        orientation: nil,
@@ -19,10 +23,11 @@ class WikiHouse::TabConnector < WikiHouse::Connector
 
 
   )
+    @fillets_to_skip ||= []
     c5 = start_pt
     c6 = end_pt
     tab_points = [c5]
-
+    fillet_count = 0
     tab_count.times do |i|
       starting_length = ((i + 1) * section_gap) + (i * tab_width) - starting_thickness
 
@@ -83,19 +88,25 @@ class WikiHouse::TabConnector < WikiHouse::Connector
       end
 
       tab_points.concat(current_points)
-      WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 4, tab_points.length - 5, reverse_it: true)
 
+      unless @fillets_to_skip.include?(fillet_count)
+        WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 4, tab_points.length - 5, reverse_it: true)
+      end
+      fillet_count +=1
       if i > 0
-
-        WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 8, tab_points.length - 7, tab_points.length - 6)
-
+        unless @fillets_to_skip.include?(fillet_count)
+          WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 8, tab_points.length - 7, tab_points.length - 6)
+        end
+        fillet_count +=1
       end
 
     end
 
     tab_points << c6
-
-    WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 2, tab_points.length - 1)
+    unless @fillets_to_skip.include?(fillet_count)
+      WikiHouse::DogBoneFillet.by_points(tab_points, tab_points.length - 3, tab_points.length - 2, tab_points.length - 1)
+    end
+    fillet_count += 1
     tab_points
   end
 

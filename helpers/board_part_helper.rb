@@ -166,6 +166,7 @@ module WikiHouse::BoardPartHelper
                                        start_pt: top_first,
                                        end_pt: top_last)
 
+
   end
 
   def build_right_side
@@ -174,8 +175,35 @@ module WikiHouse::BoardPartHelper
                                          end_pt: @bottom_side_points.first)
 
     if @right_connector.rip? || @right_connector.shelfie_hook? || @right_connector.tab?
-      @top_side_points[@top_side_points.length - 1] = @right_side_points.first
-      @bottom_side_points[0] = @right_side_points.last
+      #need to figure out if it has been filleted
+      last_points = [@top_side_points[@top_side_points.length - 1],
+                     @top_side_points[@top_side_points.length - 2],
+                     @top_side_points[@top_side_points.length - 3]]
+
+      if last_points[1].x < @right_side_points.first.x
+        @top_side_points[@top_side_points.length - 1] = @right_side_points.first
+      else
+        #puts "Going into a fillet"
+
+        @top_side_points.pop(3)
+
+        @right_side_points[0] = [@right_side_points.first.x, last_points[2].y, @right_side_points.first.z]
+        @top_side_points << @right_side_points.first
+      end
+      next_points = [@bottom_side_points[0],
+                     @bottom_side_points[1],
+                     @bottom_side_points[2]]
+
+      if @right_side_points.last.x > next_points[1].x
+        @bottom_side_points[0] = @right_side_points.last
+      else
+       # puts "Going into a fillet"
+        @bottom_side_points.shift(3)
+        @right_side_points[@right_side_points.length - 1] = [@right_side_points.last.x, next_points[2].y, @right_side_points.last.z]
+        @bottom_side_points.unshift(@right_side_points.last)
+      end
+
+
     end
   end
 
@@ -195,7 +223,37 @@ module WikiHouse::BoardPartHelper
 
     if @left_connector.rip? || @left_connector.shelfie_hook? || @left_connector.tab?
       @bottom_side_points[@bottom_side_points.length - 1] = @left_side_points.first
-      @top_side_points[0] = @left_side_points.last
+      last_points = [@bottom_side_points[@bottom_side_points.length - 1],
+                     @bottom_side_points[@bottom_side_points.length - 2],
+                     @bottom_side_points[@bottom_side_points.length - 3]]
+
+      if last_points[1].x > @left_side_points.first.x
+        @bottom_side_points[@bottom_side_points.length - 1] = @left_side_points.first
+      else
+        #puts "Going into a fillet"
+
+        @bottom_side_points.pop(3)
+
+        @left_side_points[0] = [@left_side_points.first.x, last_points[2].y, @left_side_points.first.z]
+        @bottom_side_points << @left_side_points.first
+      end
+      
+      
+      
+      next_points = [@top_side_points[0],
+                     @top_side_points[1],
+                     @top_side_points[2]]
+
+      if @left_side_points.last.x < next_points[1].x
+        @top_side_points[0] = @left_side_points.last
+      else
+        #puts "Going into a fillet"
+        @top_side_points.shift(3)
+        @left_side_points[@left_side_points.length - 1] = [@left_side_points.last.x, next_points[2].y, @left_side_points.last.z]
+        @top_side_points.unshift(@left_side_points.last)
+      end
+
+
     end
   end
 
@@ -305,8 +363,8 @@ module WikiHouse::BoardPartHelper
       if from == :top
 
         join_points = @bottom_side_points.clone[1...-1].concat(other_part.top_side_points[1...-1])
-        unique_points = join_points.collect {|pt| [Sk.round(pt.x), Sk.round(pt.y), Sk.round(pt.z)]}.uniq #had to round to handle too many decimals in fuse
-            @bottom_side_points = other_part.bottom_side_points
+        unique_points = join_points.collect { |pt| [Sk.round(pt.x), Sk.round(pt.y), Sk.round(pt.z)] }.uniq #had to round to handle too many decimals in fuse
+        @bottom_side_points = other_part.bottom_side_points
 
         @right_side_points.pop
         @right_side_points.concat(other_part.right_side_points)
