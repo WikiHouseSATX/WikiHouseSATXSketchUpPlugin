@@ -8,7 +8,7 @@ class WikiHouse::Config
   def self.sheet
     #  WikiHouse::ImperialPlywood2332Sheet
   #WikiHouse::ImperialPlywood34Sheet
-    WikiHouse::ImperialFiberboardSheet
+     WikiHouse::ImperialFiberboardSheet
 
   end
 

@@ -1,5 +1,7 @@
 class WikiHouse::NestablePart
   include WikiHouse::PartHelper
+  include WikiHouse::AttributeHelper
+
   attr_accessor :fit
 
   def initialize(sheet: nil, group: nil, origin: nil, label: nil)

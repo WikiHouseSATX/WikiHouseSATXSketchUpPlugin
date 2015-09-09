@@ -398,7 +398,7 @@ class WikiHouse::Flattener
 
   class FlatPart
     include WikiHouse::PartHelper
-
+    include WikiHouse::AttributeHelper
     def initialize(sheet: nil, component: nil, group: nil, origin: nil, label: nil)
       part_init(sheet: sheet, component: component, group: group, origin: origin, label: label)
     end

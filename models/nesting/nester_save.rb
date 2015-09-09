@@ -3,7 +3,7 @@
 # Optimize the SVG output - Consider switching to an optimized path
 
 class WikiHouse::NesterSave
-  def initialize(draw_sheet_outline: true)
+  def initialize(draw_sheet_outline: false)
     @draw_sheet_outline = draw_sheet_outline
   end
   def self.default_stroke_color
