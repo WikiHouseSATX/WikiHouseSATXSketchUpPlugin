@@ -12,7 +12,7 @@ class WikiHouse::Cnc < WikiHouse::Machine
     end
   end
   def self.bit
-    Bit.new(name: "1/4 Up-cut (52-910)", diameter: 0.26)
+    Bit.new(name: "1/4 Up-cut (52-910)", diameter: 0.25)
   end
   def self.nesting_part_gap
     bit_diameter * 2.0

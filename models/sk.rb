@@ -99,7 +99,10 @@ module Sk
   def slope(x1, y1, x2, y2)
     change_in_y = (y2 - y1)
     change_in_x = (x2 - x1)
-    change_in_x == 0 ? nil : change_in_y/change_in_x
+    return nil if change_in_x.zero?
+    return 0 if change_in_y.zero?
+    change_in_y/change_in_x
+
   end
 
   def point_slope(point: nil, slope: nil)

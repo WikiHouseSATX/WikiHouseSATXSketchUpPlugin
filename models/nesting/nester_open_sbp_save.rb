@@ -15,7 +15,7 @@
 #c7 Restart Spindle?
 #c9 Change tool
 class WikiHouse::NesterOpenSbpSave
-  DECIMAL_PLACES = 6
+
   class ProfilePoint
     attr_reader :point, :ref_point, :edge_type, :bit
 
@@ -45,48 +45,48 @@ class WikiHouse::NesterOpenSbpSave
 
     #raw points
     def x
-      @point.x.round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      @point.x.round(6)
     end
 
     def y
-      @point.y.round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      @point.y.round(6)
     end
 
     def z
-      @point.z.round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      @point.z.round(6)
     end
 
     #Points in terms of the reference point
     def gx
-      (x - @ref_point.x).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      (x - @ref_point.x).round(6)
     end
 
     def gy
-      (y - @ref_point.y).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      (y - @ref_point.y).round(6)
     end
 
     def gz
-      (z - @ref_point.z).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      (z - @ref_point.z).round(6)
     end
 
     #Calculatd based on edge type
     def cx
       if outside_edge?
-        (gx).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+        (gx).round(6)
       elsif inside_edge?
-        (gx).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+        (gx).round(6)
       elsif on_edge?
-        (gx).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+        (gx).round(6)
       end
 
     end
 
     def cy
-      (gy).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      (gy).round(6)
     end
 
     def cz
-      (gz).round(WikiHouse::NesterOpenSbpSave::DECIMAL_PLACES)
+      (gz).round(6)
     end
   end
 
@@ -99,14 +99,14 @@ class WikiHouse::NesterOpenSbpSave
   end
 
   def round(val)
-    val.to_f.round(DECIMAL_PLACES)
+    val.to_f.round(6)
   end
 
   def sbp_footer
     <<-TXT
-#{Osbp.move(z:@clearance + @sheet.thickness)}
-#{Osbp.move(x:0, y:0, z:@clearance + @sheet.thickness)}
-#{Osbp.spindle_off}
+#{Osbp.move(z: @clearance + @sheet.thickness)}
+    #{Osbp.move(x: 0, y: 0, z: @clearance + @sheet.thickness)}
+    #{Osbp.spindle_off}
 
 END
 
@@ -132,7 +132,7 @@ END
 'UNITS:Inches
 IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
 #{Osbp.use_absolute_coordinates}
-#{Osbp.cn_command(number: 90)}
+    #{Osbp.cn_command(number: 90)}
 'New Path
 'Toolpath Name = Sheet 1 Pocket 0.375in
 'Tool Name   = #{@bit.name}
@@ -140,12 +140,12 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
 
 &Tool =1           'Tool number to change to
 #{Osbp.tool_change}
-#{Osbp.set_spindle_speed(speed:14000)}
-#{Osbp.spindle_on}
-#{Osbp.pause(seconds:2)}
-#{Osbp.set_cut_speed(xy:WikiHouse::Cnc.xy_speed, z: WikiHouse::Cnc.z_speed )}
-#{Osbp.move(z: @clearance + @sheet.thickness)}
-#{Osbp.new_line}
+    #{Osbp.set_spindle_speed(speed: 14000)}
+    #{Osbp.spindle_on}
+    #{Osbp.pause(seconds: 2)}
+    #{Osbp.set_cut_speed(xy: WikiHouse::Cnc.xy_speed, z: WikiHouse::Cnc.z_speed)}
+    #{Osbp.move(z: @clearance + @sheet.thickness)}
+    #{Osbp.new_line}
     TXT
   end
 
@@ -170,11 +170,6 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
     #What if there is a problem writing to that?
     sbp_file.write sbp_header
 
-
-    max_height = ""
-    max_width = ""
-
-
     ref_point = find_reference_point(sheet_group)
 
     sheet_group.entities.each do |e|
@@ -195,28 +190,15 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
 
           sbp_file.write %Q(#{Osbp.comment("Start #{e.name} #{e.entityID}")}\n)
           sbp_file.write %Q(#{Osbp.dash_line}\n)
+          tool_path = WikiHouse::ToolPath.new(clearance: @clearance, sheet: @sheet, bit: @bit)
 
           face.loops.each do |loop|
+            next if !loop.outer? #Focusing on the outer loop for now
 
-            profile_points = loop_to_profile_points(loop: loop, ref_point: ref_point)
+            add_loop_to_toolpath(face: face, loop: loop, ref_point: ref_point, tool_path: tool_path)
 
 
-            sbp_file.write %Q(#{Osbp.move(x: profile_points.first.gx,
-                                          y:profile_points.first.gy,
-                                          z:@clearance)}\n)
-
-            depths = cut_depths(depth: @sheet.thickness)
-            depths.each_with_index do |depth, i|
-              sbp_file.write %Q(#{Osbp.comment("Pass #{i + 1}")}\n)
-              profile_points.each do |pp|
-                sbp_file.write %Q(#{Osbp.comment(pp.edge_type)}\n)
-
-                sbp_file.write %Q(#{Osbp.cut(x: pp.cx, y: pp.cy, z: round(depth))}\n)
-              end
-              #since it is a loop - need to do the first one again
-              #   sbp_file.write %Q(M3,#{profile_points.first.gx},#{profile_points.first.gy},#{round(depth)}\n)
-
-            end
+            sbp_file.write(tool_path.to_s)
           end
 
           sbp_file.write %Q(#{Osbp.comment("End #{e.name} #{e.entityID}")}\n)
@@ -231,22 +213,10 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
   end
 
 
-  def cut_depths(depth: nil)
-
-    depths = []
-    passes = (depth/@bit.diameter).round
-    passes = 1 if passes < 1
-    passes.times do |i|
-      depths << (depth - (i * @bit.diameter)) * -1
-    end
-    depths.reverse!
-    depths
-  end
-
-  def loop_to_profile_points(loop: nil, ref_point: nil)
+  def add_loop_to_toolpath(face: face, loop: nil, ref_point: nil, tool_path: nil)
     #based on code from Position Explorer
     # Copyright 2010 Glenn Babcock
-    puts "Outer Loop Found" if loop.outer?
+
     tag_dictionary = WikiHouse::AttributeHelper.tag_dictionary
     original_points = loop.vertices.collect { |v| v.position }
     context_points = convert_to_global_position(loop)
@@ -260,23 +230,72 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
     last_e = nil
     last_e_type = nil
     loop.edges.each do |e|
+
+      inside_direction = nil
       if e.get_attribute tag_dictionary, "inside_edge"
-
-        profile_points << ProfilePoint.new(bit: @bit, point: point_map[Sk.point_to_s(e.vertices.first.position)], ref_point: ref_point, edge_type: :inside_edge)
-        last_e_type = :inside_edge
+        profile_type = :inside
       elsif e.get_attribute tag_dictionary, "on_edge"
-        profile_points << ProfilePoint.new(bit: @bit, point: point_map[Sk.point_to_s(e.vertices.first.position)], ref_point: ref_point, edge_type: :on_edge)
-        last_e_type = :on_edge
+        profile_type = :on
       else
-        profile_points << ProfilePoint.new(bit: @bit, point: point_map[Sk.point_to_s(e.vertices.first.position)], ref_point: ref_point, edge_type: :outside_edge)
-        last_e_type = :outside_edge
+        profile_type = :outside
       end
-      last_e = e
+      start_point = e.vertices.first.position
+      end_point = e.vertices.last.position
+      slope = Sk.slope(start_point.x, start_point.y, end_point.x, end_point.y) #Doing it in local co-ordinates
+      if slope.nil?
+
+        if face.classify_point([start_point.x, start_point.y, start_point.z]) == Sketchup::Face::PointOnVertex
+          calibration_pt = [start_point.x, start_point.y, start_point.z]
+          if start_point.y < end_point.y
+            calibration_pt[1] = start_point.y + (start_point.y + end_point.y)/2.0
+          else
+            calibration_pt[1] = start_point.y - (start_point.y + end_point.y)/2.0
+          end
+          postive_result = face.classify_point([calibration_pt.x + 0.01, calibration_pt.y, calibration_pt.z])
+          negative_result = face.classify_point([calibration_pt.x - 0.01, calibration_pt.y, calibration_pt.z])
+          if negative_result > 4 && postive_result <= 4
+            inside_direction = 1
+          elsif negative_result <= 4 && postive_result > 4
+            inside_direction = -1
+          end
+
+
+        else
+          raise ScriptError, "The start point isn't considered a vertex for the face provided"
+        end
+      elsif slope == 0
+        if face.classify_point([start_point.x, start_point.y, start_point.z]) == Sketchup::Face::PointOnVertex
+          calibration_pt = [start_point.x, start_point.y, start_point.z]
+          if start_point.x < end_point.x
+            calibration_pt[0] = start_point.x + (start_point.x + end_point.x)/2.0
+          else
+            calibration_pt[0] = start_point.x - (start_point.x + end_point.x)/2.0
+          end
+
+          postive_result = face.classify_point([calibration_pt.x, calibration_pt.y + 0.01, calibration_pt.z])
+          negative_result = face.classify_point([calibration_pt.x, calibration_pt.y - 0.01, calibration_pt.z])
+          if negative_result > 4 && postive_result <= 4
+            inside_direction = 1
+          elsif negative_result <= 4 && postive_result > 4
+            inside_direction = -1
+          end
+
+
+        else
+          raise ScriptError, "The start point isn't considered a vertex for the face provided"
+        end
+      else
+        raise ScriptError, "We don't know how to do this slope yet"
+      end
+      if inside_direction.nil?
+        raise ScriptError, "#{slope.nil? ? "Nil" : slope} #{Sk.point_to_s(start_point)} #{Sk.point_to_s(end_point)} Unable to figure out the inside orientation for this edge"
+      end
+      puts "Adding a line with slope #{slope} and #{inside_direction} for #{profile_type}"
+      tool_path.add_line(start_point: point_map[Sk.point_to_s(start_point)],
+                         end_point: point_map[Sk.point_to_s(end_point)],
+                         profile_type: profile_type,
+                         inside_direction: inside_direction)
     end
-    profile_points << ProfilePoint.new(bit: @bit, point: point_map[Sk.point_to_s(loop.edges.first.vertices.first.position)], ref_point: ref_point, edge_type: last_e_type)
-
-
-    profile_points
   end
 
   def convert_to_global_position(entity)
