@@ -7,8 +7,8 @@ class WikiHouse::Config
 
   def self.sheet
     #  WikiHouse::ImperialPlywood2332Sheet
-  #WikiHouse::ImperialPlywood34Sheet
-     WikiHouse::ImperialFiberboardSheet
+  WikiHouse::ImperialPlywood34Sheet
+   #  WikiHouse::ImperialFiberboardSheet
 
   end
 
@@ -62,7 +62,8 @@ class WikiHouse::Config
     #   p.move_by(z:2).go!
     #    WikiHouse::UPeg.new(label: "UPeg")
     # #   WikiHouse::WallPanel.new(label: "Wall Panel")
-    WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [0,0,0])
+   # WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [0,0,0])
+    WikiHouse::SquareCalibration.new(label: "Square", origin: [0,0,0])
     # WikiHouse::WallColumnBoard.new(label: "Column Board",
     #                                   parent_part: parent_part, origin:[0,0,0])
     # #  WikiHouse::Column.new(label: " Column",

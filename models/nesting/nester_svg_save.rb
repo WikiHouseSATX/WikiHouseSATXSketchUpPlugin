@@ -2,7 +2,7 @@
 #TODO
 # Optimize the SVG output - Consider switching to an optimized path
 
-class WikiHouse::NesterSave
+class WikiHouse::NesterSvgSave
   def initialize(draw_sheet_outline: false)
     @draw_sheet_outline = draw_sheet_outline
   end
@@ -111,7 +111,7 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
     points = entity.vertices.collect { |v| v.position }
     parent = entity.parent
 
-    while parent.is_a? Sketchup::ComponentDefinition
+    while Sk.is_a_component_definition?(parent)
       group_transformation = parent.instances[0].transformation
       points.map! { |p| p.transform! group_transformation }
       parent = parent.instances[0].parent

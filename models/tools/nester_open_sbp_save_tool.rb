@@ -1,10 +1,10 @@
-class WikiHouse::NesterSaveTool
-  WikiHouse::Tools.register(:nester_save, self)
+class WikiHouse::NesterOpenSbpSaveTool
+  WikiHouse::Tools.register(:nester_open_sbp_save, self)
 
   def activate
     puts "Activating Save"
     WikiHouse.init
-    nester = WikiHouse::NesterSave.new()
+    nester = WikiHouse::NesterOpenSbpSave.new
     nester.save!
   end
 
@@ -19,17 +19,17 @@ class WikiHouse::NesterSaveTool
   end
 
   def self.setup_toolbar
-    tool = WikiHouse::NesterSaveTool.new
-    cmd = UI::Command.new("WikiHouse Nester Save") {
+    tool = WikiHouse::NesterOpenSbpSaveTool.new
+    cmd = UI::Command.new("WikiHouse Nester Open SBP Save") {
 
       Sketchup.active_model.select_tool(tool)
 
     }
     cmd.small_icon = WikiHouse.plugin_file("svg_save.png", "images")
     cmd.large_icon = WikiHouse.plugin_file("svg_save.png", "images")
-    cmd.tooltip = "WikiHouse Nester Save"
-    cmd.status_bar_text = "This saves the sheets as svgs"
-    cmd.menu_text = "WikiHouse Nester Save"
+    cmd.tooltip = "WikiHouse Nester Open SBP Save"
+    cmd.status_bar_text = "This saves the sheets as Open SBP"
+    cmd.menu_text = "WikiHouse Nester Open SBP Save"
     WikiHouse::Tools.add_to_toolbar(cmd)
     tool
   end
