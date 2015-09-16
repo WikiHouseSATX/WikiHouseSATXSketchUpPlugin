@@ -19,7 +19,7 @@ class WikiHouse::ChrisDesk
       @length_in_t = 3
 
       self.class.drawing_points(bounding_origin: [@desktop.origin.x + @desk.front_cross_bar_offset ,
-                                         @desktop.origin.y - @desk.side_leg_offset - thickness/2.0,
+                                         @desktop.origin.y - @desk.side_leg_offset - thickness * (1 - @desk.tab_depth_percent) ,
                                      @desktop.origin.z] ,
                                      count: @desk.front_cross_bar.number_of_tabs,
                                      rows: 1,
@@ -34,7 +34,7 @@ class WikiHouse::ChrisDesk
       #Back Cross Bar Pockets
 
       self.class.drawing_points(bounding_origin: [@desktop.origin.x + @desktop.width - @desk.back_cross_bar_offset - thickness,
-                                                  @desktop.origin.y - @desk.side_leg_offset  - thickness/2.0 ,
+                                                  @desktop.origin.y - @desk.side_leg_offset - thickness * (1 - @desk.tab_depth_percent) ,
                                                   @desktop.origin.z] ,
                                 count: @desk.front_cross_bar.number_of_tabs,
                                 rows: 1,
@@ -104,9 +104,9 @@ class WikiHouse::ChrisDesk
       part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
       @number_of_tabs = 3
-      init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3, length_in_t: 0.5),
-                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1.5, thickness: thickness, width_in_t: 1),
-                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1.5, thickness: thickness, width_in_t: 1),
+      init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3, length_in_t:  1 * parent_part.tab_depth_percent),
+                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t:  2 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 1),
+                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t:  2 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 1),
                  right_connector: WikiHouse::NoneConnector.new,
                  face_connector: WikiHouse::NoneConnector.new())
 
@@ -114,13 +114,17 @@ class WikiHouse::ChrisDesk
     end
 
     def length
-      parent_part.width - 2 * parent_part.side_leg_offset - thickness
+      parent_part.width - 2 * parent_part.side_leg_offset - 2 * thickness * (1 - parent_part.tab_depth_percent)
     end
 
 
     def width
-      value =  1.75 + thickness/2.0
-      sheet.length == 24 ? value/4.0 : value
+      if sheet.length == 24
+        value = parent_part.front_cross_bar_nominal_width/4.0 + thickness * parent_part.tab_depth_percent
+      else
+        value = parent_part.front_cross_bar_nominal_width + thickness * parent_part.tab_depth_percent
+      end
+
     end
   end
   class BackCrossBar
@@ -136,9 +140,9 @@ class WikiHouse::ChrisDesk
 
       @length_method = :width
       @number_of_tabs = 3
-      init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3, length_in_t: 0.5),
-                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1.5, thickness: thickness, width_in_t: 3),
-                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1.5, thickness: thickness, width_in_t: 3),
+      init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3, length_in_t: 1 * parent_part.tab_depth_percent),
+                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t:  2 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 3),
+                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t:  2 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 3),
                  right_connector: WikiHouse::NoneConnector.new,
                  face_connector: WikiHouse::NoneConnector.new())
 
@@ -146,12 +150,15 @@ class WikiHouse::ChrisDesk
 
 
     def length
-        parent_part.width - 2 * parent_part.side_leg_offset - thickness
+        parent_part.width - 2 * parent_part.side_leg_offset - 2 * thickness * (1 - parent_part.tab_depth_percent)
     end
 
     def width
-      value = 6.0 + thickness/2.0
-      sheet.length == 24 ? value/4.0 : value
+      if sheet.length == 24
+        value = parent_part.back_cross_bar_nominal_width/4.0 + thickness * parent_part.tab_depth_percent
+      else
+        value = parent_part.back_cross_bar_nominal_width + thickness * parent_part.tab_depth_percent
+      end
     end
   end
   class Leg
@@ -159,25 +166,27 @@ class WikiHouse::ChrisDesk
     include WikiHouse::PartHelper
 
     include WikiHouse::AttributeHelper
-
+    attr_reader :parent_part
 
     def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
       part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
-
+      @parent_part = parent_part
+      @origin = origin
     end
+
 
     def origin=(new_origin)
       @origin = new_origin
     end
 
     def length
-      value = 30 + thickness
+      value = 30 + thickness * (1 - parent_part.tab_depth_percent)
       sheet.length == 24 ? value/4.0 : value
     end
 
     def width
-      value = 26 - thickness/2.0
+      value = 26
       sheet.length == 24 ? value/4.0 : value
     end
 
@@ -226,17 +235,33 @@ class WikiHouse::ChrisDesk
       value = 2
       sheet.length == 24 ? value/4.0 : value
     end
-    def front_cross_bar_top_offset
-      value = 0.31250
-      sheet.length == 24 ? 0.1006 : value
-    end
+
     def back_cross_bar_back_offset
       value = 1.25
       sheet.length == 24 ? value/4.0 : value
     end
+    def front_cross_bar_top_offset
+      if sheet.length == 24
+        bottom_half = (parent_part.front_cross_bar_nominal_width/4.0 + sheet.thickness * parent_part.tab_depth_percent)/2.0 - sheet.thickness/2.0
+        value = parent_part.front_cross_bar_nominal_width/4.0 - bottom_half - sheet.thickness
+      else
+        bottom_half = (parent_part.front_cross_bar_nominal_width + sheet.thickness * parent_part.tab_depth_percent)/2.0 - sheet.thickness/2.0
+        value = parent_part.front_cross_bar_nominal_width - bottom_half - sheet.thickness
+      end
+
+      value
+    end
+
     def back_cross_bar_top_offset
-      value = 1.6875
-      sheet.length == 24 ? 0.5059 : value
+      if sheet.length == 24
+        value = (parent_part.back_cross_bar_nominal_width/4.0 - 3 * sheet.thickness)/2.0 - sheet.thickness
+      else
+        bottom_half = (parent_part.back_cross_bar_nominal_width + sheet.thickness * parent_part.tab_depth_percent - 3 * sheet.thickness)/2.0
+        value = parent_part.back_cross_bar_nominal_width - bottom_half - 3 * sheet.thickness
+      end
+      puts "Bac cross #{bottom_half} #{value}"
+      value
+
     end
 
     def make_points
@@ -247,8 +272,8 @@ class WikiHouse::ChrisDesk
 
       #Top Tab
        leg_points << [bounding_c1.x + back_foot_width + top_tab_offset, bounding_c1.y - length + thickness, bounding_c1.z]
-       leg_points << [bounding_c1.x + back_foot_width + top_tab_offset, bounding_c1.y - length + thickness/2.0, bounding_c1.z]
-       leg_points << [bounding_c1.x + back_foot_width + top_tab_offset + top_tab_width_in_t * t, bounding_c1.y - length + thickness/2.0, bounding_c1.z]
+       leg_points << [bounding_c1.x + back_foot_width + top_tab_offset, bounding_c1.y - length + thickness * (1 - parent_part.tab_depth_percent), bounding_c1.z]
+       leg_points << [bounding_c1.x + back_foot_width + top_tab_offset + top_tab_width_in_t * t, bounding_c1.y - length + thickness * (1 - parent_part.tab_depth_percent) , bounding_c1.z]
        leg_points << [bounding_c1.x + back_foot_width + top_tab_offset+ top_tab_width_in_t * t, bounding_c1.y - length + thickness, bounding_c1.z]
 
 
@@ -272,7 +297,7 @@ class WikiHouse::ChrisDesk
       #front cross bar pocket
 
       c5 = [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset - t,
-            bounding_c1.y - length + t + t + front_cross_bar_top_offset,
+            bounding_c1.y - length + thickness + front_cross_bar_top_offset + thickness,
             bounding_c1.z]
 
       c6 = [c5.x + t, c5.y, c5.z]
@@ -410,7 +435,9 @@ class WikiHouse::ChrisDesk
     @right_outer_leg.origin = @origin
     @right_inner_leg.origin = @origin
   end
-
+  def tab_depth_percent
+   0.80
+  end
   def length
     value = 30.775
     sheet.length == 24 ? value/4.0 : value
@@ -426,6 +453,12 @@ class WikiHouse::ChrisDesk
   def depth
     value = 26
     sheet.length == 24 ? value/4.0 : value
+  end
+  def front_cross_bar_nominal_width #This is measuered without tabs
+    1.75
+  end
+  def back_cross_bar_nominal_width #this is measured without tabs
+    6.0
   end
 
   def side_leg_offset # Gap between edge of top and the outer leg
@@ -455,21 +488,21 @@ class WikiHouse::ChrisDesk
     @top.draw!
     @top.move_by(x: 0,
                  y: 0,
-                 z: length - thickness).go!
-    #
+                 z: length - thickness * tab_depth_percent).go!
+
      @front_cross_bar.draw!
     @front_cross_bar.rotate(vector: [0, 0, 1], rotation: 180.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: -1 * length + thickness/2.0,
-                y: -1 * width + side_leg_offset + thickness/2.0,
+        move_by(x: -1 * length,
+                y: -1 * width + side_leg_offset + thickness * (1 - tab_depth_percent),
                 z: -1 * front_cross_bar_offset - thickness).go!
     @back_cross_bar.draw!
     @back_cross_bar.rotate(vector: [0, 0, 1], rotation: 180.degrees).
         rotate(vector: [0, 1, 0], rotation: 90.degrees).
         move_to(point: origin).
-        move_by(x: -1 * length + thickness/2.0,
-                y: -1 * width + side_leg_offset + thickness/2.0,
+        move_by(x: -1 * length,
+                y: -1 * width + side_leg_offset + thickness * (1 - tab_depth_percent),
                 z: -1 * depth + back_cross_bar_offset).go!
 
     rear_leg_offset = depth - @left_outer_leg.top_width - front_leg_offset
@@ -480,7 +513,7 @@ class WikiHouse::ChrisDesk
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         move_to(point: origin).
         move_by(x: -1 * (depth + @left_outer_leg.back_foot_width - rear_leg_offset),
-                y: length * -1 + thickness/2.0,
+                y: -1 * length,
                 z: -1 * width + side_leg_offset).go!
     @left_inner_leg.draw!
 
@@ -488,7 +521,7 @@ class WikiHouse::ChrisDesk
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         move_to(point: origin).
         move_by(x: -1 * (depth + @left_inner_leg.back_foot_width - rear_leg_offset),
-                y: length * -1 + thickness/2.0,
+                y: -1 * length,
                 z: -1 * width + side_leg_offset + thickness).go!
 
     @right_outer_leg.draw!
@@ -497,7 +530,7 @@ class WikiHouse::ChrisDesk
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         move_to(point: origin).
         move_by(x: -1 * (depth + @right_outer_leg.back_foot_width - rear_leg_offset),
-                y: length * -1 + thickness/2.0,
+                y:-1 * length,
                 z: -1 * (thickness + side_leg_offset ) ).go!
     @right_inner_leg.draw!
 
@@ -505,7 +538,7 @@ class WikiHouse::ChrisDesk
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         move_to(point: origin).
         move_by(x: -1 * (depth + @right_inner_leg.back_foot_width - rear_leg_offset),
-                y: length * - 1 + thickness/2.0,
+                y: -1 * length,
                 z: -1 * (side_leg_offset + 2 * thickness  )).go!
 
     groups = [@top.group, @front_cross_bar.group, @back_cross_bar.group,

@@ -4,7 +4,7 @@ class WikiHouse::Cnc < WikiHouse::Machine
     bit_diameter * 2.0
   end
   def self.bit_diameter
-    0.26
+    0.25
   end
   def self.bit_radius
     bit_diameter/2.0
