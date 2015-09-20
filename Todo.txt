@@ -1,6 +1,8 @@
 ########   OpenSBP Work
 # Be able to cut the outer loop of the chris desk parts
 # Need to be able to handle inside profile cuts for a face
+# Need to be able to handle a tool path that has inside, outside, and on profiles in the same path
+
 # Need to be able to handle the depth of a pocket
 # need to be able to handle the path on a fillet
 # need to be able to work on a part hat hasn't been completely flattened.

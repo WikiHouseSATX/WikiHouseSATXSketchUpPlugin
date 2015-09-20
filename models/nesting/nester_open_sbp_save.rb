@@ -115,19 +115,32 @@ TXT
           sbp_file.write %Q(#{Osbp.comment("Start #{e.name} #{e.entityID}")}\n)
           sbp_file.write %Q(#{Osbp.dash_line}\n)
           tool_path = WikiHouse::ToolPath.new(clearance: @clearance, sheet: @sheet, bit: @bit ,depth: @sheet.thickness)
-
+            #Do inner and then outer loop
           face.loops.each do |loop|
-            next if !loop.outer? #Focusing on the outer loop for now
+            # next if !loop.outer? #Focusing on the outer loop for now
+            next if loop.outer? #Focusing on the outer loop for now
 
 
             tool_path.add_loop(face: face,
                                loop: loop,
                                ref_point: ref_point,
-                               label:"#{e.name} #{e.entityID} Outer Loop" )
+                               label:"#{e.name} #{e.entityID} Inner Loop" )
 
-            sbp_file.write(tool_path.to_osbp)
+
           end
+          face.loops.each do |loop|
+             next if !loop.outer? #Focusing on the outer loop for now
+            #next if loop.outer? #Focusing on the outer loop for now
 
+
+            tool_path.add_loop(face: face,
+                               loop: loop,
+                               ref_point: ref_point,
+                               label:"#{e.name} #{e.entityID} Inner Loop" )
+
+
+          end
+          sbp_file.write(tool_path.to_osbp)
           sbp_file.write %Q(#{Osbp.comment("End #{e.name} #{e.entityID}")}\n)
           sbp_file.write %Q(#{Osbp.dash_line}\n)
         end
