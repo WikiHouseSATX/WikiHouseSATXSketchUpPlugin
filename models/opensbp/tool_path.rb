@@ -26,11 +26,11 @@ class WikiHouse::ToolPath
                                                tool_path.safe_z])) << "\n"
       previous_line = nil
       @lines.each_with_index do |line, lindex|
-        if previous_line && previous_line.end_point == line.start_point  &&
-          previous_line.profile_end_point != line.profile_start_point
+        if previous_line && previous_line.end_point == line.start_point &&
+            previous_line.profile_end_point != line.profile_start_point
           output << Osbp.comment("Adding Point to link Lines for cutting") << "\n"
           point_1 = [previous_line.profile_end_point.x, line.profile_start_point.y, depth]
-          point_2 = [line.profile_start_point.x, previous_line.profile_end_point.y, depth ]
+          point_2 = [line.profile_start_point.x, previous_line.profile_end_point.y, depth]
           if point_1.x == line.start_point.x && point_1.y == line.start_point.y
             output << Osbp.cut(pt: tool_path.round(point_2)) << "\n"
           else
@@ -45,14 +45,14 @@ class WikiHouse::ToolPath
         # end
         output << Osbp.comment("Line #{lindex}") << "\n"
         output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
-      #  output << Osbp.comment("Pt: #{Sk.point_to_s(line.start_point)}") << "\n"
+        #  output << Osbp.comment("Pt: #{Sk.point_to_s(line.start_point)}") << "\n"
         output << Osbp.cut(pt: tool_path.round([line.profile_start_point.x,
                                                 line.profile_start_point.y,
                                                 depth])) << "\n"
         output << Osbp.comment("Pt: #{Sk.point_to_s(line.end_point)}") << "\n"
         output << Osbp.cut(pt: tool_path.round([line.profile_end_point.x,
                                                 line.profile_end_point.y,
-                                                depth])) << "\n"                                                #   output << Osbp.comment("#{Sk.point_to_s(line.profile_start_point)}") << "\n"
+                                                depth])) << "\n" #   output << Osbp.comment("#{Sk.point_to_s(line.profile_start_point)}") << "\n"
 
         #output << Osbp.cut(x:  round(line.profile_end_point.x), y:  round(line.profile_end_point.y), z: round(depth)) << "\n"
         previous_line = line
@@ -83,15 +83,7 @@ class WikiHouse::ToolPath
 
     #Ignores z for all calculations :(
     def point_at_distance(point: nil, distance: nil, direction: 1)
-      if slope.nil?
-        [point.x + direction * distance, point.y, point.z]
-      elsif slope.zero?
-        [point.x, point.y + direction * distance, point.z]
-      else
-        x = point.x + direction * (distance / Math.sqrt(1 + slope ** 2))
-        y = slope * (x - point.x) + point.y
-        [x, y, point.z]
-      end
+      Sk.point_at_distance(slope: slope, point: point, distance: distance, direction: direction)
     end
 
 
@@ -240,54 +232,70 @@ class WikiHouse::ToolPath
       end
 
       slope = Sk.slope(start_point.x, start_point.y, end_point.x, end_point.y) #Doing it in local co-ordinates
-      if slope.nil?
-
-        if Sk.is_point_on_vertex_of_face?(face: face, pt: [start_point.x, start_point.y, start_point.z])
-
-          calibration_pt = [start_point.x, start_point.y, start_point.z]
-          if start_point.y < end_point.y
-            calibration_pt[1] = start_point.y + (start_point.y + end_point.y)/2.0
-          else
-            calibration_pt[1] = start_point.y - (start_point.y + end_point.y)/2.0
-          end
-          postive_result = face.classify_point([calibration_pt.x + 0.01, calibration_pt.y, calibration_pt.z])
-          negative_result = face.classify_point([calibration_pt.x - 0.01, calibration_pt.y, calibration_pt.z])
-          if negative_result > 4 && postive_result <= 4
-            inside_direction = 1
-          elsif negative_result <= 4 && postive_result > 4
-            inside_direction = -1
-          end
-
-
-        else
-          raise ScriptError, "The start point isn't considered a vertex for the face provided"
-        end
-      elsif slope == 0
-        if Sk.is_point_on_vertex_of_face?(face: face, pt: [start_point.x, start_point.y, start_point.z])
-          calibration_pt = [start_point.x, start_point.y, start_point.z]
-          if start_point.x < end_point.x
-            calibration_pt[0] = start_point.x + (start_point.x + end_point.x)/2.0
-          else
-            calibration_pt[0] = start_point.x - (start_point.x + end_point.x)/2.0
-          end
-
-          postive_result = face.classify_point([calibration_pt.x, calibration_pt.y + 0.01, calibration_pt.z])
-          negative_result = face.classify_point([calibration_pt.x, calibration_pt.y - 0.01, calibration_pt.z])
-          if negative_result > 4 && postive_result <= 4
-            inside_direction = 1
-          elsif negative_result <= 4 && postive_result > 4
-            inside_direction = -1
-          end
-
-
-        else
-          raise ScriptError, "The start point isn't considered a vertex for the face provided"
-        end
-      else
-        raise ScriptError, "We don't know how to do this slope yet"
+      mid_point = Sk.midpoint(point_1: start_point, point_2: end_point, ignore_z: true)
+      postive_result = face.classify_point(Sk.point_at_distance(slope: slope, point: mid_point, distance: 0.1, direction: 1))
+      negative_result = face.classify_point(Sk.point_at_distance(slope: slope, point: mid_point, distance: 0.1, direction: -1))
+      if postive_result <= 4
+        inside_direction = 1
+      elsif negative_result <= 4 && postive_result > 4
+        inside_direction = -1
       end
+
+      puts " Resuls #{postive_result} #{negative_result}"
+      #
+      # if slope.nil?
+      #
+      #
+      #
+      #
+      #   if Sk.is_point_on_vertex_of_face?(face: face, pt: [start_point.x, start_point.y, start_point.z])
+      #
+      #     calibration_pt = [start_point.x, start_point.y, start_point.z]
+      #     if start_point.y < end_point.y
+      #       calibration_pt[1] = start_point.y + (start_point.y + end_point.y)/2.0
+      #     else
+      #       calibration_pt[1] = start_point.y - (start_point.y + end_point.y)/2.0
+      #     end
+      #     postive_result = face.classify_point([calibration_pt.x + 0.01, calibration_pt.y, calibration_pt.z])
+      #     negative_result = face.classify_point([calibration_pt.x - 0.01, calibration_pt.y, calibration_pt.z])
+      #     if negative_result > 4 && postive_result <= 4
+      #       inside_direction = 1
+      #     elsif negative_result <= 4 && postive_result > 4
+      #       inside_direction = -1
+      #     end
+      #
+      #
+      #   else
+      #     raise ScriptError, "The start point isn't considered a vertex for the face provided"
+      #   end
+      # elsif slope == 0
+      #   if Sk.is_point_on_vertex_of_face?(face: face, pt: [start_point.x, start_point.y, start_point.z])
+      #     calibration_pt = [start_point.x, start_point.y, start_point.z]
+      #     if start_point.x < end_point.x
+      #       calibration_pt[0] = start_point.x + (start_point.x + end_point.x)/2.0
+      #     else
+      #       calibration_pt[0] = start_point.x - (start_point.x + end_point.x)/2.0
+      #     end
+      #
+      #     postive_result = face.classify_point([calibration_pt.x, calibration_pt.y + 0.01, calibration_pt.z])
+      #     negative_result = face.classify_point([calibration_pt.x, calibration_pt.y - 0.01, calibration_pt.z])
+      #     if negative_result > 4 && postive_result <= 4
+      #       inside_direction = 1
+      #     elsif negative_result <= 4 && postive_result > 4
+      #       inside_direction = -1
+      #     end
+      #
+      #
+      #   else
+      #     raise ScriptError, "The start point isn't considered a vertex for the face provided"
+      #   end
+      # else
+      #   raise ScriptError, "We don't know how to do this slope yet"
+      # end
       if inside_direction.nil?
-        raise ScriptError, "#{slope.nil? ? "Nil" : slope} #{Sk.point_to_s(start_point)} #{Sk.point_to_s(end_point)} Unable to figure out the inside orientation for this edge"
+     #  Sk.draw_line([100,100,0],  point_map[Sk.point_to_s(start_point)])
+      #  Sk.draw_line([100,100,0],  point_map[Sk.point_to_s(end_point)])
+        raise ScriptError, "#{label} #{slope.nil? ? "Nil" : slope} #{Sk.point_to_s(start_point)} #{Sk.point_to_s(end_point)} Unable to figure out the inside orientation for this edge"
       end
       puts "Adding a line with slope #{slope} and #{inside_direction} for #{profile_type}"
 

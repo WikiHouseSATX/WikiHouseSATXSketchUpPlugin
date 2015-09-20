@@ -105,14 +105,28 @@ module Sk
 
   end
 
-  def point_slope(point: nil, slope: nil)
+  #Ignores z for all calculations :(
+  def point_at_distance(slope: nil, point: nil, distance: nil, direction: 1)
     if slope.nil?
-      new_point = [point.x, point.y, point.z]
-    elsif slope == 0
+      new_pt = [point.x + direction * distance, point.y, point.z]
+    elsif slope.zero?
+      new_pt = [point.x, point.y + direction * distance, point.z]
     else
-
+      x = point.x + direction * (distance / Math.sqrt(1 + slope ** 2))
+      y = slope * (x - point.x) + point.y
+      new_pt = [x, y, point.z]
     end
-    new_point
+    puts "Point at distance #{Sk.point_to_s(new_pt)}"
+    new_pt
+  end
+
+  def midpoint(point_1: nil, point_2: nil, ignore_z: true)
+    if ignore_z
+      [(point_1.x + point_2.x)/2, (point_1.y + point_2.y)/2, point_1.z]
+    else
+      [(point_1.x + point_2.x)/2, (point_1.y + point_2.y)/2, (point_1.z + point_2.z)/2]
+    end
+
   end
 
   def build_parallelogram_points(x1, y1, b_length, h_length, x1_angle_in_degrees)

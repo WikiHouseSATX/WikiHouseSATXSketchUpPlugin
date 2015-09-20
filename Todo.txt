@@ -8,7 +8,7 @@
 # need to be able to cut a dowel hole
 
 #Whn I pull parts I need to be able to store which face is up for the purpose of cutting pockets
-
+#Make a set of calibration parts to make sure that the math is all right - physical unit tests
 
 
 
