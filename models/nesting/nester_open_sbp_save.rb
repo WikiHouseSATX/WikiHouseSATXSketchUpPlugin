@@ -16,79 +16,6 @@
 #c9 Change tool
 class WikiHouse::NesterOpenSbpSave
 
-  class ProfilePoint
-    attr_reader :point, :ref_point, :edge_type, :bit
-
-    def initialize(point: nil, edge_type: :outside, ref_point: nil, bit: nil)
-      @point = point
-      @ref_point = ref_point
-      @edge_type = edge_type
-      @bit = bit
-      raise ArgumentError, "Must set a point" if @point.nil?
-    end
-
-    def outside_edge?
-      !inside_edge? && !on_edge?
-    end
-
-    def inside_edge?
-      @edge_type == :inside_edge
-    end
-
-    def on_edge?
-      @edge_type == :on_edge
-    end
-
-    def global_point
-      [gx, gy, gz]
-    end
-
-    #raw points
-    def x
-      @point.x.round(6)
-    end
-
-    def y
-      @point.y.round(6)
-    end
-
-    def z
-      @point.z.round(6)
-    end
-
-    #Points in terms of the reference point
-    def gx
-      (x - @ref_point.x).round(6)
-    end
-
-    def gy
-      (y - @ref_point.y).round(6)
-    end
-
-    def gz
-      (z - @ref_point.z).round(6)
-    end
-
-    #Calculatd based on edge type
-    def cx
-      if outside_edge?
-        (gx).round(6)
-      elsif inside_edge?
-        (gx).round(6)
-      elsif on_edge?
-        (gx).round(6)
-      end
-
-    end
-
-    def cy
-      (gy).round(6)
-    end
-
-    def cz
-      (gz).round(6)
-    end
-  end
 
   def initialize(draw_sheet_outline: false)
     @draw_sheet_outline = draw_sheet_outline
@@ -98,15 +25,12 @@ class WikiHouse::NesterOpenSbpSave
 
   end
 
-  def round(val)
-    val.to_f.round(6)
-  end
 
   def sbp_footer
-    <<-TXT
+<<-TXT
 #{Osbp.move(z: @clearance + @sheet.thickness)}
-    #{Osbp.move(x: 0, y: 0, z: @clearance + @sheet.thickness)}
-    #{Osbp.spindle_off}
+#{Osbp.move(x: 0, y: 0, z: @clearance + @sheet.thickness)}
+#{Osbp.spindle_off}
 
 END
 
@@ -132,7 +56,7 @@ END
 'UNITS:Inches
 IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
 #{Osbp.use_absolute_coordinates}
-    #{Osbp.cn_command(number: 90)}
+#{Osbp.cn_command(number: 90)}
 'New Path
 'Toolpath Name = Sheet 1 Pocket 0.375in
 'Tool Name   = #{@bit.name}
@@ -140,13 +64,13 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
 
 &Tool =1           'Tool number to change to
 #{Osbp.tool_change}
-    #{Osbp.set_spindle_speed(speed: 14000)}
-    #{Osbp.spindle_on}
-    #{Osbp.pause(seconds: 2)}
-    #{Osbp.set_cut_speed(xy: WikiHouse::Cnc.xy_speed, z: WikiHouse::Cnc.z_speed)}
-    #{Osbp.move(z: @clearance + @sheet.thickness)}
-    #{Osbp.new_line}
-    TXT
+#{Osbp.set_spindle_speed(speed: 14000)}
+#{Osbp.spindle_on}
+#{Osbp.pause(seconds: 2)}
+#{Osbp.set_cut_speed(xy: WikiHouse::Cnc.xy_speed, z: WikiHouse::Cnc.z_speed)}
+#{Osbp.move(z: @clearance + @sheet.thickness)}
+#{Osbp.new_line}
+TXT
   end
 
   def save_sheet(project_name: nil, file_name: nil, sheet_group: nil, nesting_group: nil)
@@ -173,13 +97,13 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
     ref_point = find_reference_point(sheet_group)
 
     sheet_group.entities.each do |e|
-      if e.is_a? Sketchup::Group
+      if Sk.is_a_group?(e)
         # puts "#{e.name}"
         next if e.name == WikiHouse::Nester.sheet_outline_group_name && !@draw_sheet_outline
         face_count = 0
         face = nil
         e.entities.each do |sub_e|
-          if sub_e.is_a? Sketchup::Face
+          if Sk.is_a_face?(sub_e)
             face = sub_e
             face_count += 1
           end
@@ -190,15 +114,18 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
 
           sbp_file.write %Q(#{Osbp.comment("Start #{e.name} #{e.entityID}")}\n)
           sbp_file.write %Q(#{Osbp.dash_line}\n)
-          tool_path = WikiHouse::ToolPath.new(clearance: @clearance, sheet: @sheet, bit: @bit)
+          tool_path = WikiHouse::ToolPath.new(clearance: @clearance, sheet: @sheet, bit: @bit ,depth: @sheet.thickness)
 
           face.loops.each do |loop|
             next if !loop.outer? #Focusing on the outer loop for now
 
-            add_loop_to_toolpath(face: face, loop: loop, ref_point: ref_point, tool_path: tool_path)
 
+            tool_path.add_loop(face: face,
+                               loop: loop,
+                               ref_point: ref_point,
+                               label:"#{e.name} #{e.entityID} Outer Loop" )
 
-            sbp_file.write(tool_path.to_s)
+            sbp_file.write(tool_path.to_osbp)
           end
 
           sbp_file.write %Q(#{Osbp.comment("End #{e.name} #{e.entityID}")}\n)
@@ -212,121 +139,21 @@ IF %(25)=1 THEN GOTO UNIT_ERROR	'check to see software is set to standard
     puts "Wrote out #{file_name}"
   end
 
-
-  def add_loop_to_toolpath(face: face, loop: nil, ref_point: nil, tool_path: nil)
-    #based on code from Position Explorer
-    # Copyright 2010 Glenn Babcock
-
-    tag_dictionary = WikiHouse::AttributeHelper.tag_dictionary
-    original_points = loop.vertices.collect { |v| v.position }
-    context_points = convert_to_global_position(loop)
-
-    point_map = {}
-    original_points.each_with_index do |op, i|
-      point_map[Sk.point_to_s(op)] = context_points[i]
-    end
-
-    profile_points = []
-    last_e = nil
-    last_e_type = nil
-    loop.edges.each do |e|
-
-      inside_direction = nil
-      if e.get_attribute tag_dictionary, "inside_edge"
-        profile_type = :inside
-      elsif e.get_attribute tag_dictionary, "on_edge"
-        profile_type = :on
-      else
-        profile_type = :outside
-      end
-      start_point = e.vertices.first.position
-      end_point = e.vertices.last.position
-      slope = Sk.slope(start_point.x, start_point.y, end_point.x, end_point.y) #Doing it in local co-ordinates
-      if slope.nil?
-
-        if face.classify_point([start_point.x, start_point.y, start_point.z]) == Sketchup::Face::PointOnVertex
-          calibration_pt = [start_point.x, start_point.y, start_point.z]
-          if start_point.y < end_point.y
-            calibration_pt[1] = start_point.y + (start_point.y + end_point.y)/2.0
-          else
-            calibration_pt[1] = start_point.y - (start_point.y + end_point.y)/2.0
-          end
-          postive_result = face.classify_point([calibration_pt.x + 0.01, calibration_pt.y, calibration_pt.z])
-          negative_result = face.classify_point([calibration_pt.x - 0.01, calibration_pt.y, calibration_pt.z])
-          if negative_result > 4 && postive_result <= 4
-            inside_direction = 1
-          elsif negative_result <= 4 && postive_result > 4
-            inside_direction = -1
-          end
-
-
-        else
-          raise ScriptError, "The start point isn't considered a vertex for the face provided"
-        end
-      elsif slope == 0
-        if face.classify_point([start_point.x, start_point.y, start_point.z]) == Sketchup::Face::PointOnVertex
-          calibration_pt = [start_point.x, start_point.y, start_point.z]
-          if start_point.x < end_point.x
-            calibration_pt[0] = start_point.x + (start_point.x + end_point.x)/2.0
-          else
-            calibration_pt[0] = start_point.x - (start_point.x + end_point.x)/2.0
-          end
-
-          postive_result = face.classify_point([calibration_pt.x, calibration_pt.y + 0.01, calibration_pt.z])
-          negative_result = face.classify_point([calibration_pt.x, calibration_pt.y - 0.01, calibration_pt.z])
-          if negative_result > 4 && postive_result <= 4
-            inside_direction = 1
-          elsif negative_result <= 4 && postive_result > 4
-            inside_direction = -1
-          end
-
-
-        else
-          raise ScriptError, "The start point isn't considered a vertex for the face provided"
-        end
-      else
-        raise ScriptError, "We don't know how to do this slope yet"
-      end
-      if inside_direction.nil?
-        raise ScriptError, "#{slope.nil? ? "Nil" : slope} #{Sk.point_to_s(start_point)} #{Sk.point_to_s(end_point)} Unable to figure out the inside orientation for this edge"
-      end
-      puts "Adding a line with slope #{slope} and #{inside_direction} for #{profile_type}"
-      tool_path.add_line(start_point: point_map[Sk.point_to_s(start_point)],
-                         end_point: point_map[Sk.point_to_s(end_point)],
-                         profile_type: profile_type,
-                         inside_direction: inside_direction)
-    end
-  end
-
-  def convert_to_global_position(entity)
-    #based on code from Position Explorer
-    # Copyright 2010 Glenn Babcock
-    points = entity.vertices.collect { |v| v.position }
-    parent = entity.parent
-
-    while Sk.is_a_component_definition?(parent)
-      group_transformation = parent.instances[0].transformation
-      points.map! { |p| p.transform! group_transformation }
-      parent = parent.instances[0].parent
-    end
-    points
-  end
-
   def find_reference_point(sheet_group)
     min_x = min_y = min_z = nil
     sheet_group.entities.each do |e|
-      if e.is_a? Sketchup::Group
+      if Sk.is_a_group?(e)
         face_count = 0
         face = nil
         e.entities.each do |sub_e|
-          if sub_e.is_a? Sketchup::Face
+          if Sk.is_a_face?(sub_e)
             face = sub_e
             face_count += 1
           end
         end
         if face_count == 1
           face.loops.each do |loop|
-            group_points = convert_to_global_position(loop)
+            group_points = Sk.convert_to_global_position(loop)
             group_points.each do |p|
               #  puts "looking at #{Sk.point_to_s(p)}"
               min_x = p.x if min_x.nil? || p.x < min_x

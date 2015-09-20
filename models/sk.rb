@@ -114,6 +114,7 @@ module Sk
     end
     new_point
   end
+
   def build_parallelogram_points(x1, y1, b_length, h_length, x1_angle_in_degrees)
     c1 = [x1, y1, 0]
     c2 = [x1 + b_length, y1, 0]
@@ -286,6 +287,10 @@ module Sk
     gcopy
   end
 
+  def is_point_on_vertex_of_face?(face: nil, pt: nil)
+    face.classify_point(pt) == Sketchup::Face::PointOnVertex
+  end
+
   def is_an_edge?(item)
     item.is_a?(Sketchup::Edge)
   end
@@ -426,32 +431,18 @@ module Sk
     end
   end
 
-  def getGlobalPosition(ent)
-    g_pos=[] #array to store global positions of vertices
+  def convert_to_global_position(entity)
+#based on code from Position Explorer
+# Copyright 2010 Glenn Babcock
+    points = entity.vertices.collect { |v| v.position }
+    parent = entity.parent
 
-    #get local position of vertices
-    ent.vertices.each_with_index { |vert, i|
-      g_pos[i]=vert.position
-    }
-
-    #get the parent
-    p=ent.parent
-
-    #while the parent is a group or component
-    while p.is_a? Sketchup::ComponentDefinition
-      #get the group/component transformation
-      grp=p.instances[0]
-      grp_t=grp.transformation
-
-      #apply the group transformation to the stored position of the vertices
-      g_pos.each { |g|
-        g=g.transform! grp_t
-      }
-
-      #get the next parent in the hierarchy
-      p=p.instances[0].parent
+    while Sk.is_a_component_definition?(parent)
+      group_transformation = parent.instances[0].transformation
+      points.map! { |p| p.transform! group_transformation }
+      parent = parent.instances[0].parent
     end
-    return g_pos
+    points
   end
 
   def max_bounds(group)
@@ -521,6 +512,69 @@ module Sk
 
   def set_status_message(msg)
     Sketchup::set_status_text(msg)
+  end
+
+
+  def model_unit_options
+    opts = {}
+    model.options["UnitsOptions"].keys.each do |key|
+      opts[key] = model.options["UnitsOptions"][key]
+    end
+
+    opts
+
+    # {
+    #    length_precision: model.options["UnitsOptions"]["LengthPrecision"],
+    #    length_unit: model.options["UnitsOptions"]["LengthFormat"],
+    #    length_snap_enabled: model.options["UnitsOptions"]["LengthUnit"],
+    #    length_snap_length: model.options["UnitsOptions"]["LengthSnapEnabled"],
+    #    angle_precision: model.options["UnitsOptions"]["LengthSnapLength"],
+    #    angle_snap_enabled: model.options["UnitsOptions"]["AnglePrecision"],
+    #    snap_angle: model.options["UnitsOptions"]["SnapAngle"],
+    #    supress_units_display: model.options["UnitsOptions"]["SuppressUnitsDisplay"],
+    #    froce_inch_display: model.options["UnitsOptions"]["ForceInchDisplay"]
+    # }
+  end
+
+  def set_model_unit_options!(opt)
+    if opt.has_key?("LengthFormat")
+      opt["LengthFormat"] = case opt["LengthFormat"]
+                              when :architectural || 1
+                                1
+                              when :decimal || 0
+                                0
+                              when :engineering || 2
+                                2
+                              when :fractional || 3
+                                3
+                              else
+                                0
+                            end
+    end
+    if opt.has_key?("LengthUnit")
+      opt["LengthUnit"] = case opt["LengthUnit"]
+                            when :inches || 0
+                              0
+                            when :feet || 1
+                              1
+                            when :mm || 2
+                              2
+                            when :cm || 3
+                              3
+                            when :m || 4
+                              4
+                            else
+                              0
+                          end
+    end
+    new_opts = model_unit_options.merge(opt)
+
+    new_opts.keys.each do |key|
+      model.options["UnitsOptions"][key] = new_opts[key]
+      model.active_view.invalidate
+      UI.refresh_inspectors
+    end
+
   end
 
 end

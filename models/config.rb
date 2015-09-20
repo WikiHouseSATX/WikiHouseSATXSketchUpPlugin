@@ -1,20 +1,27 @@
 require 'ostruct'
 class WikiHouse::Config
   def self.machine
-  WikiHouse::Laser
-  #  WikiHouse::Cnc
+    WikiHouse::Laser
+    #  WikiHouse::Cnc
   end
 
   def self.sheet
     #  WikiHouse::ImperialPlywood2332Sheet
-  WikiHouse::ImperialPlywood34Sheet
-   #  WikiHouse::ImperialFiberboardSheet
+    WikiHouse::ImperialPlywood34Sheet
+    #  WikiHouse::ImperialFiberboardSheet
 
   end
 
+  def self.set_model_units
+    Sk.set_model_unit_options!({"LengthFormat" => :decimal,
+                                "LengthUnit" => :inches,
+                                "LengthPrecision" => 4,
+                                "SuppressUnitsDisplay" => true})
+
+  end
 
   def self.current_part
-
+    #  set_model_units
     Sk.erase_all!
 
     parent_part = OpenStruct.new
@@ -35,7 +42,7 @@ class WikiHouse::Config
     parent_part.top_column_length = 94 - 82 - 0.75
     parent_part.number_of_top_column_supports = 3
     #  WikiHouse::WallPanelFace.new(label: "Top", origin: [0,0,0],  parent_part: parent_part)
-   #  WikiHouse::HalfWallPanel.new()
+    #  WikiHouse::HalfWallPanel.new()
     #   p = WikiHouse::UPeg.new(label: "UPeg - 4", right_inner_leg_in_t: 4)
     #   p.draw!
     #    p.move_by(z:6).go!
@@ -62,8 +69,8 @@ class WikiHouse::Config
     #   p.move_by(z:2).go!
     #    WikiHouse::UPeg.new(label: "UPeg")
     # #   WikiHouse::WallPanel.new(label: "Wall Panel")
-   # WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [0,0,0])
-    WikiHouse::SquareCalibration.new(label: "Square", origin: [0,0,0])
+    # WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [0,0,0])
+    WikiHouse::SquareCalibration.new(label: "Square", origin: [0, 0, 0])
     # WikiHouse::WallColumnBoard.new(label: "Column Board",
     #                                   parent_part: parent_part, origin:[0,0,0])
     # #  WikiHouse::Column.new(label: " Column",
@@ -80,7 +87,7 @@ class WikiHouse::Config
     #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
     #WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
     #WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
-   #  WikiHouse::DoorPanel.new(label: "Door Panel")
+    #  WikiHouse::DoorPanel.new(label: "Door Panel")
     #  WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
     #  WikiHouse::Column.new(label: "Column", wall_panels_on: [WikiHouse::Orientation.south, WikiHouse::Orientation.west, WikiHouse::Orientation.east, WikiHouse::Orientation.north])
   end

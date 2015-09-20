@@ -30,10 +30,12 @@ module Osbp
     cmd("MS,#{xy},#{z}")
   end
 
-  def cut(x: nil, y: nil, z: nil)
+  def cut(x: nil, y: nil, z: nil ,pt:nil)
     raise ArgumentError, "You must provide an X if you provide y & z" if y && z && !x
     if x && y && z
       cmd("M3,#{x},#{y},#{z}")
+    elsif pt.respond_to?(:x) && pt.respond_to?(:y) && pt.respond_to?(:z)
+      cmd("M3,#{pt.x},#{pt.y},#{pt.z}")
     elsif x && y
       cmd("M2,#{x},#{y}")
     elsif x
@@ -50,10 +52,12 @@ module Osbp
     cmd("JS,#{xy},#{z}")
   end
 
-  def move(x: nil, y: nil, z: nil)
+  def move(x: nil, y: nil, z: nil, pt: nil)
     raise ArgumentError, "You must provide an X if you provide y & z" if y && z && !x
     if x && y && z
       cmd("J3,#{x},#{y},#{z}")
+    elsif pt.respond_to?(:x) && pt.respond_to?(:y) && pt.respond_to?(:z)
+      cmd("J3,#{pt.x},#{pt.y},#{pt.z}")
     elsif x && y
       cmd("J2,#{x},#{y}")
     elsif x
