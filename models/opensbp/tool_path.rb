@@ -256,7 +256,10 @@ class WikiHouse::ToolPath
     #And we want to be clockwise :)
 
     unordered_loop = loop.edges.collect { |e| e }
-    ordered_loop << {edge: unordered_loop.pop, direction: 1}
+    max_length = unordered_loop.collect { |e| e.length}.each_with_index.max
+
+    ordered_loop << {edge: unordered_loop[max_length[1]], direction: 1}
+    unordered_loop.delete_at(max_length[1])
     while unordered_loop.length > 0
       puts "U Count: #{unordered_loop.length} O Count: #{ordered_loop.length}"
       found = nil
@@ -316,59 +319,8 @@ class WikiHouse::ToolPath
       end
 
       puts " Resuls #{postive_result} #{negative_result}"
-      #
-      # if slope.nil?
-      #
-      #
-      #
-      #
-      #   if Sk.is_point_on_vertex_of_face?(face: face, pt: [start_point.x, start_point.y, start_point.z])
-      #
-      #     calibration_pt = [start_point.x, start_point.y, start_point.z]
-      #     if start_point.y < end_point.y
-      #       calibration_pt[1] = start_point.y + (start_point.y + end_point.y)/2.0
-      #     else
-      #       calibration_pt[1] = start_point.y - (start_point.y + end_point.y)/2.0
-      #     end
-      #     postive_result = face.classify_point([calibration_pt.x + 0.01, calibration_pt.y, calibration_pt.z])
-      #     negative_result = face.classify_point([calibration_pt.x - 0.01, calibration_pt.y, calibration_pt.z])
-      #     if negative_result > 4 && postive_result <= 4
-      #       inside_direction = 1
-      #     elsif negative_result <= 4 && postive_result > 4
-      #       inside_direction = -1
-      #     end
-      #
-      #
-      #   else
-      #     raise ScriptError, "The start point isn't considered a vertex for the face provided"
-      #   end
-      # elsif slope == 0
-      #   if Sk.is_point_on_vertex_of_face?(face: face, pt: [start_point.x, start_point.y, start_point.z])
-      #     calibration_pt = [start_point.x, start_point.y, start_point.z]
-      #     if start_point.x < end_point.x
-      #       calibration_pt[0] = start_point.x + (start_point.x + end_point.x)/2.0
-      #     else
-      #       calibration_pt[0] = start_point.x - (start_point.x + end_point.x)/2.0
-      #     end
-      #
-      #     postive_result = face.classify_point([calibration_pt.x, calibration_pt.y + 0.01, calibration_pt.z])
-      #     negative_result = face.classify_point([calibration_pt.x, calibration_pt.y - 0.01, calibration_pt.z])
-      #     if negative_result > 4 && postive_result <= 4
-      #       inside_direction = 1
-      #     elsif negative_result <= 4 && postive_result > 4
-      #       inside_direction = -1
-      #     end
-      #
-      #
-      #   else
-      #     raise ScriptError, "The start point isn't considered a vertex for the face provided"
-      #   end
-      # else
-      #   raise ScriptError, "We don't know how to do this slope yet"
-      # end
+
       if inside_direction.nil?
-        #  Sk.draw_line([100,100,0],  point_map[Sk.point_to_s(start_point)])
-        #  Sk.draw_line([100,100,0],  point_map[Sk.point_to_s(end_point)])
         raise ScriptError, "#{label} #{slope.nil? ? "Nil" : slope} #{Sk.point_to_s(start_point)} #{Sk.point_to_s(end_point)} Unable to figure out the inside orientation for this edge"
       end
       puts "Adding a line with slope #{slope} and #{inside_direction} for #{profile_type}"
