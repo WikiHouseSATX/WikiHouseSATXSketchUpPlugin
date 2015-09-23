@@ -189,7 +189,7 @@ module Sk
                radius: nil,
                start_angle: nil,
                end_angle: nil,
-               num_segments: nil,
+               num_segments: 6,
                group: nil)
     normal ||= Geom::Vector3d.new 0, 0, 1
     zero_vector ||= Geom::Vector3d.new 0, 1, 0
