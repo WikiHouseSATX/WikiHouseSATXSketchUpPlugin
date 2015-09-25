@@ -7,7 +7,12 @@
 # M3,4.5,4.38,-0.5
 # M3,4.38,4.38,-0.5
 # M3,4.38,2.64,-0.5
+#TODO https://github.com/SketchUp/testup-2/wiki  Add a unit test system since it turns out the math is getting more complex
 
+#TODO - the outside path is broken :(
+# TODO - The inside path is also busted
+# Need to look at all the permutations of None - +/- , 0 +/-, +slope +/-, -slope +/-  to make sure the math is right
+#TODO need to handle inside paths with fillets - so need to adjust the start/end points
 
 class WikiHouse::ToolPath
   # DECIMAL_PLACES = 6
@@ -29,7 +34,7 @@ class WikiHouse::ToolPath
 
     end
 
-    def to_osbp(depth: nil)
+    def to_osbp(depth: nil, first_pass: false)
       output = ""
       output << Osbp.comment("Part #{label}") << "\n"
 
@@ -37,7 +42,7 @@ class WikiHouse::ToolPath
       if cut_profile == [:outside]
         output << Osbp.move(pt: tool_path.round([@lines.first.profile_start_point.x,
                                                  @lines.first.profile_start_point.y,
-                                                 tool_path.safe_z])) << "\n"
+                                                 tool_path.safe_z])) << "\n" if first_pass
         previous_line = nil
         @lines.each_with_index do |line, lindex|
           if previous_line && previous_line.end_point == line.start_point &&
@@ -46,8 +51,10 @@ class WikiHouse::ToolPath
             point_1 = [previous_line.profile_end_point.x, line.profile_start_point.y, depth]
             point_2 = [line.profile_start_point.x, previous_line.profile_end_point.y, depth]
             if point_1.x == line.start_point.x && point_1.y == line.start_point.y
+              output << Osbp.comment("Chose Point 2 vs #{Sk.point_to_s(tool_path.round(point_1))}") << "\n"
               output << Osbp.cut(pt: tool_path.round(point_2)) << "\n"
             else
+              output << Osbp.comment("Chose Point 1 vs #{Sk.point_to_s(tool_path.round(point_2))}") << "\n"
               output << Osbp.cut(pt: tool_path.round(point_1)) << "\n"
             end
           end
@@ -64,151 +71,82 @@ class WikiHouse::ToolPath
                                                   depth])) << "\n"
           previous_line = line
         end
-      elsif cut_profile == [:inside]
-        output << Osbp.move(pt: tool_path.round([@lines.first.profile_start_point.x,
-                                                 @lines.first.profile_start_point.y,
-                                                 tool_path.safe_z])) << "\n"
+
+
+      elsif cut_profile == [:inside] || cut_profile == [:fillet, :inside]
 
         @lines.each_with_index do |line, lindex|
-
-
+          next if line.fillet_profile?
+          if lindex == 0
+            previous_line = @lines.last
+          else
+            previous_line = @lines[lindex - 1]
+          end
+          if lindex == @lines.length - 1
+            next_line = @lines.first
+          else
+            next_line = @lines[lindex + 1]
+          end
           output << Osbp.comment("Line #{lindex}") << "\n"
           output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
           output << Osbp.comment("Slope: #{line.slope.nil? ? "None" : line.slope.zero? ? "0" : line.slope}") << "\n"
           output << Osbp.comment("Inside Direction: #{line.inside_direction}") << "\n"
 
           output << Osbp.comment("Start Pt: #{Sk.point_to_s(tool_path.round(line.start_point))}") << "\n"
-          output << Osbp.cut(pt: tool_path.round([line.profile_start_point.x,
-                                                  line.profile_start_point.y,
-                                                  depth])) << "\n"
-          if line == @lines.last
-            output << Osbp.comment("End Pt: #{Sk.point_to_s(tool_path.round(line.end_point))}") << "\n"
-            output << Osbp.cut(pt: tool_path.round([line.profile_end_point.x,
-                                                    line.profile_end_point.y,
-                                                    depth])) << "\n"
+
+          if previous_line.inside_profile?
+            fillet_before = nil
+          elsif previous_line.long_fillet?
+            fillet_before = :long_fillet
+          elsif previous_line.short_fillet?
+            fillet_before = :short_fillet
           end
+          if next_line.inside_profile?
+            fillet_after = nil
+          elsif next_line.long_fillet?
+            fillet_after = :long_fillet
+          elsif next_line.short_fillet?
+            fillet_after = :short_fillet
+          end
+          if lindex == 0
+
+            output << Osbp.move(pt: tool_path.round([@lines.first.profile_start_point(fillet_before: fillet_before).x,
+                                                     @lines.first.profile_start_point(fillet_before: fillet_before).y,
+                                                     tool_path.safe_z])) << "\n" if first_pass
+          end
+
+          output << Osbp.cut(pt: tool_path.round([line.profile_start_point(fillet_before: fillet_before).x,
+                                                  line.profile_start_point(fillet_before: fillet_before).y,
+                                                  depth])) << "\n"
+          
+
+          if line == @lines.last
+
+            output << Osbp.comment("End Pt: #{Sk.point_to_s(tool_path.round(line.end_point))}") << "\n"
+            output << Osbp.cut(pt: tool_path.round([line.profile_end_point(fillet_after: fillet_after).x,
+                                                    line.profile_end_point(fillet_after: fillet_after).y,
+                                                    depth])) << "\n"
+          else
+            if next_line.inside_profile?
+              dummy = 1 #Don't need to do anything here
+            elsif next_line.long_fillet? || next_line.short_fillet?
+              output << Osbp.comment("End Pt: #{Sk.point_to_s(tool_path.round(line.end_point))}") << "\n"
+              output << Osbp.cut(pt: tool_path.round([line.profile_end_point(fillet_after: fillet_after).x,
+                                                      line.profile_end_point(fillet_after: fillet_after).y,
+                                                      depth])) << "\n"
+            end
+          end
+
+
         end
-      elsif cut_profile == [:fillet, :inside]
-        output << Osbp.move(pt: tool_path.round([@lines.first.profile_start_point.x,
-                                                 @lines.first.profile_start_point.y,
-                                                 tool_path.safe_z])) << "\n"
-         @lines.each_with_index do |line, lindex|
-                output << Osbp.comment("Line #{lindex}") << "\n"
-                output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
-                output << Osbp.comment("Slope: #{line.slope.nil? ? "None" : line.slope.zero? ? "0" : line.slope}") << "\n"
-                output << Osbp.comment("Inside Direction: #{line.inside_direction}") << "\n"
 
-                output << Osbp.comment("Start Pt: #{Sk.point_to_s(tool_path.round(line.start_point))}") << "\n"
-                output << Osbp.move(pt: tool_path.round([line.start_point().x,
-                                                        line.start_point().y,
-                                                        depth])) << "\n"
-
-         end
-        # @lines.each_with_index do |line, lindex|
-        #  if lindex == 0
-        #   #special case where we have to consider the fillet at the end
-        #    fillet_before = nil
-        #    if @lines.last.fillet_profile?
-        #      if @lines.last.short_fillet?
-        #        fillet_before = :short_fillet
-        #      else
-        #        fillet_before = :long_fillet
-        #      end
-        #    end
-        #
-        #      output << Osbp.comment("Line #{lindex}") << "\n"
-        #      output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
-        #      output << Osbp.comment("Slope: #{line.slope.nil? ? "None" : line.slope.zero? ? "0" : line.slope}") << "\n"
-        #      output << Osbp.comment("Inside Direction: #{line.inside_direction}") << "\n"
-        #
-        #      output << Osbp.comment("Start Pt: #{Sk.point_to_s(tool_path.round(line.start_point))}") << "\n"
-        #      output << Osbp.cut(pt: tool_path.round([line.profile_start_point(fillet_before:fillet_before).x,
-        #                                              line.profile_start_point(fillet_before:fillet_before).y,
-        #                                              depth])) << "\n"
-        #
-        #
-        #  else
-        #    if line.fillet_profile?
-        #      if line.long_fillet?
-        #        output << Osbp.comment("Line #{lindex}") << "\n"
-        #        output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
-        #        output << Osbp.comment("Slope: #{line.slope.nil? ? "None" : line.slope.zero? ? "0" : line.slope}") << "\n"
-        #        output << Osbp.comment("Inside Direction: #{line.inside_direction}") << "\n"
-        #
-        #        output << Osbp.comment("Start Pt: #{Sk.point_to_s(tool_path.round(line.start_point))}") << "\n"
-        #        output << Osbp.cut(pt: tool_path.round([line.profile_start_point.x,
-        #                                                line.profile_start_point.y,
-        #                                                depth])) << "\n"
-        #        output << Osbp.cut(pt: tool_path.round([line.profile_end_point.x,
-        #                                                line.profile_end_point.y,
-        #                                                depth])) << "\n"
-        #
-        #
-        #      else
-        #        output << Osbp.comment("Line #{lindex}") << "\n"
-        #        output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
-        #        output << Osbp.comment("Slope: #{line.slope.nil? ? "None" : line.slope.zero? ? "0" : line.slope}") << "\n"
-        #        output << Osbp.comment("Inside Direction: #{line.inside_direction}") << "\n"
-        #
-        #        output << Osbp.comment("Start Pt: #{Sk.point_to_s(tool_path.round(line.start_point))}") << "\n"
-        #
-        #      end
-        #    else
-        #      fillet_before = nil
-        #      if @lines[lindex - 1].fillet_profile?
-        #        if @lines[lindex - 1].short_fillet?
-        #          fillet_before = :short_fillet
-        #        else
-        #          fillet_before = :long_fillet
-        #        end
-        #      end
-        #
-        #      output << Osbp.comment("Line #{lindex}") << "\n"
-        #      output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
-        #      output << Osbp.comment("Slope: #{line.slope.nil? ? "None" : line.slope.zero? ? "0" : line.slope}") << "\n"
-        #      output << Osbp.comment("Inside Direction: #{line.inside_direction}") << "\n"
-        #
-        #      output << Osbp.comment("Start Pt: #{Sk.point_to_s(tool_path.round(line.start_point))}") << "\n"
-        #      output << Osbp.cut(pt: tool_path.round([line.profile_start_point(fillet_before:fillet_before).x,
-        #                                              line.profile_start_point(fillet_before:fillet_before).y,
-        #                                              depth])) << "\n"
-        #
-        #    end
-        #
-        #  end
-        #
-        # end
-        # if @lines.last.profile_type == :fillet
-        # @lines.each_with_index do |line, lindex|
-        #
-        #   if line.profile_type == :inside
-        #     output << Osbp.comment("Line #{lindex}") << "\n"
-        #     output << Osbp.comment("Profile Type: #{line.profile_type}") << "\n"
-        #     output << Osbp.comment("Slope: #{line.slope.nil? ? "None" : line.slope.zero? ? "0" : line.slope}") << "\n"
-        #     output << Osbp.comment("Inside Direction: #{line.inside_direction}") << "\n"
-        #
-        #     output << Osbp.comment("Start Pt: #{Sk.point_to_s(tool_path.round(line.start_point))}") << "\n"
-        #     output << Osbp.cut(pt: tool_path.round([line.profile_start_point.x,
-        #                                             line.profile_start_point.y,
-        #                                             depth])) << "\n"
-        #     if line == @lines.last
-        #       output << Osbp.comment("End Pt: #{Sk.point_to_s(tool_path.round(line.end_point))}") << "\n"
-        #       output << Osbp.cut(pt: tool_path.round([line.profile_end_point.x,
-        #                                               line.profile_end_point.y,
-        #                                               depth])) << "\n"
-        #     end
-        #   elsif line.profile_type == :fillet
-        #
-        #   end
-        #
-        #
-        # end
       else
         raise ScriptError, "Doesn't support mixed profile types in a loop #{cut_profile.join(",")}"
       end
 
       output
     end
+
   end
   class ToolLine
     attr_reader :start_point, :end_point, :inside_direction, :profile_type, :tool_path
@@ -230,6 +168,7 @@ class WikiHouse::ToolPath
     def slope
       Sk.slope(@start_point.x, @start_point.y, @end_point.x, @end_point.y)
     end
+
     def length
       if slope.nil?
         (@start_point.y - @end_point.y).abs
@@ -257,26 +196,26 @@ class WikiHouse::ToolPath
         when :inside
           if slope.nil?
 
-            pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius,
+            pt = [start_point.x + 1 * inside_direction * tool_path.bit.radius,
                   start_point.y + inside_direction * tool_path.bit.radius,
                   start_point.z]
 
 
           elsif slope.zero?
-            pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius,
-                  start_point.y + inside_direction * tool_path.bit.radius,
+            pt = [start_point.x + 1 * inside_direction * tool_path.bit.radius,
+                  start_point.y + -1 * inside_direction * tool_path.bit.radius,
                   start_point.z]
-            if fillet_before == :long_fillet
-              pt.y -= tool_path.bit.radius * inside_direction
-            end
+            # if fillet_before == :long_fillet
+            #   pt.y -= tool_path.bit.radius * inside_direction
+            # end
           else
             if slope > 0
-              pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius,
-                    start_point.y + -1 * inside_direction * tool_path.bit.radius,
-                    start_point.z]
-            else
               pt = [start_point.x + 1 * inside_direction * tool_path.bit.radius,
                     start_point.y + 1 * inside_direction * tool_path.bit.radius,
+                    start_point.z]
+            else
+              pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius,
+                    start_point.y + -1 * inside_direction * tool_path.bit.radius,
                     start_point.z]
             end
 
@@ -285,35 +224,7 @@ class WikiHouse::ToolPath
         when :outside
           pt = point_at_distance(point: start_point, distance: tool_path.bit.radius, direction: inside_direction)
         when :fillet
-          if long_fillet?
-            if slope.nil?
-
-              pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius,
-                    start_point.y + inside_direction * tool_path.bit.radius,
-                    start_point.z]
-
-
-            elsif slope.zero?
-              pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius,
-                    start_point.y + inside_direction * tool_path.bit.radius,
-                    start_point.z]
-
-            else
-              if slope > 0
-                pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius,
-                      start_point.y + -1 * inside_direction * tool_path.bit.radius,
-                      start_point.z]
-              else
-                pt = [start_point.x + 1 * inside_direction * tool_path.bit.radius,
-                      start_point.y + 1 * inside_direction * tool_path.bit.radius,
-                      start_point.z]
-              end
-
-            end
-
-          else
-
-          end
+          raise ScriptError, "Fillets don't get drawn directly"
         else
           raise ScriptError, "Unsupported profile type #{profile_type}"
       end
@@ -321,7 +232,7 @@ class WikiHouse::ToolPath
       return pt
     end
 
-    def profile_end_point
+    def profile_end_point(fillet_after: nil)
       case profile_type
         when :on
           end_point
@@ -330,8 +241,8 @@ class WikiHouse::ToolPath
           #  pt = point_at_distance(point: end_point, distance: inside_distance, direction: inside_direction)
           if slope.nil?
 
-            pt = [end_point.x + -1 * inside_direction * tool_path.bit.radius,
-                  end_point.y + inside_direction * tool_path.bit.radius,
+            pt = [end_point.x + 1 * inside_direction * tool_path.bit.radius,
+                  end_point.y + -1 * inside_direction * tool_path.bit.radius,
                   end_point.z]
 
           elsif slope.zero?
@@ -344,43 +255,15 @@ class WikiHouse::ToolPath
                     end_point.y + 1 * inside_direction * tool_path.bit.radius,
                     end_point.z]
             else
-              pt = [end_point.x + -1 * inside_direction * tool_path.bit.radius,
-                    end_point.y + 1 * inside_direction * tool_path.bit.radius,
+              pt = [end_point.x + 1 * inside_direction * tool_path.bit.radius,
+                    end_point.y + -1 * inside_direction * tool_path.bit.radius,
                     end_point.z]
             end
           end
         when :outside
           pt = point_at_distance(point: end_point, distance: tool_path.bit.radius, direction: inside_direction)
         when :fillet
-          if long_fillet?
-            if slope.nil?
-
-              pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius * 2,
-                    start_point.y + inside_direction * tool_path.bit.radius,
-                    start_point.z]
-
-
-            elsif slope.zero?
-              pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius * 2,
-                    start_point.y + inside_direction * tool_path.bit.radius,
-                    start_point.z]
-
-            else
-              if slope > 0
-                pt = [start_point.x + -1 * inside_direction * tool_path.bit.radius * 2,
-                      start_point.y + -1 * inside_direction * tool_path.bit.radius * 2,
-                      start_point.z]
-              else
-                pt = [start_point.x + 1 * inside_direction * tool_path.bit.radius * 2,
-                      start_point.y + 1 * inside_direction * tool_path.bit.radius * 2,
-                      start_point.z]
-              end
-
-            end
-
-          else
-
-          end
+          raise ScriptError, "Fillets don't get drawn directly"
         else
           raise ScriptError, "Unsupported profile type #{profile_type}"
       end
@@ -388,24 +271,30 @@ class WikiHouse::ToolPath
       return pt
     end
 
-    def profile_points
-      [profile_start_point, profile_end_point]
+    def profile_points(fillet_before:nil, fillet_after:nil)
+      [profile_start_point(fillet_before: fillet_before), profile_end_point(fillet_after: fillet_after)]
     end
+
     def inside_profile?
       profile_type && profile_type == :inside
     end
+
     def outside_profile?
-      profile_type && profile_type ==  :outside
+      profile_type && profile_type == :outside
     end
+
     def on_profile?
       profile_type && profile_type == :on
     end
+
     def fillet_profile?
       profile_type && profile_type == :fillet
     end
+
     def short_fillet?
       fillet_profile? && length == tool_path.bit.radius
     end
+
     def long_fillet?
       fillet_profile? && length == tool_path.bit.diameter
     end
@@ -596,10 +485,11 @@ class WikiHouse::ToolPath
 
     @loops.each do |loop|
       depths = cut_depths(depth: depth)
-      depths.each_with_index do |pass_depth, i|
+      depths = [0.25] #Shortening to debug
+       depths.each_with_index do |pass_depth, i|
         output << Osbp.comment("Pass #{i + 1} #{pass_depth}") << "\n"
 
-        output << loop.to_osbp(depth: pass_depth)
+        output << loop.to_osbp(depth: pass_depth , first_pass: i == 0)
       end
     end
 
