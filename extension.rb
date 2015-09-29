@@ -7,6 +7,12 @@ require 'sketchup.rb'
 require 'extensions.rb'
 SKETCHUP_CONSOLE.show
 
+#Adds in a the cloned version of the testup library
+if Dir.exists?(File.expand_path(File.dirname(__FILE__) + "/../testup-2/src"))
+    puts "Loading the testup testing ext"
+    $LOAD_PATH << File.expand_path(File.dirname(__FILE__) + "/../testup-2/src")
+    require "testup.rb"
+end
 wikihouse_extension = SketchupExtension.new('WikiHouseSATX SketchUp Plugin',
     "#{PLUGIN_DIR}/wiki_house.rb")
 wikihouse_extension.version = '1.0'
