@@ -1,4 +1,5 @@
 class WikiHouse::DoorPanelTopRib
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper
 

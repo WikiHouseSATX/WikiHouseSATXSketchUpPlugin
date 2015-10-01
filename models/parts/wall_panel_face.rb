@@ -1,5 +1,5 @@
 class WikiHouse::WallPanelFace
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper
 
@@ -11,7 +11,7 @@ class WikiHouse::WallPanelFace
                top_connector: WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
                bottom_connector:  WikiHouse::SlotConnector.new(count: 1, thickness: thickness),
                left_connector:  WikiHouse::SlotConnector.new(count: 2, thickness: thickness),
-               face_connector: WikiHouse::PocketConnector.new(count: parent_part.number_of_internal_supports, rows: 2))
+               face_connector: WikiHouse::PocketConnector.new(count: parent_part.number_of_internal_supports, rows: parent_part.number_of_face_tabs))
 
   end
 

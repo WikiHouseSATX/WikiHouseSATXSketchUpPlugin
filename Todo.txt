@@ -39,6 +39,7 @@ Flatten them with all edges intact
 
 Pending Work
 =====================
+Need to fix Helpers so they work like concerns so you can nest the include
 Focus on Nesting for Laser first
 Add a label to all parts for cutting
 

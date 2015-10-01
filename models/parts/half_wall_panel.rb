@@ -1,5 +1,5 @@
 class WikiHouse::HalfWallPanel < WikiHouse::WallPanel
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
 
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil)

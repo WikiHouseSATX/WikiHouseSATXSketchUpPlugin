@@ -1,6 +1,6 @@
 class WikiHouse::UPeg
 
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
 
   attr_accessor :right_inner_leg_in_t, :left_inner_leg_in_t

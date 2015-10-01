@@ -1,6 +1,6 @@
 class WikiHouse::Wedge
 
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
 
 

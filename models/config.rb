@@ -68,13 +68,14 @@ class WikiHouse::Config
     #
     #   p.move_by(z:2).go!
     #    WikiHouse::UPeg.new(label: "UPeg")
-    # #   WikiHouse::WallPanel.new(label: "Wall Panel")
+  # WikiHouse::WallPanel.new(label: "Wall Panel")
     # WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [0,0,0])
-    WikiHouse::SquareCalibration.new(label: "Square", origin: [0, 0, 0])
+ #   WikiHouse::SquareCalibration.new(label: "Square", origin: [0, 0, 0])
     # WikiHouse::WallColumnBoard.new(label: "Column Board",
     #                                   parent_part: parent_part, origin:[0,0,0])
-    # #  WikiHouse::Column.new(label: " Column",
-    #                                       wall_panels_on: [WikiHouse::Orientation::North, WikiHouse::Orientation::South])
+     WikiHouse::Column.new(label: " EN Column",
+                                          wall_panels_on: [WikiHouse::Orientation.east,
+                                                           WikiHouse::Orientation.north])
 
     # WikiHouse::WallColumnRib.new(label: " Column",parent_part: parent_part,
     #                                       wall_panels_on: [WikiHouse::Orientation.west,WikiHouse::Orientation.south])
@@ -87,8 +88,8 @@ class WikiHouse::Config
     #  WikiHouse::DoorPanelTopCap.new(label: "inner", parent_part: parent_part)
     #WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
     #WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
-    #  WikiHouse::DoorPanel.new(label: "Door Panel")
-    #  WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
+   # WikiHouse::DoorPanel.new(label: "Door Panel")
+    # WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
     #  WikiHouse::Column.new(label: "Column", wall_panels_on: [WikiHouse::Orientation.south, WikiHouse::Orientation.west, WikiHouse::Orientation.east, WikiHouse::Orientation.north])
   end
 end

@@ -1,5 +1,5 @@
 class WikiHouse::Column
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
   include WikiHouse::JoinableHelper
 

@@ -1,5 +1,5 @@
 class WikiHouse::WallPanelOuterSide
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper
 

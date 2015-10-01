@@ -1,4 +1,5 @@
 class WikiHouse::DoubleZPeg
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
 
   def initialize(origin: nil, sheet: nil, label: nil)

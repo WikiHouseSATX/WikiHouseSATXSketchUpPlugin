@@ -2,7 +2,7 @@
 #TODO - Dowel Holes
 
 class WikiHouse::Shelfie
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper
 

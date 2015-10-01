@@ -1,6 +1,6 @@
 class WikiHouse::ZPeg
 
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
 
 

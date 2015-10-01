@@ -1,5 +1,6 @@
 class WikiHouse::DoorPanelRib
   include WikiHouse::PartHelper
+  include WikiHouse::AttributeHelper
   include WikiHouse::BoardPartHelper
 
   def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)

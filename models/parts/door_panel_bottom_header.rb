@@ -9,6 +9,7 @@ class WikiHouse::DoorPanelBottomHeader
   include WikiHouse::PartHelper
   include WikiHouse::AttributeHelper
   class TopPart
+    include WikiHouse::AttributeHelper
     include WikiHouse::PartHelper
     include WikiHouse::BoardPartHelper
 
@@ -28,6 +29,7 @@ class WikiHouse::DoorPanelBottomHeader
 
   end
   class MiddlePart
+    include WikiHouse::AttributeHelper
     include WikiHouse::PartHelper
     include WikiHouse::BoardPartHelper
 
@@ -45,6 +47,7 @@ class WikiHouse::DoorPanelBottomHeader
     end
   end
   class BottomPart
+    include WikiHouse::AttributeHelper
     include WikiHouse::PartHelper
     include WikiHouse::BoardPartHelper
 

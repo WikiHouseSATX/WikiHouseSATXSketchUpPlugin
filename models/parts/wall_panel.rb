@@ -1,5 +1,5 @@
 class WikiHouse::WallPanel
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
   include WikiHouse::JoinableHelper
 
@@ -49,6 +49,7 @@ class WikiHouse::WallPanel
 
   def width
     length/2.0
+    #value = 18
     # value = 94/2.0
     # if sheet.length == 24
     #   value/4.0

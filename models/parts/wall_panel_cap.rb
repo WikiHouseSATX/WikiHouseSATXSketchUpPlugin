@@ -1,5 +1,5 @@
 class WikiHouse::WallPanelCap
-
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper
 

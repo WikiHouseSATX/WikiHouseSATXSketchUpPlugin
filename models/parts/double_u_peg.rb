@@ -1,5 +1,6 @@
 #This has to inlcude the wedge as well
 class WikiHouse::DoubleUPeg
+  include WikiHouse::AttributeHelper
   include WikiHouse::PartHelper
 
   def initialize(origin: nil, sheet: nil, label: nil)

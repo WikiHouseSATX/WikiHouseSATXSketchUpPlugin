@@ -4,6 +4,7 @@ class WikiHouse::Orientation
   SOUTH_FACE ||= 0
   WEST_FACE ||= 3
   attr_reader :face_index
+
   def initialize(face_index: nil)
     @face_index = face_index
   end
@@ -15,30 +16,43 @@ class WikiHouse::Orientation
     return "West" if @face_index == WEST_FACE
     "Unknown"
   end
+
   def ==(other)
-    other.face_index == self.face_index
+    if other.respond_to?(:face_index)
+      other.face_index == self.face_index
+    else
+      self.face_index == other
+    end
   end
+
   def north?
     @face_index == NORTH_FACE
   end
+
   def east?
     @face_index == EAST_FACE
   end
+
   def south?
     @face_index == SOUTH_FACE
   end
+
   def west?
     @face_index == WEST_FACE
   end
+
   def self.north
     WikiHouse::Orientation.new(face_index: NORTH_FACE)
   end
+
   def self.east
     WikiHouse::Orientation.new(face_index: EAST_FACE)
   end
+
   def self.south
     WikiHouse::Orientation.new(face_index: SOUTH_FACE)
   end
+
   def self.west
     WikiHouse::Orientation.new(face_index: WEST_FACE)
   end
