@@ -72,7 +72,12 @@ class WikiHouse::SingleNesting
 
       original_group_name = part.group.name
       original_entityID = part.group.entityID
-      part.group = Sk.nest_group(destination_group: sheet_group, source_group: part.group)
+      if Sk.is_a_group?(part.group)
+        part.group = Sk.nest_group(destination_group: sheet_group, source_group: part.group)
+      else
+        part.group = Sk.nest_component(destination_group: sheet_group, source_component: part.group, make_unique: true)
+
+      end
 
       action = fit_action(part, sheet_bounds)
 
@@ -81,14 +86,14 @@ class WikiHouse::SingleNesting
         part.rotate(vector: [0, 0, 1], rotation: -90.degrees).
             move_to(point: [0, 0, 0]).
             move_by(
-                x: -1 * ( @starting_y + sheet.margin + part.group.bounds.width),#-1 *  last_x, #+ sheet.margin),
+                x: -1 * (@starting_y + sheet.margin + part.group.bounds.width), #-1 *  last_x, #+ sheet.margin),
                 y: last_x + sheet.margin, # @starting_y + sheet.margin,
                 z: 0).go!
       elsif action == :move
         part.move_to(point: [last_x + sheet.margin, @starting_y + sheet.margin, 0]).go!
       else
-        raise ArgumentError, "This part doesn't fit!"
-      end
+        raise ArgumentError, "This part doesn't fit! #{part.group.name}"
+     end
 
       part.set_tag(tag_name: "group_source", value: original_group_name)
       part.set_tag(tag_name: "source", value: original_entityID)

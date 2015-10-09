@@ -616,7 +616,7 @@ class WikiHouse::Flattener
   def crawl_group(item)
     item.entities.each do |subitem|
 
-      if subitem.is_a?(Sketchup::Group)
+      if Sk.is_a_group?(subitem)
         if is_cutable?(subitem) || is_flattenable?(subitem)
           flatten_group!(subitem)
         else
@@ -635,7 +635,7 @@ class WikiHouse::Flattener
 
   def crawl_component(item)
     item.definition.entities.each do |subitem|
-      if subitem.is_a?(Sketchup::Group)
+      if Sk.is_a_group?(subitem)
         if is_cutable?(subitem) || is_flattenable?(subitem)
           flatten_group!(subitem)
         else
@@ -658,7 +658,7 @@ class WikiHouse::Flattener
 
     Sk.entities.each do |top|
 
-      if top.is_a?(Sketchup::Group)
+      if Sk.is_a_group?(top)
         if is_cutable?(top) || is_flattenable?(top)
           flatten_group!(top)
         else

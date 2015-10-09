@@ -105,9 +105,19 @@ class WikiHouse::Nester
   def build_nestable_part(item)
     original_layer = Sk.current_active_layer
     Sk.make_layer_active_name(name: nest_layer_name)
-    gcopy = Sk.copy_group(destination_group: @nest_group, source_group: item)
-    gcopy.make_unique
-    gcopy.entities.each { |e| e.layer = nest_layer_name }
+    if Sk.is_a_group?(item)
+      gcopy = Sk.copy_group(destination_group: @nest_group, source_group: item)
+      gcopy.make_unique
+      gcopy.entities.each { |e| e.layer = nest_layer_name }
+    else
+
+    gcopy = Sk.nest_component(destination_group: @nest_group, source_component: item, make_unique: true)
+
+
+    gcopy.definition.entities.each { |e| e.layer = nest_layer_name }
+    end
+
+
     gcopy.name = item.name
     part = WikiHouse::NestablePart.new(group: gcopy, origin: [0, 0, 0], label: item.name)
     part.move_to!(point: [0, 0, 0])

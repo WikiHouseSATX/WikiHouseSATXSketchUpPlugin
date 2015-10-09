@@ -321,6 +321,9 @@ module Sk
     item.is_a?(Sketchup::ComponentInstance)
   end
 
+  def is_a_construction_line?(item)
+    item.is_a?(Sketchup::ConstructionLine)
+  end
   def is_a_group?(item)
     item.is_a?(Sketchup::Group)
   end
