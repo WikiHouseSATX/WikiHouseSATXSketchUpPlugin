@@ -121,7 +121,9 @@ module WikiHouse::PartHelper
   def move_by!(x: 0, y: 0, z: 0)
     alteration.move_by!(x: x, y: y, z: z)
   end
-
+  def clone()
+    alteration.clone
+  end
   def rotate(point: nil, vector: nil, rotation: nil)
     alteration.rotate(point: point, vector: vector, rotation: rotation)
   end

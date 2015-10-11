@@ -30,13 +30,14 @@ class WikiHouse::Nester
     @parts = []
     @outline_sheets
     @strategy = strategy ? strategy : WikiHouse::SingleNesting.new(outline_sheets: outline_sheets, starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
-   # @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(outline_sheets: outline_sheets,starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
+    # @strategy = strategy ? strategy : WikiHouse::FirstFitDecreasingNesting.new(outline_sheets: outline_sheets,starting_x: starting_x, starting_y: starting_y, sheet: @sheet)
     Sk.find_or_create_layer(name: nest_layer_name)
   end
 
   def self.sheet_outline_group_name
     "Sheet Outline"
   end
+
   def self.nest_layer_name
     "WikiHouse::NestedLayer"
   end
@@ -67,6 +68,7 @@ class WikiHouse::Nester
   def nest_layer_name
     self.class.nest_layer_name
   end
+
   def save!
     #this needs to look at the group/layer
     #find all the sheets and trigger a save out to svg
@@ -98,8 +100,6 @@ class WikiHouse::Nester
     end
 
 
-
-
   end
 
   def build_nestable_part(item)
@@ -111,16 +111,29 @@ class WikiHouse::Nester
       gcopy.entities.each { |e| e.layer = nest_layer_name }
     else
 
-    gcopy = Sk.nest_component(destination_group: @nest_group, source_component: item, make_unique: true)
+      gcopy = Sk.nest_component(destination_group: @nest_group, source_component: item, make_unique: true)
 
 
-    gcopy.definition.entities.each { |e| e.layer = nest_layer_name }
+      gcopy.definition.entities.each { |e| e.layer = nest_layer_name }
+
     end
 
 
     gcopy.name = item.name
     part = WikiHouse::NestablePart.new(group: gcopy, origin: [0, 0, 0], label: item.name)
-    part.move_to!(point: [0, 0, 0])
+   #Find the an entity at the lower left hand bounds
+    diff =  part.group.bounds.corner(0)
+
+    #
+    # part.entities.each do |e|
+    #   next if !Sk.is_a_face?(e)
+    #   outer_loop = e.outer_loop
+    #   puts Sk.convert_to_global_position(e)
+    # end
+#    puts Sk.round_pt(Sk.convert_to_global_position(part.group))
+
+   # part.move_to(point: [0,0,0]).move_by(x: 0, y: 0, z: 0).go!
+    part.clone.move_by(x: -1 * diff.x,  y: -1 * diff.z, z:  diff.y).go!
 
 
     Sk.make_layer_active(original_layer)

@@ -10,7 +10,10 @@ class WikiHouse::Alteration
     @operations = []
     self
   end
-
+  def clone
+    @operations << @part.group.transformation
+    self
+  end
   def go!
     unless @operations.length == 0
       #puts "Part Origin before: #{@part.origin}"

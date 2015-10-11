@@ -51,7 +51,9 @@ module Sk
   def round(val)
     val.to_f.round(4)
   end
-
+  def round_pt(pt)
+    [round(pt.x), round(pt.y), round(pt.z)]
+  end
   def degrees_to_radians(degrees)
     degrees.to_f * Math::PI / 180
   end
@@ -448,10 +450,12 @@ module Sk
     end
   end
 
-  def convert_to_global_position(entity)
+  def convert_to_global_position(entity, points: nil)
 #based on code from Position Explorer
 # Copyright 2010 Glenn Babcock
+    if points.nil?
     points = entity.vertices.collect { |v| v.position }
+    end
     parent = entity.parent
 
     while Sk.is_a_component_definition?(parent)

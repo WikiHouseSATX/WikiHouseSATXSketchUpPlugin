@@ -130,7 +130,7 @@ class WikiHouse::Flattener
             next if x == last_dowel_count && dowel_skip_last
             if bounds.min.y == bounds.max.y
               center_z = dowel_center_override != 0 ? dowel_center_override + min.z : center.z
-              circle = Sk.draw_circle(center_point: [min_x + ((x + 1) * dowel_gap_in_inches) ,
+              circle = Sk.draw_circle(center_point: [min_x + ((x + 1) * dowel_gap_in_inches),
                                                      center.y,
                                                      center_z + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center)],
                                       radius: dowel_radius, normal: item.normal)
@@ -142,7 +142,7 @@ class WikiHouse::Flattener
                                                      center_y + (x % 2 == 0 ? dowel_off_center : -1.0 * dowel_off_center),
                                                      center.z],
                                       radius: dowel_radius, normal: item.normal)
-             # puts "bottom #{min_x + ((x + 1) * dowel_gap_in_inches)} #{min.x + ((x + 1) * dowel_gap_in_inches) - dowel_start_override}"
+              # puts "bottom #{min_x + ((x + 1) * dowel_gap_in_inches)} #{min.x + ((x + 1) * dowel_gap_in_inches) - dowel_start_override}"
             end
 
 
@@ -399,6 +399,7 @@ class WikiHouse::Flattener
   class FlatPart
     include WikiHouse::PartHelper
     include WikiHouse::AttributeHelper
+
     def initialize(sheet: nil, component: nil, group: nil, origin: nil, label: nil)
       part_init(sheet: sheet, component: component, group: group, origin: origin, label: label)
     end
@@ -557,22 +558,33 @@ class WikiHouse::Flattener
       end
     end
     if primary_face
+      normal = primary_face.normal
       loop = primary_face.outer_loop
       primary_face.material = nil
-      z_filter = primary_face.vertices.first.position.z #use this to filter out things not at the same level as the plane
+      if Sk.round_pt(normal) == [0, 1, 0]
+        puts "Rotating?"
 
-      off_of_z = lambda do |entity|
+        part.move_to(point: [0,0,0]).rotate(point: [0,0, 0], vector: [1, 0, 0], rotation: 90.degrees).move_to(point: [0,0,0]).go!
+      else
+        part.move_to(point: [0,0,0]).go!
+      end
+      tr = part.group.transformation
+      pt = primary_face.vertices.first.position.transform!(tr)
+      filter_value = Sk.round(pt.z)
 
+      off_of_filter = lambda do |entity|
         return false if !Sk.is_an_edge?(entity)
-        return true if entity.start.position.z != z_filter || entity.end.position.z != z_filter
+        start_pt = entity.start.position.transform!(tr)
+        end_pt = entity.end.position.transform!(tr)
+        return true if Sk.round(start_pt.z) != filter_value ||
+            Sk.round(end_pt.z) != filter_value
         return false
       end
-      off_of_z_count = lambda do |list|
-        list.find_all { |e| off_of_z.call(e) }.count
+      off_of_filter_count = lambda do |list|
+        list.find_all { |e| off_of_filter.call(e) }.count
       end
-
       #need to loop until all stray edges are removed
-      while off_of_z_count.call(part.entities) != 0
+      while off_of_filter_count.call(part.entities) != 0
         part.entities.each do |entity|
           next if entity == primary_face
           erase = false
@@ -580,17 +592,24 @@ class WikiHouse::Flattener
             erase = true
           end
           if !entity.deleted? && Sk.is_an_edge?(entity)
-            erase = true if off_of_z.call(entity)
+            erase = true if off_of_filter.call(entity)
 
           end
           entity.erase! if erase
         end
       end
-      if primary_face.normal.z == -1
-        #puts "Reversing #{primary_face.normal.z}"
+      if Sk.round_pt(normal) == [0, 1, 0]
+        puts "Rotating?"
         primary_face.reverse!
+        part.rotate(point: [x, 20, 0], vector: [1, 0, 0], rotation: 90.degrees).move_to(point: [x, 20, 0]).go!
+
+      else
+        if primary_face.normal.z == -1
+          #puts "Reversing #{primary_face.normal.z}"
+          primary_face.reverse!
+        end
+        part.move_to(point: [x, 20, 0]).go!
       end
-      part.move_to!(point: [x, 200, -1 * z_filter])
     else
       puts "This part does not have a primary face :("
     end
