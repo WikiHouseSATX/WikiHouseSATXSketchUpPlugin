@@ -76,7 +76,7 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
     if Sk.is_a_group?(sheet_group)
       sheet_group.entities.each do |e|
         if e.is_a? Sketchup::Group
-          # puts "#{e.name}"
+          puts "#{e.name}"
           next if e.name == WikiHouse::Nester.sheet_outline_group_name && !@draw_sheet_outline
           face_count = 0
           face = nil
@@ -87,7 +87,7 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
             end
           end
           if face_count != 1
-            puts "Sorry this needs to be flat"
+            puts "Sorry this needs to be flat #{face_count}"
           else
             svg_file.write %Q(<g id="sketchup-entityId-#{e.entityID}">\n)
             svg_file.write %Q(<desc>#{e.name}</desc>\n)

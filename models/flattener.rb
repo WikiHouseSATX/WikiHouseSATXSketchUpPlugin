@@ -243,6 +243,21 @@ class WikiHouse::Flattener
 
         g = Sk.add_group
         g.name = "Flat " + sel.name
+        outer_loop = nil
+        inner_loops = []
+        all_entities.each do |e|
+          next if e.deleted?
+          if Sk.is_a_face?(e) && Sk.get_attribute(e, WikiHouse::PartHelper.tag_dictionary, "primary_face").to_s == "true"
+            outer_loop = e.outer_loop.edges.collect { |e| [e.start.position, e.end.position] }
+            e.loops.each do |loop|
+              next if loop.outer?
+              inner_loops << loop.edges.collect { |e| [e.start.position, e.end.position] }
+            end
+            break
+          end
+        end
+
+
         all_entities.each do |e|
           next if e.deleted?
           if Sk.is_a_face?(e)
@@ -256,7 +271,84 @@ class WikiHouse::Flattener
             e.erase!
           end
         end
+        if outer_loop
+         # puts "Redrawing the outerloop"
+          lines = []
+          last_line = nil
+          outer_loop.each do |e|
 
+            if last_line
+              if last_line[1] == e[0]
+                start_pt = e[0]
+                end_pt = e[1]
+              else
+                start_pt = e[1]
+                end_pt = e[0]
+              end
+            else
+              #first run
+              if outer_loop[1][0] == e[0]
+                start_pt = e[0]
+                end_pt = e[1]
+              else
+                start_pt = e[1]
+                end_pt = e[0]
+              end
+
+            end
+          #  puts "Outer #{start_pt} -> #{end_pt}"
+            lines << Sk.draw_line([start_pt.x, start_pt.y, 0], [end_pt.x, end_pt.y, 0], group: g)
+            last_line = [start_pt, end_pt]
+
+          end
+
+          face =g.entities.add_face(lines)
+          # e = outer_loop.first
+          # lines << Sk.draw_line([e[0].x, e[0].y, 0], [e[1].x, e[1].y, 0], group: g)
+          # Sk.add_face(lines)
+        end
+        if inner_loops
+         # puts "Redrawing the outerloop"
+
+          inner_loops.each do |loop|
+            lines = []
+            last_line = nil
+            loop.each do |e|
+
+              if last_line
+                if last_line[1] == e[0]
+                  start_pt = e[0]
+                  end_pt = e[1]
+                else
+                  start_pt = e[1]
+                  end_pt = e[0]
+                end
+              else
+                #first run
+                if loop[1][0] == e[0]
+                  start_pt = e[0]
+                  end_pt = e[1]
+                else
+                  start_pt = e[1]
+                  end_pt = e[0]
+                end
+
+              end
+           #   puts "Innert #{start_pt} -> #{end_pt}"
+              lines << Sk.draw_line([start_pt.x, start_pt.y, 0], [end_pt.x, end_pt.y, 0], group: g)
+              last_line = [start_pt, end_pt]
+            end
+            face =g.entities.add_face(lines)
+            face.erase!
+            # e = outer_loop.first
+            # lines << Sk.draw_line([e[0].x, e[0].y, 0], [e[1].x, e[1].y, 0], group: g)
+            # Sk.add_face(lines)
+          end
+
+        end
+
+
+        # Sk.add_face(g.entities.select { |e| Sk.is_an_edge?(e) })
         Sk.nest_group(destination_group: @@flat_group, source_group: g)
 
         x += part.bounds.width + 10
@@ -339,6 +431,12 @@ class WikiHouse::Flattener
     unless Sk.selection.empty?
       Sk.selection.each do |e|
         remove_primary_face!(e)
+        if Sk.is_a_group?(e)
+          e.entities.each { |sub_e| remove_primary_face!(sub_e) }
+        elsif Sk.is_a_component_instance?(e)
+          e.definition.entities.each { |sub_e| remove_primary_face!(sub_e) }
+        end
+
       end
     end
   end
@@ -564,9 +662,9 @@ class WikiHouse::Flattener
       if Sk.round_pt(normal) == [0, 1, 0]
         puts "Rotating?"
 
-        part.move_to(point: [0,0,0]).rotate(point: [0,0, 0], vector: [1, 0, 0], rotation: 90.degrees).move_to(point: [0,0,0]).go!
+        part.move_to(point: [0, 0, 0]).rotate(point: [0, 0, 0], vector: [1, 0, 0], rotation: 90.degrees).move_to(point: [0, 0, 0]).go!
       else
-        part.move_to(point: [0,0,0]).go!
+        part.move_to(point: [0, 0, 0]).go!
       end
       tr = part.group.transformation
       pt = primary_face.vertices.first.position.transform!(tr)

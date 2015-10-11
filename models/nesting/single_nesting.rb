@@ -78,9 +78,15 @@ class WikiHouse::SingleNesting
         part.group = Sk.nest_component(destination_group: sheet_group, source_component: part.group, make_unique: true)
 
       end
+      part_bounds = Sk.min_max_bounds(part.group)
+      pmax = part_bounds[:max]
 
-      action = fit_action(part, sheet_bounds)
+      if pmax.z != 0
+        part.move_by(z: 0).go!
+      end
 
+     action = fit_action(part, sheet_bounds)
+     puts  "Action is #{action}"
       if action == :rotate
 
         part.rotate(vector: [0, 0, 1], rotation: -90.degrees).

@@ -121,19 +121,11 @@ class WikiHouse::Nester
 
     gcopy.name = item.name
     part = WikiHouse::NestablePart.new(group: gcopy, origin: [0, 0, 0], label: item.name)
-   #Find the an entity at the lower left hand bounds
-    diff =  part.group.bounds.corner(0)
+    #Find the an entity at the lower left hand bounds
+    diff = part.group.bounds.corner(0)
 
-    #
-    # part.entities.each do |e|
-    #   next if !Sk.is_a_face?(e)
-    #   outer_loop = e.outer_loop
-    #   puts Sk.convert_to_global_position(e)
-    # end
-#    puts Sk.round_pt(Sk.convert_to_global_position(part.group))
 
-   # part.move_to(point: [0,0,0]).move_by(x: 0, y: 0, z: 0).go!
-    part.clone.move_by(x: -1 * diff.x,  y: -1 * diff.z, z:  diff.y).go!
+    part.clone.move_by(x: -1 * diff.x, y: -1 * diff.z, z: diff.y).go!
 
 
     Sk.make_layer_active(original_layer)
