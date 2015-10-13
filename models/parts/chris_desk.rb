@@ -285,8 +285,8 @@ class WikiHouse::ChrisDesk
       @length_method = :width
       @number_of_tabs = 3
       init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3, length_in_t: 1 * parent_part.tab_depth_percent),
-                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 2 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 3),
-                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 2 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 3),
+                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1 + 1 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 3),
+                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1 + 1 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 3),
                  right_connector: WikiHouse::NoneConnector.new,
                  face_connector: WikiHouse::NoneConnector.new())
 
@@ -294,7 +294,8 @@ class WikiHouse::ChrisDesk
 
 
     def length
-      parent_part.width - 2 * parent_part.side_leg_offset - 2 * thickness * (1 - parent_part.tab_depth_percent)
+      parent_part.width - 2 * parent_part.side_leg_offset  - 2 *  thickness * (1 - parent_part.tab_depth_percent)
+
     end
 
     def width
@@ -679,7 +680,7 @@ class WikiHouse::ChrisDesk
   end
 
   def back_cross_bar_nominal_width #this is measured without tabs
-    6.0
+    5.0
   end
 
   def side_leg_offset # Gap between edge of top and the outer leg
@@ -706,10 +707,10 @@ class WikiHouse::ChrisDesk
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
 
-    @top.draw!
-     @top.move_by(x: 0,
-                  y: 0,
-                  z: length - thickness * tab_depth_percent).go!
+    # @top.draw!
+    #  @top.move_by(x: 0,
+    #               y: 0,
+    #               z: length - thickness * tab_depth_percent).go!
 
        @front_cross_bar.draw!
 
@@ -724,7 +725,7 @@ class WikiHouse::ChrisDesk
          rotate(vector: [0, 1, 0], rotation: 90.degrees).
          move_to(point: origin).
          move_by(x: -1 * length,
-                 y: -1 * width + side_leg_offset + thickness * (1 - tab_depth_percent),
+                 y: -1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent),
                  z: -1 * depth + back_cross_bar_offset).go!
 
      rear_leg_offset = depth - @left_outer_leg.top_width - front_leg_offset
