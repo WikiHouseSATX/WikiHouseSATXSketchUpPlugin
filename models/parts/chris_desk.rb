@@ -675,7 +675,7 @@ class WikiHouse::ChrisDesk
   end
 
   def front_cross_bar_nominal_width #This is measuered without tabs
-    1.75
+   3.0
   end
 
   def back_cross_bar_nominal_width #this is measured without tabs
