@@ -82,15 +82,17 @@ class WikiHouse::ChrisDesk
       @length_in_t = 1
       offset_top = (@desk.middle_left_cross_bar.width - 2 * @desk.thickness * @desk.tab_depth_percent)/2.0
       # Left Leg Pockets
-      puts @desk.middle_left_cross_bar_offset
-      puts @desk.middle_right_cross_bar_offset
+    #  puts @desk.middle_left_cross_bar_offset
+    #  puts @desk.middle_right_cross_bar_offset
+      #left
       pockets << draw_pocket!(location: [@cross_bar.origin.x + offset_top ,
-                                         @cross_bar.origin.y - @desk.middle_left_cross_bar_offset  ,
+                                         @cross_bar.origin.y - (@desk.width - @desk.middle_left_cross_bar_offset) + @desk.side_leg_offset + @desk.tab_depth_percent * thickness  ,
                                          @cross_bar.origin.z])
 
 
-      pockets << draw_pocket!(location: [@cross_bar.origin.x + offset_top,
-                                         @cross_bar.origin.y  - @desk.middle_right_cross_bar_offset,
+      #right
+      pockets << draw_pocket!(location: [@cross_bar.origin.x + offset_top ,
+                                         @cross_bar.origin.y - (@desk.width - @desk.middle_right_cross_bar_offset) + @desk.side_leg_offset + @desk.tab_depth_percent * thickness  ,
                                          @cross_bar.origin.z])
 
 
@@ -162,14 +164,16 @@ class WikiHouse::ChrisDesk
                                          @desktop.origin.y - @desktop.length + 2 * thickness + @desk.side_leg_offset,
                                          @desktop.origin.z])
 
+        #Middle CrossBar Pockets
       @width_in_t = 3
       @length_in_t = 1
-
-      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset + @desk.middle_right_cross_bar.length/2.0 - (@width_in_t * thickness)/2.0,
-                                         @desktop.origin.y - @desktop.length +  thickness + @desk.side_leg_offset + @desk.middle_right_cross_bar_offset,
+#middle right
+      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset + @desk.middle_right_cross_bar.length/2.0 + thickness - (2 * thickness), #+ @desk.middle_right_cross_bar.length/2.0 + (@width_in_t * thickness)/2.0,
+                                         @desktop.origin.y - @desktop.length  + (@desktop.length - @desk.middle_right_cross_bar_offset),
                                          @desktop.origin.z])
-      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset +   @desk.middle_left_cross_bar.length/2.0 - (@width_in_t * thickness)/2.0,
-                                         @desktop.origin.y - @desktop.length +  thickness + @desk.side_leg_offset + @desk.middle_left_cross_bar_offset,
+#middle left
+      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset + @desk.middle_right_cross_bar.length/2.0 + thickness - (2 * thickness),
+                                         @desktop.origin.y - @desktop.length +  (@desktop.length - @desk.middle_left_cross_bar_offset),
                                          @desktop.origin.z])
       # half_width_part = part_width/2.0
       # half_width_connector = width/2.0
@@ -376,7 +380,7 @@ class WikiHouse::ChrisDesk
 
 
     def length
-      parent_part.leg_top_width - parent_part.leg_front_cross_bar_front_offset - parent_part.leg_back_cross_bar_back_offset
+      parent_part.leg_top_width - parent_part.leg_front_cross_bar_front_offset - parent_part.leg_back_cross_bar_back_offset  - 2 *  thickness * (1 - parent_part.tab_depth_percent)
 
     end
 
@@ -739,8 +743,8 @@ class WikiHouse::ChrisDesk
 
   def tab_depth_percent
     0.80
-    #0.50
-      1.0
+    0.50
+#    1.0
   end
 
   def length
@@ -803,11 +807,14 @@ class WikiHouse::ChrisDesk
   def middle_left_cross_bar_offset
 
     (@front_cross_bar.length * 0.33).to_f.round(2)
+    width/4 - thickness/2.0
+
 
 
   end
   def middle_right_cross_bar_offset
     (@front_cross_bar.length * 0.66).to_f.round(2)
+    width/4 * 3 - thickness/2.0
 
   end
   def draw!
@@ -837,22 +844,22 @@ class WikiHouse::ChrisDesk
 
     @middle_left_cross_bar.draw!
 
-    @middle_left_cross_bar.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-        rotate(vector: [0, 1, 0], rotation: 180.degrees).
-        rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: -1 * length,
-                y: @middle_left_cross_bar.length - front_cross_bar_nominal_width - thickness * tab_depth_percent,
-                z:-1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent)  + middle_left_cross_bar_offset + thickness).go!
-    puts "Moving it to #{width} + #{side_leg_offset} + #{thickness * (1 - tab_depth_percent)}+ #{middle_left_cross_bar_offset} = #{-1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent)  + middle_left_cross_bar_offset}"
+    # @middle_left_cross_bar.rotate(vector: [1, 0, 0], rotation: -90.degrees).
+    #     rotate(vector: [0, 1, 0], rotation: 180.degrees).
+    #     rotate(vector: [0, 0, 1], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: -1 * length,
+    #             y: @middle_left_cross_bar.length - front_cross_bar_nominal_width ,
+    #             z:-1 * width +  middle_left_cross_bar_offset  - thickness * tab_depth_percent).go!
+  #  puts "Moving it to #{width} + #{side_leg_offset} + #{thickness * (1 - tab_depth_percent)}+ #{middle_left_cross_bar_offset} = #{-1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent)  + middle_left_cross_bar_offset}"
     @middle_right_cross_bar.draw!
     @middle_right_cross_bar.rotate(vector: [1, 0, 0], rotation: -90.degrees).
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         rotate(vector: [0, 0, 1], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: -1 * length,
-                y: @middle_right_cross_bar.length  - front_cross_bar_nominal_width  - thickness * tab_depth_percent,
-                z: -1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent)  + middle_right_cross_bar_offset + thickness ).go!
+                y: depth - back_cross_bar_offset - @middle_right_cross_bar.length - ( 1 *  _tab_depth_percent * thickness),
+                z: -1 * width + ( middle_right_cross_bar_offset)  ).go!
 
 
     rear_leg_offset = depth - @left_outer_leg.top_width - front_leg_offset

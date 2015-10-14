@@ -110,7 +110,7 @@ module Sk
     c1 = [x1, y1, 0]
     c2 = [x1 + b_length, y1, 0]
     bottom_triangle_leg = h_length/Math.tan(self.class.degrees_to_radians(x1_angle_in_degrees))
-    puts "#{x1} #{b_length} #{h_length} #{bottom_triangle_leg}"
+   # puts "#{x1} #{b_length} #{h_length} #{bottom_triangle_leg}"
     if x1_angle_in_degrees > 90
       c3 = [x1 + b_length + -bottom_triangle_leg, y1 - h_length, 0]
 
@@ -193,7 +193,7 @@ module Sk
                group: nil)
     normal ||= Geom::Vector3d.new 0, 0, 1
     zero_vector ||= Geom::Vector3d.new 0, 1, 0
-    puts radius, center_point, zero_vector, normal, start_angle, end_angle, num_segments, group
+  #  puts radius, center_point, zero_vector, normal, start_angle, end_angle, num_segments, group
     group ? group.entities.add_arc(center_point, zero_vector, normal, radius, start_angle, end_angle, num_segments) : Sketchup.active_model.active_entities.add_arc(center_point, zero_vector, normal, radius,
                                                                                                                                                                     start_angle, end_angle, num_segments)
 
@@ -491,7 +491,7 @@ module Sk
   def flipped_x?(entity)
     transformation = entity.transformation
     dot_x, dot_y, dot_z = transformation_axes_dot_products(transformation)
-    puts "Dots- #{dot_x} #{dot_y} #{dot_z}"
+   # puts "Dots- #{dot_x} #{dot_y} #{dot_z}"
     dot_x < 0 && dot_matrix_flipped?(dot_x, dot_y, dot_z)
   end
 
