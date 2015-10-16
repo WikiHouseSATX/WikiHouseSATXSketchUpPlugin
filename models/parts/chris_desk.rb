@@ -77,22 +77,23 @@ class WikiHouse::ChrisDesk
       pockets = []
       #Front Cross Bar Pockets
 
-   
+
       @width_in_t = 2
       @length_in_t = 1
-      offset_top = (@desk.middle_left_cross_bar.width - 2 * @desk.thickness * @desk.tab_depth_percent)/2.0
+  #    puts "#{@desk.middle_left_cross_bar.width} #{@desk.thickness} #{@desk.tab_depth_percent}"
+      offset_top = (@desk.middle_left_cross_bar.width - 2 * @desk.thickness )/2.0
       # Left Leg Pockets
-    #  puts @desk.middle_left_cross_bar_offset
-    #  puts @desk.middle_right_cross_bar_offset
+      #  puts @desk.middle_left_cross_bar_offset
+      #  puts @desk.middle_right_cross_bar_offset
       #left
-      pockets << draw_pocket!(location: [@cross_bar.origin.x + offset_top ,
-                                         @cross_bar.origin.y - (@desk.width - @desk.middle_left_cross_bar_offset) + @desk.side_leg_offset + @desk.tab_depth_percent * thickness  ,
+      pockets << draw_pocket!(location: [@cross_bar.origin.x + offset_top,
+                                         @cross_bar.origin.y - (@desk.width - @desk.middle_left_cross_bar_offset) + @desk.side_leg_offset +  thickness + thickness * (1.0 - @desk.tab_depth_percent),
                                          @cross_bar.origin.z])
 
 
       #right
-      pockets << draw_pocket!(location: [@cross_bar.origin.x + offset_top ,
-                                         @cross_bar.origin.y - (@desk.width - @desk.middle_right_cross_bar_offset) + @desk.side_leg_offset + @desk.tab_depth_percent * thickness  ,
+      pockets << draw_pocket!(location: [@cross_bar.origin.x + offset_top,
+                                         @cross_bar.origin.y - (@desk.width - @desk.middle_right_cross_bar_offset) + @desk.side_leg_offset + thickness + thickness * (1.0 - @desk.tab_depth_percent),
                                          @cross_bar.origin.z])
 
 
@@ -164,16 +165,16 @@ class WikiHouse::ChrisDesk
                                          @desktop.origin.y - @desktop.length + 2 * thickness + @desk.side_leg_offset,
                                          @desktop.origin.z])
 
-        #Middle CrossBar Pockets
+      #Middle CrossBar Pockets
       @width_in_t = 3
       @length_in_t = 1
-#middle right
-      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset + @desk.middle_right_cross_bar.length/2.0 + thickness - (2 * thickness), #+ @desk.middle_right_cross_bar.length/2.0 + (@width_in_t * thickness)/2.0,
-                                         @desktop.origin.y - @desktop.length  + (@desktop.length - @desk.middle_right_cross_bar_offset),
+      #middle right
+      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset + @desk.middle_right_cross_bar.length/2.0  - (1.5 * (@desk.tab_depth_percent * thickness)), #+ @desk.middle_right_cross_bar.length/2.0 + (@width_in_t * thickness)/2.0,
+                                         @desktop.origin.y - @desktop.length + (@desktop.length - @desk.middle_right_cross_bar_offset),
                                          @desktop.origin.z])
-#middle left
-      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset + @desk.middle_right_cross_bar.length/2.0 + thickness - (2 * thickness),
-                                         @desktop.origin.y - @desktop.length +  (@desktop.length - @desk.middle_left_cross_bar_offset),
+      #middle left
+      pockets << draw_pocket!(location: [@desktop.origin.x + @desk.front_cross_bar_offset + @desk.middle_right_cross_bar.length/2.0 -  (1.5 * (@desk.tab_depth_percent * thickness)),
+                                         @desktop.origin.y - @desktop.length + (@desktop.length - @desk.middle_left_cross_bar_offset),
                                          @desktop.origin.z])
       # half_width_part = part_width/2.0
       # half_width_connector = width/2.0
@@ -225,64 +226,63 @@ class WikiHouse::ChrisDesk
       pre_point = [top_left_corner.x, top_left_corner.y - corner_radius, top_left_corner.z]
       post_point = [top_left_corner.x + corner_radius, top_left_corner.y, top_left_corner.z]
       center_point = [post_point.x, pre_point.y, top_left_corner.z]
-     
+
 
       corners[0] = Sk.draw_arc(center_point: center_point,
-                        zero_vector: [0, 1, 0],
-                        normal: [0, 0, 1],
-                        radius: corner_radius,
-                        start_angle: 0,
-                        end_angle: 90.degrees)
+                               zero_vector: [0, 1, 0],
+                               normal: [0, 0, 1],
+                               radius: corner_radius,
+                               start_angle: 0,
+                               end_angle: 90.degrees)
 
-      pre_point = [top_right_corner.x - corner_radius, top_right_corner.y , top_right_corner.z]
+      pre_point = [top_right_corner.x - corner_radius, top_right_corner.y, top_right_corner.z]
       post_point = [top_right_corner.x, top_right_corner.y - corner_radius, top_right_corner.z]
       center_point = [pre_point.x, post_point.y, top_right_corner.z]
-    
+
 
       corners[1] = Sk.draw_arc(center_point: center_point,
                                zero_vector: [0, 1, 0],
                                normal: [0, 0, 1],
                                radius: corner_radius,
-                               start_angle:0,
+                               start_angle: 0,
                                end_angle: -90.degrees)
 
 
-
-      pre_point = [bottom_right_corner.x , bottom_right_corner.y + corner_radius , bottom_right_corner.z]
-      post_point = [bottom_right_corner.x - corner_radius, bottom_right_corner.y , bottom_right_corner.z]
+      pre_point = [bottom_right_corner.x, bottom_right_corner.y + corner_radius, bottom_right_corner.z]
+      post_point = [bottom_right_corner.x - corner_radius, bottom_right_corner.y, bottom_right_corner.z]
       center_point = [post_point.x, pre_point.y, bottom_right_corner.z]
-    
+
 
       corners[2] = Sk.draw_arc(center_point: center_point,
                                zero_vector: [0, 1, 0],
                                normal: [0, 0, 1],
                                radius: corner_radius,
-                               start_angle:180.degrees,
+                               start_angle: 180.degrees,
                                end_angle: 270.degrees)
 
-      pre_point = [bottom_left_corner.x + corner_radius , bottom_left_corner.y  , bottom_left_corner.z]
-      post_point = [bottom_left_corner.x , bottom_left_corner.y + corner_radius , bottom_left_corner.z]
+      pre_point = [bottom_left_corner.x + corner_radius, bottom_left_corner.y, bottom_left_corner.z]
+      post_point = [bottom_left_corner.x, bottom_left_corner.y + corner_radius, bottom_left_corner.z]
       center_point = [pre_point.x, post_point.y, bottom_left_corner.z]
-   
+
 
       corners[3] = Sk.draw_arc(center_point: center_point,
                                zero_vector: [0, 1, 0],
                                normal: [0, 0, 1],
                                radius: corner_radius,
-                               start_angle:90.degrees,
+                               start_angle: 90.degrees,
                                end_angle: 180.degrees)
       lines = []
-      corners[0].each { |c| lines << c}
+      corners[0].each { |c| lines << c }
       lines << Sk.draw_line(corners[0].first.start.position, corners[1].first.start.position)
 
-      corners[1].each { |c| lines << c}
+      corners[1].each { |c| lines << c }
       lines << Sk.draw_line(corners[1].last.end.position, corners[2].last.end.position)
-      corners[2].each { |c| lines << c}
-     lines << Sk.draw_line(corners[2].first.start.position, corners[3].last.end.position)
-     corners[3].each { |c| lines << c}
-     lines << Sk.draw_line(corners[3].first.start.position, corners[0].last.end.position)
+      corners[2].each { |c| lines << c }
+      lines << Sk.draw_line(corners[2].first.start.position, corners[3].last.end.position)
+      corners[3].each { |c| lines << c }
+      lines << Sk.draw_line(corners[3].first.start.position, corners[0].last.end.position)
 
-     lines
+      lines
 
     end
 
@@ -303,7 +303,7 @@ class WikiHouse::ChrisDesk
                  top_connector: WikiHouse::NoneConnector.new(),
                  bottom_connector: WikiHouse::NoneConnector.new(),
                  right_connector: WikiHouse::HookConnector.new(thickness: thickness, width_in_t: 1 * parent_part.tab_depth_percent, length_in_t: 1),
-                 face_connector:  BackCrossBarPocketConnector.new(cross_bar: self, desk: parent_part))
+                 face_connector: BackCrossBarPocketConnector.new(cross_bar: self, desk: parent_part))
 
 
     end
@@ -314,11 +314,9 @@ class WikiHouse::ChrisDesk
 
 
     def width
-      if sheet.length == 24
-        value = parent_part.front_cross_bar_nominal_width/4.0 + thickness * parent_part.tab_depth_percent + thickness
-      else
+
         value = parent_part.front_cross_bar_nominal_width + thickness * parent_part.tab_depth_percent + thickness
-      end
+
 
     end
   end
@@ -345,16 +343,14 @@ class WikiHouse::ChrisDesk
 
 
     def length
-      parent_part.width - 2 * parent_part.side_leg_offset  - 2 *  thickness * (1 - parent_part.tab_depth_percent)
+      parent_part.width - 2 * parent_part.side_leg_offset - 2 * thickness * (1 - parent_part.tab_depth_percent)
 
     end
 
     def width
-      if sheet.length == 24
-        value = parent_part.back_cross_bar_nominal_width/4.0 + thickness * parent_part.tab_depth_percent
-      else
+
         value = parent_part.back_cross_bar_nominal_width + thickness * parent_part.tab_depth_percent
-      end
+
     end
   end
   class MiddleCrossBar
@@ -371,8 +367,8 @@ class WikiHouse::ChrisDesk
       @length_method = :width
       @number_of_tabs = 1
       init_board(left_connector: WikiHouse::TabConnector.new(count: @number_of_tabs, thickness: thickness, width_in_t: 3, length_in_t: 1 * parent_part.tab_depth_percent),
-                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t:  1 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 2),
-                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t:  1 * parent_part.tab_depth_percent, thickness: thickness, width_in_t:2),
+                 top_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 2),
+                 bottom_connector: WikiHouse::TabConnector.new(count: 1, length_in_t: 1 * parent_part.tab_depth_percent, thickness: thickness, width_in_t: 2),
                  right_connector: WikiHouse::NoneConnector.new,
                  face_connector: WikiHouse::NoneConnector.new())
 
@@ -380,16 +376,13 @@ class WikiHouse::ChrisDesk
 
 
     def length
-      parent_part.leg_top_width - parent_part.leg_front_cross_bar_front_offset - parent_part.leg_back_cross_bar_back_offset  - 2 *  thickness * (1 - parent_part.tab_depth_percent)
+      parent_part.leg_top_width - parent_part.leg_front_cross_bar_front_offset - parent_part.leg_back_cross_bar_back_offset - 2 * thickness * (1 - parent_part.tab_depth_percent)
 
     end
 
     def width
-      if sheet.length == 24
-        value = parent_part.front_cross_bar_nominal_width/4.0 + thickness * parent_part.tab_depth_percent
-      else
         value = parent_part.front_cross_bar_nominal_width + thickness * parent_part.tab_depth_percent
-      end
+
     end
   end
   class Leg
@@ -467,7 +460,7 @@ class WikiHouse::ChrisDesk
     end
 
     def front_cross_bar_front_offset
-     parent_part.leg_front_cross_bar_front_offset
+      parent_part.leg_front_cross_bar_front_offset
     end
 
     def back_cross_bar_back_offset
@@ -475,24 +468,17 @@ class WikiHouse::ChrisDesk
     end
 
     def front_cross_bar_top_offset
-      if sheet.length == 24
-        bottom_half = (parent_part.front_cross_bar_nominal_width/4.0 + sheet.thickness * parent_part.tab_depth_percent)/2.0 - sheet.thickness/2.0
-        value = parent_part.front_cross_bar_nominal_width/4.0 - bottom_half - sheet.thickness
-      else
+
         bottom_half = (parent_part.front_cross_bar_nominal_width + sheet.thickness * parent_part.tab_depth_percent)/2.0 - sheet.thickness/2.0
         value = parent_part.front_cross_bar_nominal_width - bottom_half - sheet.thickness
-      end
 
       value
     end
 
     def back_cross_bar_top_offset
-      if sheet.length == 24
-        value = (parent_part.back_cross_bar_nominal_width/4.0 - 3 * sheet.thickness)/2.0 - sheet.thickness
-      else
+
         bottom_half = (parent_part.back_cross_bar_nominal_width + sheet.thickness * parent_part.tab_depth_percent - 3 * sheet.thickness)/2.0
         value = parent_part.back_cross_bar_nominal_width - bottom_half - 3 * sheet.thickness
-      end
 
       value
 
@@ -666,19 +652,19 @@ class WikiHouse::ChrisDesk
 
 
       # Front Cross Bar Slot
-      leg_points << [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset - t,
+       leg_points << [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset - t,
                      bounding_c1.y - length + thickness,
                      bounding_c1.z]
       leg_points << [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset - t,
                      bounding_c1.y - length + thickness + parent_part.front_cross_bar_nominal_width + t,
                      bounding_c1.z]
-      leg_points << [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset,
+     leg_points << [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset,
                      bounding_c1.y - length + thickness + parent_part.front_cross_bar_nominal_width + t,
+                     bounding_c1.z]
+      leg_points << [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset,
+                     bounding_c1.y - length + thickness,
                      bounding_c1.z]
 
-      leg_points << [bounding_c1.x + back_foot_width + top_width - front_cross_bar_front_offset,
-                     bounding_c1.y - length + thickness,
-                     bounding_c1.z]
       #Rest of leg
       leg_points << [bounding_c1.x + back_foot_width + top_width, bounding_c1.y - length + thickness, bounding_c1.z]
       leg_points << [bounding_c1.x + width, bounding_c1.y, bounding_c1.z]
@@ -743,8 +729,8 @@ class WikiHouse::ChrisDesk
 
   def tab_depth_percent
     0.80
-    0.50
-#    1.0
+  #  0.50
+  #  1.0
   end
 
   def length
@@ -765,16 +751,20 @@ class WikiHouse::ChrisDesk
   end
 
   def front_cross_bar_nominal_width #This is measuered without tabs
-   3.0
+    value = 3.0
+    sheet.length == 24 ? value/4.0 : value
   end
 
   def back_cross_bar_nominal_width #this is measured without tabs
-    5.0
+    value = 5.0
+    sheet.length == 24 ? value/4.0 : value
   end
+
   def leg_top_width
     value = 15.0
     sheet.length == 24 ? value/4.0 : value
   end
+
   def leg_front_cross_bar_front_offset
     value = 2
     sheet.length == 24 ? value/4.0 : value
@@ -804,99 +794,101 @@ class WikiHouse::ChrisDesk
     value = 6.25
     sheet.length == 24 ? value/4.0 : value
   end
+
   def middle_left_cross_bar_offset
 
     (@front_cross_bar.length * 0.33).to_f.round(2)
     width/4 - thickness/2.0
 
 
-
   end
+
   def middle_right_cross_bar_offset
     (@front_cross_bar.length * 0.66).to_f.round(2)
     width/4 * 3 - thickness/2.0
 
   end
+
   def draw!
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
 
     @top.draw!
-     @top.move_by(x: 0,
-                  y: 0,
-                  z: length - thickness * tab_depth_percent).go!
+    @top.move_by(x: 0,
+                 y: 0,
+                 z: length - thickness * tab_depth_percent).go!
 
-       @front_cross_bar.draw!
+    @front_cross_bar.draw!
 
-     @front_cross_bar.rotate(vector: [0, 0, 1], rotation: 180.degrees).
-         rotate(vector: [0, 1, 0], rotation: 90.degrees).
-         move_to(point: origin).
-         move_by(x: -1 * length,
-                 y: -1 * width + side_leg_offset + thickness * (1 - tab_depth_percent),
-                 z: -1 * front_cross_bar_offset - thickness).go!
+    @front_cross_bar.rotate(vector: [0, 0, 1], rotation: 180.degrees).
+        rotate(vector: [0, 1, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: -1 * length,
+                y: -1 * width + side_leg_offset + thickness * (1 - tab_depth_percent),
+                z: -1 * front_cross_bar_offset - thickness).go!
     @back_cross_bar.draw!
-     @back_cross_bar.rotate(vector: [0, 0, 1], rotation: 180.degrees).
-         rotate(vector: [0, 1, 0], rotation: 90.degrees).
-         move_to(point: origin).
-         move_by(x: -1 * length,
-                 y: -1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent),
-                 z: -1 * depth + back_cross_bar_offset).go!
+    @back_cross_bar.rotate(vector: [0, 0, 1], rotation: 180.degrees).
+        rotate(vector: [0, 1, 0], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: -1 * length,
+                y: -1 * width + side_leg_offset + thickness * (1 - tab_depth_percent),
+                z: -1 * depth + back_cross_bar_offset).go!
 
     @middle_left_cross_bar.draw!
 
-    # @middle_left_cross_bar.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-    #     rotate(vector: [0, 1, 0], rotation: 180.degrees).
-    #     rotate(vector: [0, 0, 1], rotation: 90.degrees).
-    #     move_to(point: origin).
-    #     move_by(x: -1 * length,
-    #             y: @middle_left_cross_bar.length - front_cross_bar_nominal_width ,
-    #             z:-1 * width +  middle_left_cross_bar_offset  - thickness * tab_depth_percent).go!
-  #  puts "Moving it to #{width} + #{side_leg_offset} + #{thickness * (1 - tab_depth_percent)}+ #{middle_left_cross_bar_offset} = #{-1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent)  + middle_left_cross_bar_offset}"
+    @middle_left_cross_bar.rotate(vector: [1, 0, 0], rotation: -90.degrees).
+        rotate(vector: [0, 1, 0], rotation: 180.degrees).
+        rotate(vector: [0, 0, 1], rotation: 90.degrees).
+        move_to(point: origin).
+        move_by(x: -1 * length,
+                y:  depth - back_cross_bar_offset - @middle_left_cross_bar.length - (1 * (1.0 - tab_depth_percent) * thickness),
+                z:  -1 * width + (middle_left_cross_bar_offset)).go!
+    #  puts "Moving it to #{width} + #{side_leg_offset} + #{thickness * (1 - tab_depth_percent)}+ #{middle_left_cross_bar_offset} = #{-1 * width + side_leg_offset +  thickness * (1 - tab_depth_percent)  + middle_left_cross_bar_offset}"
     @middle_right_cross_bar.draw!
     @middle_right_cross_bar.rotate(vector: [1, 0, 0], rotation: -90.degrees).
         rotate(vector: [0, 1, 0], rotation: 180.degrees).
         rotate(vector: [0, 0, 1], rotation: 90.degrees).
         move_to(point: origin).
         move_by(x: -1 * length,
-                y: depth - back_cross_bar_offset - @middle_right_cross_bar.length - ( 1 *  _tab_depth_percent * thickness),
-                z: -1 * width + ( middle_right_cross_bar_offset)  ).go!
+                y: depth - back_cross_bar_offset - @middle_right_cross_bar.length - (1 * (1.0 - tab_depth_percent) * thickness),
+                z: -1 * width + (middle_right_cross_bar_offset)).go!
 
 
     rear_leg_offset = depth - @left_outer_leg.top_width - front_leg_offset
 
-     @left_outer_leg.draw!
+    @left_outer_leg.draw!
 
-     @left_outer_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-         rotate(vector: [0, 1, 0], rotation: 180.degrees).
-         move_to(point: origin).
-         move_by(x: -1 * (depth + @left_outer_leg.back_foot_width - rear_leg_offset),
-                 y: -1 * length,
-                 z: -1 * width + side_leg_offset).go!
-     @left_inner_leg.draw!
+    @left_outer_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
+        rotate(vector: [0, 1, 0], rotation: 180.degrees).
+        move_to(point: origin).
+        move_by(x: -1 * (depth + @left_outer_leg.back_foot_width - rear_leg_offset),
+                y: -1 * length,
+                z: -1 * width + side_leg_offset).go!
+    @left_inner_leg.draw!
 
-     @left_inner_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-         rotate(vector: [0, 1, 0], rotation: 180.degrees).
-         move_to(point: origin).
-         move_by(x: -1 * (depth + @left_inner_leg.back_foot_width - rear_leg_offset),
-                 y: -1 * length,
-                 z: -1 * width + side_leg_offset + thickness).go!
+    @left_inner_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
+        rotate(vector: [0, 1, 0], rotation: 180.degrees).
+        move_to(point: origin).
+        move_by(x: -1 * (depth + @left_inner_leg.back_foot_width - rear_leg_offset),
+                y: -1 * length,
+                z: -1 * width + side_leg_offset + thickness).go!
 
-     @right_outer_leg.draw!
+    @right_outer_leg.draw!
 
-     @right_outer_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-         rotate(vector: [0, 1, 0], rotation: 180.degrees).
-         move_to(point: origin).
-         move_by(x: -1 * (depth + @right_outer_leg.back_foot_width - rear_leg_offset),
-                 y:-1 * length,
-                 z: -1 * (thickness + side_leg_offset ) ).go!
-     @right_inner_leg.draw!
+    @right_outer_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
+        rotate(vector: [0, 1, 0], rotation: 180.degrees).
+        move_to(point: origin).
+        move_by(x: -1 * (depth + @right_outer_leg.back_foot_width - rear_leg_offset),
+                y: -1 * length,
+                z: -1 * (thickness + side_leg_offset)).go!
+    @right_inner_leg.draw!
 
-     @right_inner_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-         rotate(vector: [0, 1, 0], rotation: 180.degrees).
-         move_to(point: origin).
-         move_by(x: -1 * (depth + @right_inner_leg.back_foot_width - rear_leg_offset),
-                 y: -1 * length,
-                 z: -1 * (side_leg_offset + 2 * thickness  )).go!
+    @right_inner_leg.rotate(vector: [1, 0, 0], rotation: -90.degrees).
+        rotate(vector: [0, 1, 0], rotation: 180.degrees).
+        move_to(point: origin).
+        move_by(x: -1 * (depth + @right_inner_leg.back_foot_width - rear_leg_offset),
+                y: -1 * length,
+                z: -1 * (side_leg_offset + 2 * thickness)).go!
 
     groups = [@top.group, @front_cross_bar.group, @back_cross_bar.group,
               @left_outer_leg.group, @left_inner_leg.group, @right_outer_leg.group, @right_inner_leg.group, @middle_left_cross_bar.group, @middle_right_cross_bar.group]
