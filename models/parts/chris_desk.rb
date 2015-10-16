@@ -740,7 +740,7 @@ class WikiHouse::ChrisDesk
 
 
   def width
-    value = 48
+    value = 47
     sheet.length == 24 ? value/4.0 : value
   end
 
