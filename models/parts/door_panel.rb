@@ -2,7 +2,7 @@ class WikiHouse::DoorPanel
 
 
   include WikiHouse::PartHelper
-
+  include WikiHouse::AttributeHelper
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil)
     part_init(sheet: sheet, origin: origin, parent_part: parent_part)
     #parts
@@ -154,7 +154,7 @@ class WikiHouse::DoorPanel
   end
 
   def depth
-    value = 10
+    value = 8
     if sheet.length == 24
       value/4.0
     else

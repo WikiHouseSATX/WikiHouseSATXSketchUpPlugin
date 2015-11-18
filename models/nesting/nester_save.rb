@@ -84,7 +84,7 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
           end
         end
         if face_count != 1
-          puts "Sorry this needs to be flat"
+          puts "Sorry this needs to be flat #{face_count}"
         else
           svg_file.write %Q(<g id="sketchup-entityId-#{e.entityID}">\n)
           svg_file.write %Q(<desc>#{e.name}</desc>\n)

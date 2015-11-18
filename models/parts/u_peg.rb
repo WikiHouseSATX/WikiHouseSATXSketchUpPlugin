@@ -2,7 +2,7 @@ class WikiHouse::UPeg
 
 
   include WikiHouse::PartHelper
-
+  include WikiHouse::AttributeHelper
   attr_accessor :right_inner_leg_in_t, :left_inner_leg_in_t
 
   def initialize(sheet: nil, group: nil, origin: nil, label: label, parent_part: nil,

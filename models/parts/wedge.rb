@@ -2,7 +2,7 @@ class WikiHouse::Wedge
 
 
   include WikiHouse::PartHelper
-
+  include WikiHouse::AttributeHelper
 
   def initialize(left_length_in_t: nil,
                  right_length_in_t: nil,

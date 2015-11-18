@@ -2,7 +2,7 @@ class WikiHouse::Column
 
   include WikiHouse::PartHelper
   include WikiHouse::JoinableHelper
-
+  include WikiHouse::AttributeHelper
   attr_accessor :wall_panels_on
 
   def initialize(origin: nil, sheet: nil, label: nil, parent_part: nil, wall_panels_on: [])

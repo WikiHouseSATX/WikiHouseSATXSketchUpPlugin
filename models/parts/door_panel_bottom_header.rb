@@ -11,7 +11,7 @@ class WikiHouse::DoorPanelBottomHeader
   class TopPart
     include WikiHouse::PartHelper
     include WikiHouse::BoardPartHelper
-
+    include WikiHouse::AttributeHelper
     def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
       part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
@@ -30,7 +30,7 @@ class WikiHouse::DoorPanelBottomHeader
   class MiddlePart
     include WikiHouse::PartHelper
     include WikiHouse::BoardPartHelper
-
+    include WikiHouse::AttributeHelper
     def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
       part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 
@@ -47,7 +47,7 @@ class WikiHouse::DoorPanelBottomHeader
   class BottomPart
     include WikiHouse::PartHelper
     include WikiHouse::BoardPartHelper
-
+    include WikiHouse::AttributeHelper
     def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
       part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
 

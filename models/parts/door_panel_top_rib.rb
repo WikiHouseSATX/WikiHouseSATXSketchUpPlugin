@@ -1,7 +1,7 @@
 class WikiHouse::DoorPanelTopRib
   include WikiHouse::PartHelper
   include WikiHouse::BoardPartHelper
-
+  include WikiHouse::AttributeHelper
   def initialize(parent_part: nil, sheet: nil, group: nil, origin: nil, label: label)
     part_init(origin: origin, sheet: sheet, label: label, parent_part: parent_part)
     @length_method = :top_column_length
