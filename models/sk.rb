@@ -228,9 +228,9 @@ module Sk
     lines = []
     pts.each_with_index do |pt, index|
       if index + 1 < pts.length
-        lines << draw_line(pt, pts[index + 1])
+        lines << draw_line(pt, pts[index + 1], group: group)
       else
-        lines << draw_line(pt, pts[0])
+        lines << draw_line(pt, pts[0], group: group)
       end
     end
 
@@ -241,7 +241,7 @@ module Sk
     lines = []
     pts.each_with_index do |pt, index|
       if index + 1 < pts.length
-        lines << draw_line(pt, pts[index + 1])
+        lines << draw_line(pt, pts[index + 1], group: group)
       end
     end
 

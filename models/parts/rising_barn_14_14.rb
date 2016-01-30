@@ -90,6 +90,7 @@ class WikiHouse::RisingBarn1414
   end
 
   class LeftWallFace < BarnPart
+
     def length
       6.591
     end
@@ -101,7 +102,19 @@ class WikiHouse::RisingBarn1414
     def spline_lengths
       [4.487, width - 8.623]
     end
+    def mark_face!
+      bottom_points = []
+      bottom_points << [bounding_c1.x , bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width, bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
 
+
+      lines = Sk.draw_points(bottom_points)
+      top_points = bottom_points.collect do |pt|
+        [pt.x , pt.y, pt.z + thickness]
+      end
+
+      lines = Sk.draw_points(top_points)
+    end
     def make_points
       t = thickness
       part_points = []
@@ -119,6 +132,9 @@ class WikiHouse::RisingBarn1414
 
   end
   class LeftWallInside <LeftWallFace
+    def mark_face!
+
+    end
     def make_points
       t = thickness
       part_points = []
@@ -148,7 +164,19 @@ class WikiHouse::RisingBarn1414
     def spline_lengths
       [width]
     end
+    def mark_face!
+      bottom_points = []
+      bottom_points << [bounding_c1.x , bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width, bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
 
+
+      lines = Sk.draw_points(bottom_points)
+      top_points = bottom_points.collect do |pt|
+        [pt.x , pt.y, pt.z + thickness]
+      end
+
+      lines = Sk.draw_points(top_points)
+    end
     def make_points
       t = thickness
       part_points = []
@@ -187,6 +215,9 @@ class WikiHouse::RisingBarn1414
 
   end
   class RightWallInside <RightWallFace
+    def mark_face!
+
+    end
     def make_points
       t = thickness
       part_points = []
@@ -228,8 +259,23 @@ class WikiHouse::RisingBarn1414
 
       part_points
     end
+    def mark_face!
+      bottom_points = []
+      bottom_points << [bounding_c1.x , bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width, bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+
+
+      lines = Sk.draw_points(bottom_points)
+      top_points = bottom_points.collect do |pt|
+        [pt.x , pt.y, pt.z + thickness]
+      end
+
+      lines = Sk.draw_points(top_points)
+    end
   end
   class BackWallInside < BackWallFace
+    def mark_face!
+    end
     def make_points
       t = thickness
       part_points = []
@@ -279,8 +325,37 @@ class WikiHouse::RisingBarn1414
 
       part_points
     end
+    def mark_face!
+      bottom_points = []
+      bottom_points << [bounding_c1.x , bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width, bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+
+
+      lines = Sk.draw_points(bottom_points)
+      top_points = bottom_points.collect do |pt|
+        [pt.x , pt.y, pt.z + thickness]
+      end
+
+      lines = Sk.draw_points(top_points)
+    end
+    def mark_face!
+      bottom_points = []
+      bottom_points << [bounding_c1.x , bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width, bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+
+
+      lines = Sk.draw_points(bottom_points)
+      top_points = bottom_points.collect do |pt|
+        [pt.x , pt.y, pt.z + thickness]
+      end
+
+      lines = Sk.draw_points(top_points)
+    end
   end
   class FrontWallInside < FrontWallFace
+    def mark_face!
+
+    end
     def make_points
       t = thickness
       part_points = []
@@ -325,9 +400,25 @@ class WikiHouse::RisingBarn1414
       part_points << [bounding_c1.x + width, bounding_c1.y, bounding_c1.z]
       part_points
     end
+    def mark_face!
+      bottom_points = []
+      bottom_points << [bounding_c1.x , bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width, bounding_c1.y + SIP_OFFSET , bounding_c1.z + 0 * thickness]
+
+
+      lines = Sk.draw_points(bottom_points)
+      top_points = bottom_points.collect do |pt|
+        [pt.x , pt.y, pt.z + thickness]
+      end
+
+      lines = Sk.draw_points(top_points)
+    end
 
   end
   class RoofInside < RoofFace
+    def mark_face!
+
+    end
     def make_points
       t = thickness
       part_points = []
@@ -351,14 +442,21 @@ class WikiHouse::RisingBarn1414
       [length, width, length, width]
     end
     def mark_face!
-      inside_points = []
-      puts bounding_c1.z, thickness, bounding_c1.z + thickness, bounding_c1.z + 2 * thickness
-      inside_points << [bounding_c1.x + SIP_OFFSET, bounding_c1.y + SIP_OFFSET, bounding_c1.z + 1 * thickness]
-      inside_points << [bounding_c1.x + SIP_OFFSET, bounding_c1.y + length - SIP_OFFSET, bounding_c1.z + 1 * thickness]
-      inside_points << [bounding_c1.x + width - SIP_OFFSET, bounding_c1.y + length - SIP_OFFSET, bounding_c1.z + 1 * thickness]
-      inside_points << [bounding_c1.x + width - SIP_OFFSET, bounding_c1.y + SIP_OFFSET, bounding_c1.z + 1 * thickness]
+      bottom_points = []
+     bottom_points << [bounding_c1.x + SIP_OFFSET, bounding_c1.y + SIP_OFFSET, bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + SIP_OFFSET, bounding_c1.y + length - SIP_OFFSET, bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width - SIP_OFFSET, bounding_c1.y + length - SIP_OFFSET, bounding_c1.z + 0 * thickness]
+      bottom_points << [bounding_c1.x + width - SIP_OFFSET, bounding_c1.y + SIP_OFFSET, bounding_c1.z + 0 * thickness]
 
-      lines = Sk.draw_all_points(inside_points)
+     lines = Sk.draw_all_points(bottom_points)
+      face = Sk.add_face(lines)
+      top_points = bottom_points.collect do |pt|
+        [pt.x , pt.y, pt.z + thickness]
+      end
+
+      lines = Sk.draw_all_points(top_points)
+      face = Sk.add_face(lines)
+
     end
   end
   class FloorInside < FloorFace
@@ -406,6 +504,12 @@ class WikiHouse::RisingBarn1414
     #What about spline on outside of roof - is it wider?
 
     #Need to mark the offsets for the inside piece
+    # Back Wall
+    # Front Wall
+    # left Wall
+    # right Wall
+    # Left Roof
+    # Right Roof
     #Need to handle flattening and exporting to svg - keeping the parts on the right material
 
 
@@ -508,17 +612,18 @@ class WikiHouse::RisingBarn1414
     face_part.draw!
     face_part.move_by(x: placement_width).go!
     placement_width += face_part.width + 5
+    face_part.move_by(x: placement_width).go!
 
 
-    inside_part.draw!
-    inside_part.move_by(x: placement_width).go!
-    placement_width += inside_part.width + 5
-
-    splines.each do |spline, index|
-      spline.draw!
-      spline.move_by(x: placement_width).go!
-      placement_width += spline.width + 5 + (index == 0 ? inside_part.width : 0)
-    end
+    # inside_part.draw!
+    # inside_part.move_by(x: placement_width).go!
+    # placement_width += inside_part.width + 5
+    #
+    # splines.each do |spline, index|
+    #   spline.draw!
+    #   spline.move_by(x: placement_width).go!
+    #   placement_width += spline.width + 5 + (index == 0 ? inside_part.width : 0)
+    # end
     placement_width
 
   end
@@ -528,13 +633,13 @@ class WikiHouse::RisingBarn1414
     Sk.make_layer_active_name(name: self.class.name)
     placement_width = 0
     placement_width = draw_part!(@floor_face, @floor_inside, @floor_splines, placement_width)
-#    placement_width = draw_part!(@back_wall_face, @back_wall_inside, @back_wall_splines, placement_width)
-#    placement_width = draw_part!(@front_wall_face, @front_wall_inside, @front_wall_splines, placement_width)
-#    placement_width = draw_part!(@left_wall_face, @left_wall_inside, @left_wall_splines, placement_width)
-#    placement_width = draw_part!(@right_wall_face, @right_wall_inside, @right_wall_splines, placement_width)
+   placement_width = draw_part!(@back_wall_face, @back_wall_inside, @back_wall_splines, placement_width)
+    placement_width = draw_part!(@front_wall_face, @front_wall_inside, @front_wall_splines, placement_width)
+    placement_width = draw_part!(@left_wall_face, @left_wall_inside, @left_wall_splines, placement_width)
+    placement_width = draw_part!(@right_wall_face, @right_wall_inside, @right_wall_splines, placement_width)
 
- #   placement_width = draw_part!(@left_roof_face, @left_roof_inside, @left_roof_splines, placement_width)
- #   placement_width = draw_part!(@right_roof_face, @right_roof_inside, @right_roof_splines, placement_width)
+    placement_width = draw_part!(@left_roof_face, @left_roof_inside, @left_roof_splines, placement_width)
+    placement_width = draw_part!(@right_roof_face, @right_roof_inside, @right_roof_splines, placement_width)
 
     groups = [@floor_face.group, @floor_inside.group,
 
