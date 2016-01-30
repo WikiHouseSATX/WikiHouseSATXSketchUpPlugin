@@ -1,14 +1,14 @@
 require 'ostruct'
 class WikiHouse::Config
   def self.machine
- #   WikiHouse::Laser
-      WikiHouse::Cnc
+    WikiHouse::Laser
+ #     WikiHouse::Cnc
   end
 
   def self.sheet
     #  WikiHouse::ImperialPlywood2332Sheet
-    WikiHouse::ImperialPlywood34Sheet
-  #WikiHouse::ImperialFiberboardSheet
+  #  WikiHouse::ImperialPlywood34Sheet
+  WikiHouse::ImperialFiberboardSheet
 
   end
 
@@ -91,5 +91,6 @@ class WikiHouse::Config
    # WikiHouse::DoorPanel.new(label: "Door Panel")
     # WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
     #  WikiHouse::Column.new(label: "Column", wall_panels_on: [WikiHouse::Orientation.south, WikiHouse::Orientation.west, WikiHouse::Orientation.east, WikiHouse::Orientation.north])
+  WikiHouse::RisingBarn1414.new(label: "Barn")
   end
 end
