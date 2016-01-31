@@ -439,7 +439,7 @@ class WikiHouse::RisingBarn1414
     end
 
     def spline_lengths
-      [length, width, length, width]
+      [length, width - 2 * SIP_OFFSET, length, width - 2 * SIP_OFFSET]
     end
     def mark_face!
       bottom_points = []
@@ -612,18 +612,17 @@ class WikiHouse::RisingBarn1414
     face_part.draw!
     face_part.move_by(x: placement_width).go!
     placement_width += face_part.width + 5
-    face_part.move_by(x: placement_width).go!
 
 
-    # inside_part.draw!
-    # inside_part.move_by(x: placement_width).go!
-    # placement_width += inside_part.width + 5
-    #
-    # splines.each do |spline, index|
-    #   spline.draw!
-    #   spline.move_by(x: placement_width).go!
-    #   placement_width += spline.width + 5 + (index == 0 ? inside_part.width : 0)
-    # end
+    inside_part.draw!
+    inside_part.move_by(x: placement_width).go!
+    placement_width += inside_part.width + 5
+
+    splines.each do |spline, index|
+      spline.draw!
+      spline.move_by(x: placement_width).go!
+      placement_width += spline.width + 5 + (index == 0 ? inside_part.width : 0)
+    end
     placement_width
 
   end
@@ -633,13 +632,13 @@ class WikiHouse::RisingBarn1414
     Sk.make_layer_active_name(name: self.class.name)
     placement_width = 0
     placement_width = draw_part!(@floor_face, @floor_inside, @floor_splines, placement_width)
-   placement_width = draw_part!(@back_wall_face, @back_wall_inside, @back_wall_splines, placement_width)
-    placement_width = draw_part!(@front_wall_face, @front_wall_inside, @front_wall_splines, placement_width)
-    placement_width = draw_part!(@left_wall_face, @left_wall_inside, @left_wall_splines, placement_width)
-    placement_width = draw_part!(@right_wall_face, @right_wall_inside, @right_wall_splines, placement_width)
-
-    placement_width = draw_part!(@left_roof_face, @left_roof_inside, @left_roof_splines, placement_width)
-    placement_width = draw_part!(@right_roof_face, @right_roof_inside, @right_roof_splines, placement_width)
+   # placement_width = draw_part!(@back_wall_face, @back_wall_inside, @back_wall_splines, placement_width)
+   #  placement_width = draw_part!(@front_wall_face, @front_wall_inside, @front_wall_splines, placement_width)
+   #  placement_width = draw_part!(@left_wall_face, @left_wall_inside, @left_wall_splines, placement_width)
+   #  placement_width = draw_part!(@right_wall_face, @right_wall_inside, @right_wall_splines, placement_width)
+   #
+   #  placement_width = draw_part!(@left_roof_face, @left_roof_inside, @left_roof_splines, placement_width)
+   #  placement_width = draw_part!(@right_roof_face, @right_roof_inside, @right_roof_splines, placement_width)
 
     groups = [@floor_face.group, @floor_inside.group,
 
