@@ -62,7 +62,9 @@ module WikiHouse
                     ["imperial_plywood_3_4_sheet.rb", "sheets"],
                     ["tools.rb", "tools"],
                     ["wall_panel.rb", "parts"],
-                    ["wall_panel_outer_side.rb", "parts"]]
+                    ["wall_panel_outer_side.rb", "parts"],
+                    ["rising_barn.rb", "parts"]
+    ]
     base_classes.each do |item|
       load plugin_file(item[0], ["models", item[1]]) #Other files depend on this
       base_files << item[0]

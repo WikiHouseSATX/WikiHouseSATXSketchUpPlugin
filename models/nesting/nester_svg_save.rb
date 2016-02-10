@@ -80,23 +80,40 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
           next if e.name == WikiHouse::Nester.sheet_outline_group_name && !@draw_sheet_outline
           face_count = 0
           face = nil
+          faceless_edges = []
           e.entities.each do |sub_e|
             if sub_e.is_a? Sketchup::Face
               face = sub_e
               face_count += 1
+            elsif sub_e.is_a? Sketchup::Edge
+              faceless_edges << sub_e
             end
           end
           if face_count != 1
             puts "Sorry this needs to be flat #{face_count}"
           else
+            faceless_edges.delete_if do |e|
+              face.all_connected.include?(e)
+            end
             svg_file.write %Q(<g id="sketchup-entityId-#{e.entityID}">\n)
             svg_file.write %Q(<desc>#{e.name}</desc>\n)
+            svg_file.write %Q(<g id="sketchup-entityId-#{e.entityID}-face-#{face.entityID}">\n)
             face.loops.each do |loop|
               #   puts loop.outer? ? "Outer Loop" : "Inner Loop"
               group_points = convert_to_global_position(loop).map { |p| [p.x - ref_point.x, p.y - ref_point.y, p.z - ref_point.z] }
               #    puts "Point is #{group_points.first.x * 1.0} #{group_points.first.y * 1.0}"
-              points = group_points.collect { |v| "#{v.x * 1.0} #{v.y * 1.0}" }
+              points = group_points.collect { |v| "#{Sk.round(v.x * 1.0)} #{Sk.round(v.y * 1.0)}" }
               svg_file.write %Q(<polygon  class="part" points="#{points.join(", ")}" />\n)
+            end
+            svg_file.write %Q(</g>\n)
+            if faceless_edges.count > 0
+              svg_file.write %Q(<g id="faceless-edges-#{e.entityID}">\n)
+              svg_file.write %Q(<desc>Edges for #{e.name}</desc>\n)
+              puts "Found faceless edges #{faceless_edges.count}"
+              faceless_edges.each do |fe|
+                write_line(svg_file, ref_point, fe)
+              end
+              svg_file.write %Q(</g>\n)
             end
             svg_file.write %Q(</g>\n)
           end
@@ -137,6 +154,15 @@ xmlns="http://www.3.org/2000/svg" version="1.1" baseProfile="full">\n)
     svg_file.write %Q(</svg>)
     svg_file.close
     puts "Wrote out #{file_name}"
+  end
+
+  def write_line(svg_file, ref_point,edge)
+    svg_file.write %Q(<g id="sketchup-entityId-#{edge.entityID}">\n)
+    svg_file.write %Q(<desc>Edge #{edge.entityID}</desc>\n)
+    points = convert_to_global_position(edge).map { |p| [p.x - ref_point.x, p.y - ref_point.y, p.z - ref_point.z] }
+    svg_file.write %Q(<line  class="part" x1="#{Sk.round(points[0].x)}" y1="#{Sk.round(points[0].y)}" x2="#{Sk.round(points[1].x)}" y2="#{Sk.round(points[1].y)}"/>\n)
+    svg_file.write %Q(</g>\n)
+
   end
 
   def convert_to_global_position(entity)

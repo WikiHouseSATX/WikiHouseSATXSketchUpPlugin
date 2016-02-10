@@ -11,7 +11,52 @@ module Sk
   def abs(val)
     val < 0 ? -1.0 * val : val
   end
+  def shift_point(pt, x: 0, y: 0, z: 0, origin: nil)
+    if origin
+      [pt.x + x + origin.x, pt.y + y + origin.y, pt.z + z + origin.z]
+    else
+      [pt.x + x, pt.y + y, pt.z + z]
+    end
 
+  end
+  def shift_point_array(pts_array, shifts)
+    pts_array.collect.with_index do |pt , index|
+      shift_pt = shifts[index] ? shifts[index] : [0,0,0]
+      shift_point(pt, x: shift_pt.x, y: shift_pt.y, z: shift_pt.z)
+    end
+  end
+  def horizontal_mirror(pts, mirror_x_pt: nil)
+      mirrored_points = []
+      if mirror_x_pt
+        mirror_x = mirror_x_pt
+      else
+        mirror_x = pts.collect {|pt| pt.x}.max
+      end
+
+      shortest_distance = mirror_x
+      horizontal_mirror = pts.collect do |pt|
+        distance = Sk.round(mirror_x - pt.x)
+       #  puts "Distance from #{pt.x} to #{mirror_x} = #{distance}"
+        shortest_distance = distance if distance < shortest_distance
+      #    puts "Shortest distance is #{shortest_distance}"
+        distance
+      end
+      if mirror_x_pt
+        shortest_distance = mirror_x_pt
+        horizontal_mirror.each_with_index do |x, index|
+    #  puts "Moving #{pts[index].x} to #{ x + shortest_distance} #{shortest_distance} "
+          mirrored_points[index] = [x , pts[index].y, pts[index].z]
+        end
+      else
+        horizontal_mirror.each_with_index do |x, index|
+       #   puts "Moving #{pts[index].x} to #{ x - shortest_distance} #{shortest_distance} "
+          mirrored_points[index] = [x - shortest_distance, pts[index].y, pts[index].z]
+        end
+      end
+
+      mirrored_points
+
+  end
   def model
     Sketchup.active_model
   end

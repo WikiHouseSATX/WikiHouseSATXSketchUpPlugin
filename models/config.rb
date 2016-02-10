@@ -91,6 +91,9 @@ class WikiHouse::Config
    # WikiHouse::DoorPanel.new(label: "Door Panel")
     # WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
     #  WikiHouse::Column.new(label: "Column", wall_panels_on: [WikiHouse::Orientation.south, WikiHouse::Orientation.west, WikiHouse::Orientation.east, WikiHouse::Orientation.north])
-  WikiHouse::RisingBarn1414.new(label: "Barn")
+  #WikiHouse::OldRisingBarn1020.new(label: "10X20Barn")
+  #WikiHouse::RisingBarn1020.new(label: "10x20Barn")
+     WikiHouse::RisingBarn1428.new(label: "14x28Barn")
+    #WikiHouse::OldRisingBarn1414.new(label: "14X14Barn")
   end
 end

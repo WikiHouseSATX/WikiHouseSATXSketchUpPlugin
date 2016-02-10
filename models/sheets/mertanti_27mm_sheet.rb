@@ -1,4 +1,5 @@
-class WikiHouse::CoroplastSheet < WikiHouse::Sheet
+class WikiHouse::Meranti27mmSheet < WikiHouse::Sheet
+  #2.7mm
   def units
     :inches
   end
@@ -16,21 +17,20 @@ class WikiHouse::CoroplastSheet < WikiHouse::Sheet
   end
 
   def length
-    vertical? ? 24 : 12
+    vertical? ? 21 : 8
   end
 
   def thickness
-   # 0.169
-    0.157
+    0.106
   end
 
   def margin
     0.125
   end
   def self.material_name
-    "Plastic_Coroplast"
+    "Wood_Basswood"
   end
   def self.material_filename
-    WikiHouse.plugin_file("coroplast.jpg", "images")
+    WikiHouse.plugin_file("basswood.jpg", "images")
   end
 end
