@@ -16,6 +16,7 @@ class WikiHouse::Alteration
   end
   def go!
     unless @operations.length == 0
+
       #puts "Part Origin before: #{@part.origin}"
       @part.alter! @operations.inject(:*)
       @operations = []

@@ -244,15 +244,12 @@ class WikiHouse::DoorPanel
     Sk.make_layer_active_name(name: self.class.name)
 
     @top_cap.draw!
-    @top_cap.rotate(vector: [0, 0, 1], rotation: -90.degrees).
-        move_to(point: origin).
-        move_by(x: 0,
-                y: 0,
-                z: length).go!
+    @top_cap.move_by(x: 0,
+                     y: 0,
+                     z: length).rotate(vector: [0, 0, 1], rotation: -90.degrees).go!
 
     @top_header.draw!
     @top_header.rotate(vector: [0, 0, 1], rotation: -90.degrees).
-        move_to(point: origin).
         move_by(x: 0,
                 y: 0,
                 z: side_column_inner_length + thickness).
@@ -261,7 +258,6 @@ class WikiHouse::DoorPanel
 
     @bottom_header.draw!
     @bottom_header.rotate(vector: [0, 0, 1], rotation: -90.degrees).
-        move_to(point: origin).
         move_by(x: 0,
                 y: 0,
                 z: side_column_inner_length).
@@ -281,183 +277,193 @@ class WikiHouse::DoorPanel
         rib.draw!
 
 
-        rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
-            rotate(vector: [1, 0, 0], rotation: -90.degrees).
-            move_to(point: origin).
-            move_by(x: -1 * depth,
-                    y: -1 * side_column_inner_length - top_column_length - thickness,
-                    z: location.y + origin.y - rib.thickness).
-            go!
+         rib.rotate(vector: [0, 0, 1], rotation: 90.degrees).
+                 move_by(x: side_column_width - thickness,
+                         y: -1 * depth,
+                         z: -1 * (location.y + origin.y )).
+                 go!
+        puts location.y, origin.y
+        #     rotate(vector: [1, 0, 0], rotation: -90.degrees).
+        #     move_to(point: origin).
+        #     move_by(x: -1 * depth,
+        #             y: -1 * side_column_inner_length - top_column_length - thickness,
+        #             z: location.y + origin.y - rib.thickness).
+        #     go!
+
+        # rib.move_by(x: -1 * depth,
+        #             y: -1 * side_column_inner_length - top_column_length - thickness,
+        #             z: location.y + origin.y - rib.thickness).
+        #     go!
+
 
       end
     end
 
     @left_outer_side.draw!
     @left_outer_side.rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: -1 * depth,
-                y: thickness,
-                z: 0).
+        rotate(vector: [0, 1, 0], rotation: 90.degrees).
+        move_by(x: 0,
+                y: -1 * depth,
+                z: 1 * thickness).
         go!
 
     @left_inner_side.draw!
 
     @left_inner_side.rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: -1 * depth,
-                y: thickness,
-                z: side_column_width - thickness).
-        go!
-    @right_outer_side.draw!
-    @right_outer_side.rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: -1 * depth,
-                y: thickness,
-                z: width - thickness).
-        go!
-    @right_inner_side.draw!
-    @right_inner_side.rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        rotate(vector: [1, 0, 0], rotation: 90.degrees).
-        move_to(point: origin).
-        move_by(x: -1 * depth,
-                y: thickness,
-                z: width - side_column_width).
-        go!
+        rotate(vector: [0, 1, 0], rotation: 90.degrees).
 
-
-    @left_footer_bottom.draw!
-    @left_footer_bottom.rotate(vector: [0, 0, 1], rotation: 0.degrees).
-        move_to(point: origin).
-        move_by(x: 0,
+        move_by(x: 1 * side_column_width - thickness,
                 y: -1 * depth,
                 z: thickness).
         go!
-    @left_footer_top.draw!
-    @left_footer_top.rotate(vector: [0, 0, 1], rotation: 0.degrees).
-        move_to(point: origin).
-        move_by(x: 0,
-                y: -1 * depth,
-                z: thickness * 2).
-        go!
-    first_rib = @left_side_ribs.first
-    if first_rib
-      connector = first_rib.left_connector
-      connector.class.drawing_points(bounding_origin: origin,
-                                     count: @left_side_ribs.count,
-                                     rows: 1,
-                                     part_length: length,
-                                     part_width: depth,
-                                     item_length: connector.length,
-                                     item_width: connector.width) do |row, col, location|
-        rib = @left_side_ribs[col]
-        rib.draw!
-
-
-        rib.rotate(vector: [0, 0, 1], rotation: 0.degrees).
-            move_to(point: origin).
-            move_by(x: 0,
-                    y: -1 * depth,
-
-                    z: -1 * location.y - origin.y + rib.thickness).
-            go!
-
-      end
-    end
-    unless face_off
-      @front_left_face.draw!
-      @front_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          move_to(point: origin).
-          move_by(x: 0 * @front_left_face.thickness,
-                  y: 1 * @front_left_face.thickness,
-                  z: depth - @front_left_face.thickness).
-          go!
-
-
-      @back_left_face.draw!
-      @back_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          move_to(point: origin).
-          move_by(x: 0 * @back_left_face.thickness,
-                  y: 1 * @back_left_face.thickness,
-                  z: 0).
-          go!
-    end
-    @right_footer_bottom.draw!
-    @right_footer_bottom.rotate(vector: [0, 0, 1], rotation: 180.degrees).
-        move_to(point: origin).
-        move_by(x: width * -1,
-                y: 0,
-                z: thickness).
-        go!
-    @right_footer_top.draw!
-    @right_footer_top.rotate(vector: [0, 0, 1], rotation: 180.degrees).
-        move_to(point: origin).
-        move_by(x: width * -1,
-                y: 0,
-                z: thickness * 2).
-        go!
-    first_rib = @right_side_ribs.first
-    if first_rib
-      connector = first_rib.right_connector
-      connector.class.drawing_points(bounding_origin: origin,
-                                     count: @right_side_ribs.count,
-                                     rows: 1,
-                                     part_length: length,
-                                     part_width: depth,
-                                     item_length: connector.length,
-                                     item_width: connector.width) do |row, col, location|
-        rib = @right_side_ribs[col]
-        rib.draw!
-
-
-        rib.rotate(vector: [0, 0, 1], rotation: 180.degrees).
-            move_to(point: origin).
-            move_by(x: width * -1,
-                    y: 0,
-                    z: -1 * location.y - origin.y + rib.thickness).
-            go!
-
-      end
-    end
-    unless face_off
-      @front_right_face.draw!
-      @front_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          move_to(point: origin).
-          move_by(x: width - side_column_width,
-                  y: 1 * @front_right_face.thickness,
-                  z: depth - @front_right_face.thickness).
-          go!
-
-      @back_right_face.draw!
-      @back_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          move_to(point: origin).
-          move_by(x: width - side_column_width,
-                  y: 1 * @back_right_face.thickness,
-                  z: 0).
-          go!
-
-
-      @front_top_face.draw!
-      @front_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          rotate(vector: [0, 0, 1], rotation: 90.degrees).
-          move_to(point: origin).
-          move_by(x: side_column_inner_length ,
-                  y: -1 * width,
-                  z: depth - thickness).
-          go!
-
-
-      @back_top_face.draw!
-      @back_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
-          rotate(vector: [0, 0, 1], rotation: 90.degrees).
-          move_to(point: origin).
-          move_by(x: side_column_inner_length ,
-                  y: -1 * width,
-                  z: 0).
-          go!
-    end
+    # @right_outer_side.draw!
+    # @right_outer_side.rotate(vector: [0, 0, 1], rotation: 90.degrees).
+    #     rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: -1 * depth,
+    #             y: thickness,
+    #             z: width - thickness).
+    #     go!
+    # @right_inner_side.draw!
+    # @right_inner_side.rotate(vector: [0, 0, 1], rotation: 90.degrees).
+    #     rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: -1 * depth,
+    #             y: thickness,
+    #             z: width - side_column_width).
+    #     go!
+    #
+    #
+    # @left_footer_bottom.draw!
+    # @left_footer_bottom.rotate(vector: [0, 0, 1], rotation: 0.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: 0,
+    #             y: -1 * depth,
+    #             z: thickness).
+    #     go!
+    # @left_footer_top.draw!
+    # @left_footer_top.rotate(vector: [0, 0, 1], rotation: 0.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: 0,
+    #             y: -1 * depth,
+    #             z: thickness * 2).
+    #     go!
+    # first_rib = @left_side_ribs.first
+    # if first_rib
+    #   connector = first_rib.left_connector
+    #   connector.class.drawing_points(bounding_origin: origin,
+    #                                  count: @left_side_ribs.count,
+    #                                  rows: 1,
+    #                                  part_length: length,
+    #                                  part_width: depth,
+    #                                  item_length: connector.length,
+    #                                  item_width: connector.width) do |row, col, location|
+    #     rib = @left_side_ribs[col]
+    #     rib.draw!
+    #
+    #
+    #     rib.rotate(vector: [0, 0, 1], rotation: 0.degrees).
+    #         move_to(point: origin).
+    #         move_by(x: 0,
+    #                 y: -1 * depth,
+    #
+    #                 z: -1 * location.y - origin.y + rib.thickness).
+    #         go!
+    #
+    #   end
+    # end
+    # unless face_off
+    #   @front_left_face.draw!
+    #   @front_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #       move_to(point: origin).
+    #       move_by(x: 0 * @front_left_face.thickness,
+    #               y: 1 * @front_left_face.thickness,
+    #               z: depth - @front_left_face.thickness).
+    #       go!
+    #
+    #
+    #   @back_left_face.draw!
+    #   @back_left_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #       move_to(point: origin).
+    #       move_by(x: 0 * @back_left_face.thickness,
+    #               y: 1 * @back_left_face.thickness,
+    #               z: 0).
+    #       go!
+    # end
+    # @right_footer_bottom.draw!
+    # @right_footer_bottom.rotate(vector: [0, 0, 1], rotation: 180.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: width * -1,
+    #             y: 0,
+    #             z: thickness).
+    #     go!
+    # @right_footer_top.draw!
+    # @right_footer_top.rotate(vector: [0, 0, 1], rotation: 180.degrees).
+    #     move_to(point: origin).
+    #     move_by(x: width * -1,
+    #             y: 0,
+    #             z: thickness * 2).
+    #     go!
+    # first_rib = @right_side_ribs.first
+    # if first_rib
+    #   connector = first_rib.right_connector
+    #   connector.class.drawing_points(bounding_origin: origin,
+    #                                  count: @right_side_ribs.count,
+    #                                  rows: 1,
+    #                                  part_length: length,
+    #                                  part_width: depth,
+    #                                  item_length: connector.length,
+    #                                  item_width: connector.width) do |row, col, location|
+    #     rib = @right_side_ribs[col]
+    #     rib.draw!
+    #
+    #
+    #     rib.rotate(vector: [0, 0, 1], rotation: 180.degrees).
+    #         move_to(point: origin).
+    #         move_by(x: width * -1,
+    #                 y: 0,
+    #                 z: -1 * location.y - origin.y + rib.thickness).
+    #         go!
+    #
+    #   end
+    # end
+    # unless face_off
+    #   @front_right_face.draw!
+    #   @front_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #       move_to(point: origin).
+    #       move_by(x: width - side_column_width,
+    #               y: 1 * @front_right_face.thickness,
+    #               z: depth - @front_right_face.thickness).
+    #       go!
+    #
+    #   @back_right_face.draw!
+    #   @back_right_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #       move_to(point: origin).
+    #       move_by(x: width - side_column_width,
+    #               y: 1 * @back_right_face.thickness,
+    #               z: 0).
+    #       go!
+    #
+    #
+    #   @front_top_face.draw!
+    #   @front_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #       rotate(vector: [0, 0, 1], rotation: 90.degrees).
+    #       move_to(point: origin).
+    #       move_by(x: side_column_inner_length ,
+    #               y: -1 * width,
+    #               z: depth - thickness).
+    #       go!
+    #
+    #
+    #   @back_top_face.draw!
+    #   @back_top_face.rotate(vector: [1, 0, 0], rotation: 90.degrees).
+    #       rotate(vector: [0, 0, 1], rotation: 90.degrees).
+    #       move_to(point: origin).
+    #       move_by(x: side_column_inner_length ,
+    #               y: -1 * width,
+    #               z: 0).
+    #       go!
+    # end
     groups = []
 
     @left_side_ribs.each { |rib| groups << rib.group }
