@@ -32,6 +32,8 @@ class WikiHouse::ImperialPlywood34Sheet < WikiHouse::Sheet
   def self.material_filename
     WikiHouse.plugin_file("plywood.jpg", "images")
   end
-
+  def self.active_material_filename
+    WikiHouse.plugin_file("arrow_up.jpg","images")
+  end
 
 end
