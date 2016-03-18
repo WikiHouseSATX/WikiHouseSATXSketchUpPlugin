@@ -69,7 +69,7 @@ class WikiHouse::Config
     #   p.move_by(z:2).go!
     #    WikiHouse::UPeg.new(label: "UPeg")
  #  WikiHouse::WallPanel.new(label: "Wall Panel Right")
-     WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [0,0,0])
+#     WikiHouse::ChrisDesk.new(label: "Chris Desk", origin: [10,10,10])
  #   WikiHouse::SquareCalibration.new(label: "Square", origin: [0, 0, 0])
     # WikiHouse::WallColumnBoard.new(label: "Column Board",
     #                                   parent_part: parent_part, origin:[0,0,0])
@@ -89,7 +89,7 @@ class WikiHouse::Config
     #WikiHouse::DoorPanelTopFace.new(label: "inner", parent_part: parent_part)
     #WikiHouse::DoorPanelSideFace.new(label: "inner", parent_part: parent_part)
    #WikiHouse::DoorPanel.new(label: "Door Panel")
-   WikiHouse::RotationLab.new(label: "RotationLab")
+   WikiHouse::RotationLab.new(label: "RotationLab", origin: [0,0,0])
     # WikiHouse::DoorWallPanel.new(label: "Door Wall Panel")
     #  WikiHouse::Column.new(label: "Column", wall_panels_on: [WikiHouse::Orientation.south, WikiHouse::Orientation.west, WikiHouse::Orientation.east, WikiHouse::Orientation.north])
   #WikiHouse::OldRisingBarn1020.new(label: "10X20Barn")

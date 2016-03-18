@@ -77,70 +77,64 @@ class WikiHouse::RotationLab
   end
 
   def draw!
-    #Draw all of the parts with the correct orientation
-    #Make the primary face a different color
-    #make it so that once you are done you put the corner back at origin optionally :)
-    #modify the method to make it easy to rotate to that orientation
+
     #make something that can detect the orientation
+    #Fix it so that you can rotate it to face front and then face top and have it draw it correctly.
     face_off = false
     Sk.find_or_create_layer(name: self.class.name)
     Sk.make_layer_active_name(name: self.class.name)
 
+
     @lfront_board.draw!
-    @lfront_board.rotate(vector: [0, 1, 0], rotation: 90.degrees).
-        rotate(vector: [0, 0, 1], rotation: 90.degrees).
-        move_by(x: @lfront_board.length,
-                y: 0,
-                z: 0).go!
-    @wfront_board.draw!
-    @wfront_board.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-            move_by(x: 0 ,
-                    y: 0,
-                    z: @wfront_board.length).go!
 
+    @lfront_board.face_front_long!
 
-    @lback_board.draw!
-    @lback_board.rotate(vector: [0, 1, 0], rotation: 90.degrees).
-        rotate(vector: [0, 0, 1], rotation: 270.degrees).
-        move_by(x: @lback_board.length * -1 ,
-                y: thickness,
-                z: 0).go!
+    bottom_plane = Geom.fit_plane_to_points( [0,0,0], [10,10,0], [0,10,0] )
 
-    @wback_board.draw!
-    @wback_board.rotate(vector: [1,0,0], rotation: -90.degrees).
-        rotate(vector: [0, 0,1], rotation: 180.degrees).
-        move_by(x: 0,
-                y: thickness ,
-                z: @wback_board.length).go!
-    # @wback_board.rotate(vector: [1, 0, 0], rotation: -90.degrees).
-    #     rotate(vector: [0, 0,1], rotation: 90.degrees).
-    # rotate(vector: [0, 1,0], rotation: 90.degrees).go!
+    loop = @lfront_board.primary_face.outer_loop
+    gloop1= Sk.convert_to_global_position(loop)
+    part_plane = Geom.fit_plane_to_points(*gloop1)
+    line = Geom.intersect_plane_plane(bottom_plane, part_plane)
+    puts line
+    @lleft_board.draw!
 
-    # @ltop_board.draw!
-    # @ltop_board.rotate(vector: [1, 0, 0], rotation: 180.degrees).
-    #     rotate(vector: [0, 0, 1], rotation: -90.degrees).go!
+    @lleft_board.face_left_long!
+
+    bottom_plane = Geom.fit_plane_to_points( [0,0,0], [10,10,0], [0,10,0] )
+
+    loop = @lleft_board.primary_face.outer_loop
+    gloop1= Sk.convert_to_global_position(loop)
+    part_plane = Geom.fit_plane_to_points(*gloop1)
+    line = Geom.intersect_plane_plane(bottom_plane, part_plane)
+    puts line
     #
+    # @wfront_board.draw!
+    # @wfront_board.face_front_wide!
+    #
+    # @lback_board.draw!
+    # @lback_board.face_back_long!
+    # @wback_board.draw!
+    # @wback_board.face_back_wide!
+    #
+    # @ltop_board.draw!
+    # @ltop_board.face_top_long!
+    # @wtop_board.draw!
+    # @wtop_board.face_top_wide!
     #
     # @lbottom_board.draw!
-    # @lbottom_board.rotate(vector: [0, 0, 1], rotation: 90.degrees).go!
-    #
+    # @lbottom_board.face_bottom_long!
+    # @wbottom_board.draw!
+    # @wbottom_board.face_bottom_wide!
     #
     # @lleft_board.draw!
-    # @lleft_board.rotate(vector: [0, 1, 0], rotation: 90.degrees).go!
-    # @lright_board.draw!
-    # @lright_board.rotate(vector: [0, 1, 0], rotation: -90.degrees).go!
-
-
-    # @wtop_board.draw!
-    # @wtop_board.rotate(vector: [1, 0, 0], rotation: 180.degrees).go!
-    # @wtop_board.rotate(vector: [0, 1, 0], rotation: 180.degrees).go!
-    # @wbottom_board.draw!
-    # @wbottom_board.rotate(vector: [0, 0, 1], rotation: 180.degrees).go!
+    # @lleft_board.face_left_long!
     # @wleft_board.draw!
-    # @wleft_board.rotate(vector: [0, 1, 0], rotation: 90.degrees).rotate(vector: [1, 0, 0], rotation: 90.degrees).go!
-    # @wright_board.draw!
-    # @wright_board.rotate(vector: [0, 1, 0], rotation: -90.degrees).rotate(vector: [1, 0, 0], rotation: 90.degrees).go!
+    # @wleft_board.face_left_wide!
     #
+    # @lright_board.draw!
+    # @lright_board.face_right_long!
+    # @wright_board.draw!
+    # @wright_board.face_right_wide!
 
     groups = [@lfront_board.group, @lback_board.group,
               @ltop_board.group, @lbottom_board.group,

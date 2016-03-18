@@ -344,15 +344,17 @@ module WikiHouse::BoardPartHelper
 
     lines = draw_edges!
 
-    face = draw_primary_face(lines)
+    @primary_face = draw_primary_face(lines)
     Sk.add_face(lines)
 
     draw_groove_faces
 
-    set_group(face.all_connected)
-    mark_primary_face!(face)
+    set_group(@primary_face.all_connected)
+    mark_primary_face!(@primary_face)
   end
-
+  def primary_face
+    @primary_face
+  end
   def set_default_properties
     mark_cutable!
   end
