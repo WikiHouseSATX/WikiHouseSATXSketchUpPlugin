@@ -289,6 +289,7 @@ module WikiHouse::BoardPartHelper
 
   def build_points
     build_top_side
+    @top_side_points.each {|pt| puts Sk.point_to_s(pt)}
     build_bottom_side
 
     build_right_side

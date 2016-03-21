@@ -92,91 +92,96 @@ class WikiHouse::RotationLab
     # line = Geom.intersect_plane_plane(plane1, plane2)
     # puts "Line #{line}"
 
-
-
     @lfront_board.draw!
-    gloop1= Sk.convert_to_global_position(@lfront_board.primary_face.outer_loop)
+    clock = 0
+   #Sk.draw_line([0,0,0], [100,100,0])
+  #  Sk.draw_line([0,@lfront_board.length,0], [100,100,0])
 
-   # puts gloop1
-    puts Geom.fit_plane_to_points(gloop1[0], gloop1[1], gloop1[2], gloop1[3]).join(",")
-    puts "-------------"
-    @lfront_board.face_left_long!
-    edges = []
-#     # edges << Sk.draw_line([0,0,0],[10,0,0])
-#     # edges << Sk.draw_line([10,0,0],[10,10,0])
-#     # edges << Sk.draw_line([10,10,0],[0,10,0])
-#     # edges << Sk.draw_line([0,10,0],[0,0,0])
-    edges << Sk.draw_line([0,0,0],[0,0,10])
-    edges << Sk.draw_line([0,0,10],[0,10,10])
-    edges << Sk.draw_line([0,10,10],[0,10,0])
-    edges << Sk.draw_line([0,10,0],[0,0,0])
+    bounds = @lfront_board.group.bounds
+    8.times {|c|  Sk.draw_line([100,100,0], bounds.corner(c)) }
 
-    plane_face = Sk.add_face(edges)
-#
-#      bottom_plane = Geom.fit_plane_to_points( [0,0,0],[10,0,0], [10,10,0], [0,10,0] )
- puts plane_face.plane.join(",")
-#     puts "========="
-    # #puts @lfront_board.primary_face.plane.join(",")
 
-    gloop1= Sk.convert_to_global_position(@lfront_board.primary_face.outer_loop)
+  #  @lfront_board.rotate(vector:[0,0,1], rotation:1.degrees).go!
+    puts "origin #{@lfront_board.origin}"
+    timer = UI.start_timer(0.5,true) {
+      clock += 0.5
+      case clock
+        when 0..5
+          puts "Roating #{360.0/10.0} [0,0,1]"
+          #@lfront_board.move_by(x: 5).go!
+          puts "B Origin #{@lfront_board.origin}"
+          @lfront_board.rotate(point: [0, @lfront_board.length,0],vector:[0,0,1], rotation: (360.0/10.0).degrees).go!
+          puts "A Origin #{@lfront_board.origin}"
+        # when 5..10
+        #   puts "Roating #{360.0/10.0} [0,1,0]"
+        #   #@lfront_board.move_by(x: 5).go!
+        #   puts "B Origin #{@lfront_board.origin}"
+        #   @lfront_board.move_to(point: [0,0,0]).rotate(point: [0,0,0],vector:[0,0,1], rotation: (360.0/10.0).degrees).go!
+        #   puts "A Origin #{@lfront_board.origin}"
+         # @lfront_board.rotate(point: [0,@lfront_board.length,0],vector:[0,1,0], rotation: (360.0/10.0).degrees).go!
+    #    when 10..15
+        #   puts "Roating #{360.0/10.0} [1,0,0]"
+        #   #@lfront_board.move_by(x: 5).go!
+        #   @lfront_board.rotate(point: [0,@lfront_board.length,0],vector:[1,1,1], rotation: (360.0/10.0).degrees).go!
+        #
+        else
+          puts "Final Origin #{@lfront_board.origin}"
+          UI.stop_timer timer
+      end
+    }
 
-    # puts gloop1
-    puts Geom.fit_plane_to_points(gloop1[0], gloop1[1], gloop1[2], gloop1[3]).join(",")
-
-    #loop = @lfront_board.primary_face.outer_loop
-  #   gloop1= Sk.convert_to_global_position(@lfront_board.primary_face.outer_loop)
-  #   gloop2= Sk.convert_to_global_position(plane_face.outer_loop)
-  #   puts gloop1
-  #   puts "-----"
-  #   puts gloop2
-  # #   part_plane = Geom.fit_plane_to_points(loop.vertices[0], loop.vertices[1], loop.vertices[2])
-  #    line = Geom.intersect_plane_plane(plane_face.plane, @lfront_board.primary_face.plane)
-  #
-  #    puts "New Line #{line}"
-    # @lleft_board.draw!
-    #
-    # @lleft_board.face_left_long!
-    #
-    # bottom_plane = Geom.fit_plane_to_points( [0,0,0], [10,10,0], [0,10,0] )
-    #
-    # loop = @lleft_board.primary_face.outer_loop
-    # gloop1= Sk.convert_to_global_position(loop)
-    # part_plane = Geom.fit_plane_to_points(*gloop1)
-    # line = Geom.intersect_plane_plane(bottom_plane, part_plane)
-    # puts line
-    #
 
     if (false == true)
       @lfront_board.draw!
 
       @lfront_board.face_front_long!
+      @lfront_board.face_back_long!
+
+      #  puts "Long Front #{Sk.face_to_global_plane(@lfront_board.primary_face).join(",")}"
       @wfront_board.draw!
       @wfront_board.face_front_wide!
+    #  puts "Wide Front #{Sk.face_to_global_plane(@wfront_board.primary_face).join(",")}"
 
       @lback_board.draw!
       @lback_board.face_back_long!
+   #   puts "Long Back #{Sk.face_to_global_plane(@lback_board.primary_face).join(",")}"
+
       @wback_board.draw!
       @wback_board.face_back_wide!
+    #  puts "Wide Back #{Sk.face_to_global_plane(@wback_board.primary_face).join(",")}"
 
       @ltop_board.draw!
       @ltop_board.face_top_long!
+    #  puts "Long Top #{Sk.face_to_global_plane(@ltop_board.primary_face).join(",")}"
+
       @wtop_board.draw!
       @wtop_board.face_top_wide!
+  #    puts "Wide Top #{Sk.face_to_global_plane(@wtop_board.primary_face).join(",")}"
 
       @lbottom_board.draw!
       @lbottom_board.face_bottom_long!
+  #    puts "Long Bottom #{Sk.face_to_global_plane(@lbottom_board.primary_face).join(",")}"
+
       @wbottom_board.draw!
       @wbottom_board.face_bottom_wide!
+   #   puts "Wide Bottom #{Sk.face_to_global_plane(@wbottom_board.primary_face).join(",")}"
 
       @lleft_board.draw!
       @lleft_board.face_left_long!
+    #  puts "Long Left #{Sk.face_to_global_plane(@lleft_board.primary_face).join(",")}"
+
       @wleft_board.draw!
       @wleft_board.face_left_wide!
+    #  puts "Wide Left #{Sk.face_to_global_plane(@wleft_board.primary_face).join(",")}"
 
       @lright_board.draw!
       @lright_board.face_right_long!
+     # puts "Long Right #{Sk.face_to_global_plane(@lright_board.primary_face).join(",")}"
+
       @wright_board.draw!
       @wright_board.face_right_wide!
+     # puts "Wide Right #{Sk.face_to_global_plane(@wright_board.primary_face).join(",")}"
+
     end
     groups = [@lfront_board.group, @lback_board.group,
               @ltop_board.group, @lbottom_board.group,

@@ -11,6 +11,7 @@ module Sk
   def abs(val)
     val < 0 ? -1.0 * val : val
   end
+
   def shift_point(pt, x: 0, y: 0, z: 0, origin: nil)
     if origin
       [pt.x + x + origin.x, pt.y + y + origin.y, pt.z + z + origin.z]
@@ -19,44 +20,47 @@ module Sk
     end
 
   end
+
   def shift_point_array(pts_array, shifts)
-    pts_array.collect.with_index do |pt , index|
-      shift_pt = shifts[index] ? shifts[index] : [0,0,0]
+    pts_array.collect.with_index do |pt, index|
+      shift_pt = shifts[index] ? shifts[index] : [0, 0, 0]
       shift_point(pt, x: shift_pt.x, y: shift_pt.y, z: shift_pt.z)
     end
   end
+
   def horizontal_mirror(pts, mirror_x_pt: nil)
-      mirrored_points = []
-      if mirror_x_pt
-        mirror_x = mirror_x_pt
-      else
-        mirror_x = pts.collect {|pt| pt.x}.max
-      end
+    mirrored_points = []
+    if mirror_x_pt
+      mirror_x = mirror_x_pt
+    else
+      mirror_x = pts.collect { |pt| pt.x }.max
+    end
 
-      shortest_distance = mirror_x
-      horizontal_mirror = pts.collect do |pt|
-        distance = Sk.round(mirror_x - pt.x)
-       #  puts "Distance from #{pt.x} to #{mirror_x} = #{distance}"
-        shortest_distance = distance if distance < shortest_distance
+    shortest_distance = mirror_x
+    horizontal_mirror = pts.collect do |pt|
+      distance = Sk.round(mirror_x - pt.x)
+      #  puts "Distance from #{pt.x} to #{mirror_x} = #{distance}"
+      shortest_distance = distance if distance < shortest_distance
       #    puts "Shortest distance is #{shortest_distance}"
-        distance
+      distance
+    end
+    if mirror_x_pt
+      shortest_distance = mirror_x_pt
+      horizontal_mirror.each_with_index do |x, index|
+        #  puts "Moving #{pts[index].x} to #{ x + shortest_distance} #{shortest_distance} "
+        mirrored_points[index] = [x, pts[index].y, pts[index].z]
       end
-      if mirror_x_pt
-        shortest_distance = mirror_x_pt
-        horizontal_mirror.each_with_index do |x, index|
-    #  puts "Moving #{pts[index].x} to #{ x + shortest_distance} #{shortest_distance} "
-          mirrored_points[index] = [x , pts[index].y, pts[index].z]
-        end
-      else
-        horizontal_mirror.each_with_index do |x, index|
-       #   puts "Moving #{pts[index].x} to #{ x - shortest_distance} #{shortest_distance} "
-          mirrored_points[index] = [x - shortest_distance, pts[index].y, pts[index].z]
-        end
+    else
+      horizontal_mirror.each_with_index do |x, index|
+        #   puts "Moving #{pts[index].x} to #{ x - shortest_distance} #{shortest_distance} "
+        mirrored_points[index] = [x - shortest_distance, pts[index].y, pts[index].z]
       end
+    end
 
-      mirrored_points
+    mirrored_points
 
   end
+
   def model
     Sketchup.active_model
   end
@@ -96,9 +100,11 @@ module Sk
   def round(val)
     val.to_f.round(4)
   end
+
   def round_pt(pt)
     [round(pt.x), round(pt.y), round(pt.z)]
   end
+
   def degrees_to_radians(degrees)
     degrees.to_f * Math::PI / 180
   end
@@ -371,6 +377,7 @@ module Sk
   def is_a_construction_line?(item)
     item.is_a?(Sketchup::ConstructionLine)
   end
+
   def is_a_group?(item)
     item.is_a?(Sketchup::Group)
   end
@@ -499,7 +506,7 @@ module Sk
 #based on code from Position Explorer
 # Copyright 2010 Glenn Babcock
     if points.nil?
-    points = entity.vertices.collect { |v| v.position }
+      points = entity.vertices.collect { |v| v.position }
     end
     parent = entity.parent
 
@@ -641,6 +648,15 @@ module Sk
       UI.refresh_inspectors
     end
 
+  end
+
+  def face_to_global_plane(face)
+    gloop = Sk.convert_to_global_position(face.outer_loop)
+    if gloop.length >= 4
+      Geom.fit_plane_to_points(Sk.round_pt(gloop[0]), Sk.round_pt(gloop[1]), Sk.round_pt(gloop[2]), Sk.round_pt(gloop[3]))
+    else
+      Geom.fit_plane_to_points(Sk.round_pt(gloop[0]), Sk.round_pt(gloop[1]), Sk.round_pt(gloop[2]))
+    end
   end
 
 end

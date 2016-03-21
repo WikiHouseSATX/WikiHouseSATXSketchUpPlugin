@@ -50,12 +50,15 @@ class WikiHouse::Alteration
     raise ArgumentError, "You must provide a vector" unless vector
     raise ArgumentError, "You must provide a rotation" unless rotation
     @operations << Geom::Transformation.rotation(Geom::Point3d.new(point), vector, rotation)
+
     self
   end
 
   def move_to(point: nil)
     point ||= @part.origin
+
     @operations << Geom::Transformation.new(Geom::Point3d.new(point))
+    puts @operations.last.origin
     self
   end
 

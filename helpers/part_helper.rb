@@ -84,7 +84,7 @@ module WikiHouse::PartHelper
 
   def alter!(transformation, undoable: true)
     #Warning move and transform behave differently
- #   puts "Origin before #{@origin}"
+    #   puts "Origin before #{@origin}"
     if group
       if undoable
         group.transform! transformation
@@ -93,9 +93,9 @@ module WikiHouse::PartHelper
 
       end
 
-      @origin = [transformation.origin.x + @origin.x,
-                 transformation.origin.y + @origin.y,
-                 transformation.origin.z + @origin.z]
+      @origin = [Sk.round(transformation.origin.x) + @origin.x,
+                 Sk.round(transformation.origin.y) + @origin.y,
+                 Sk.round(transformation.origin.z) + @origin.z]
     elsif component
       if undoable
         component.transform! transformation
@@ -104,9 +104,9 @@ module WikiHouse::PartHelper
 
       end
 
-      @origin = [transformation.origin.x + @origin.x,
-                 transformation.origin.y + @origin.y,
-                 transformation.origin.z + @origin.z]
+      @origin = [Sk.round(transformation.origin.x) + @origin.x,
+                 Sk.round(transformation.origin.y) + @origin.y,
+                 Sk.round(transformation.origin.z) + @origin.z]
     end
 
   end
@@ -210,36 +210,47 @@ module WikiHouse::PartHelper
   def face_front_long!
     WikiHouse::Direction.front().apply(self)
   end
+
   def face_front_wide!
     WikiHouse::Direction.front(length_up: false).apply(self)
   end
+
   def face_back_long!
     WikiHouse::Direction.back().apply(self)
   end
+
   def face_back_wide!
     WikiHouse::Direction.back(length_up: false).apply(self)
   end
+
   def face_left_long!
     WikiHouse::Direction.left().apply(self)
   end
+
   def face_left_wide!
     WikiHouse::Direction.left(length_up: false).apply(self)
   end
+
   def face_right_long!
     WikiHouse::Direction.right().apply(self)
   end
+
   def face_right_wide!
     WikiHouse::Direction.right(length_up: false).apply(self)
   end
+
   def face_top_long!
     WikiHouse::Direction.top().apply(self)
   end
+
   def face_top_wide!
     WikiHouse::Direction.top(length_up: false).apply(self)
   end
+
   def face_bottom_long!
     WikiHouse::Direction.bottom().apply(self)
   end
+
   def face_bottom_wide!
     WikiHouse::Direction.bottom(length_up: false).apply(self)
   end
