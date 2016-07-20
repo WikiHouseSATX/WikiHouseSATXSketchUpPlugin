@@ -1,9 +1,11 @@
 module Osbp
 
   extend self
+
   def use_absolute_coordinates
     cmd("SA", "Use Absolute Co-Ordinates")
   end
+
   def cn_command(number: nil)
     #These undocumented commands occur in some files
     if number == 91
@@ -30,7 +32,7 @@ module Osbp
     cmd("MS,#{xy},#{z}")
   end
 
-  def cut(x: nil, y: nil, z: nil ,pt:nil)
+  def cut(x: nil, y: nil, z: nil, pt: nil)
     raise ArgumentError, "You must provide an X if you provide y & z" if y && z && !x
     if x && y && z
       cmd("M3,#{x},#{y},#{z}")
@@ -85,9 +87,11 @@ module Osbp
   def comment(msg)
     msg ? "'#{msg}" : ""
   end
+
   def new_line
     comment("")
   end
+
   def dash_line
     comment("------------------------------")
   end
