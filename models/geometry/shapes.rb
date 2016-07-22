@@ -11,7 +11,14 @@ module Shapes
   class Rhombus
 
   end
-  class Polygon
+  class UniformPolygon
+    attr_reader :origin,:segment_length, :angle
+    def init(origin,segment_length, angle)
+      @segment_length = segment
+      @angle = angle
+      @origin = origin
+
+    end
 
   end
 end
