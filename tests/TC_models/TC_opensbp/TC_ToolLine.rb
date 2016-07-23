@@ -8,7 +8,7 @@ describe "TC_ToolLine" do
   it "can handle specs at the tomp" do
     1.must.equal 2
   end
-  describe "Nested" do
+  describe " and then if nested " do
     it "can handle nested specs" do
       1.must.equal 2
     end
